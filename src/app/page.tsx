@@ -1,43 +1,93 @@
-/* Temporary token specimen — replaced by the real page in Phase 2. */
+/* Phase 1 scratch assembly — replaced by the real 14 sections in Phase 2. */
+import AnnouncementBar from "@/components/AnnouncementBar";
+import TerminalHUD from "@/components/TerminalHUD";
+import Nav from "@/components/Nav";
+import Section from "@/components/Section";
+import Kicker from "@/components/Kicker";
+import Button from "@/components/Button";
+import Highlight from "@/components/Highlight";
+import Reveal from "@/components/Reveal";
+import LogoHalftone from "@/components/LogoHalftone";
+import DemoPanel from "@/components/DemoPanel";
+import { DitherBand } from "@/components/Dither";
+
 export default function Home() {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-24">
-      <p className="kicker-text text-ink-muted">
-        <span className="text-accent">›</span> TOKEN SPECIMEN · PHASE 0
-      </p>
-      <h1 className="display-1 mt-6">
-        Run your business
-        <br />
-        <span className="text-accent">like an AI CEO.</span>
-      </h1>
-      <p className="mt-6 max-w-[60ch] text-lg leading-[1.55] text-ink-body">
-        Body copy at 18px on ink-body. A key phrase gets an{" "}
-        <span className="rounded bg-accent-soft px-1">accent-soft pill</span>{" "}
-        and another a{" "}
-        <span className="border-b-2 border-dotted border-accent">
-          dotted underline
-        </span>
-        .
-      </p>
-      <div className="mt-8 flex gap-3">
-        <a
-          href="#"
-          className="rounded-lg bg-accent px-6 py-3 font-bold text-accent-on shadow-[3px_3px_0_rgba(10,10,10,0.9)] hover:bg-accent-hover"
-        >
-          Get the free brain →
-        </a>
-        <a
-          href="#"
-          className="rounded-lg border border-line bg-bg px-6 py-3 font-bold text-ink"
-        >
-          See the office ↓
-        </a>
-      </div>
-      <div className="mt-10 rounded-2xl bg-bg-dark p-5 font-mono text-xs text-ink-muted">
-        <span className="live-dot mr-2 inline-block h-2 w-2 rounded-full bg-accent" />
-        THE OFFICE · SECOND BRAIN · LIVE
-        <span className="hud-cursor ml-2 inline-block h-3 w-[7px] bg-accent align-middle" />
-      </div>
-    </main>
+    <>
+      <AnnouncementBar />
+      <TerminalHUD />
+      <Nav />
+      <main>
+        <Section id="hero" grid className="py-20 md:py-28">
+          <div className="grid items-center gap-14 md:grid-cols-[1.15fr_1fr]">
+            <div>
+              <Kicker glyph="●">FREE BRAIN OPEN · COHORT 1: 10 SEATS</Kicker>
+              <h1 className="display-1 mt-6">
+                Run your business
+                <br />
+                <span className="text-accent">like an AI CEO.</span>
+              </h1>
+              <p className="mt-6 max-w-[56ch] text-lg leading-[1.55] text-ink-body">
+                Over 8 live sessions we build systems you{" "}
+                <Highlight>own outright</Highlight>: a second brain, a deputy
+                that answers for you, speed to lead, reactivation, and a{" "}
+                <Highlight variant="dotted">7am brief</Highlight>.
+              </p>
+              <div className="mt-9 flex flex-wrap gap-3">
+                <Button href="#pricing">Get the free brain</Button>
+                <Button href="#office" variant="secondary" arrow="↓">
+                  See the office
+                </Button>
+              </div>
+            </div>
+            <LogoHalftone />
+          </div>
+        </Section>
+
+        <DitherBand seed="hero-office" direction="edges" />
+
+        <Section id="office" className="py-20">
+          <Kicker>INSIDE THE OFFICE · LIVE</Kicker>
+          <h2 className="display-2 mt-4 max-w-[24ch]">
+            A live map of everything your business knows.
+          </h2>
+          <div className="mt-10">
+            <DemoPanel
+              title="● THE OFFICE · SECOND BRAIN · LIVE"
+              caption="This is a real one, running. You get yours free, on day one."
+            >
+              <div className="flex h-full items-center justify-center font-mono text-xs text-neutral-500">
+                [ demo embeds here in phase 3 ]
+              </div>
+            </DemoPanel>
+          </div>
+        </Section>
+
+        <Section id="problem" className="py-24">
+          <Reveal>
+            <h2 className="display-2 max-w-[26ch]">
+              Scroll test: this section swaps the HUD to 02_problem.
+            </h2>
+            <p className="mt-6 max-w-[60ch] text-lg leading-[1.55] text-ink-body">
+              Dummy manifesto copy to give the page scroll height. The real
+              problem section lands in Phase 2.
+            </p>
+          </Reveal>
+          <div className="h-[60vh]" />
+        </Section>
+
+        <DitherBand seed="problem-pricing" direction="down" />
+
+        <Section id="pricing" grid className="py-24">
+          <Reveal>
+            <h2 className="display-2">Pricing swaps it to 09_pricing.</h2>
+            <p className="mt-6 max-w-[60ch] text-lg leading-[1.55] text-ink-body">
+              More dummy height below to finish the scroll runway.
+            </p>
+          </Reveal>
+          <div className="h-[70vh]" />
+        </Section>
+      </main>
+    </>
   );
 }
