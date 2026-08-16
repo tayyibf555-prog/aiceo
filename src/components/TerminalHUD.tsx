@@ -30,9 +30,9 @@ export default function TerminalHUD() {
       },
       { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
     );
-    document
-      .querySelectorAll<HTMLElement>("[data-exec]")
-      .forEach((el) => io.observe(el));
+    const observed = document.querySelectorAll<HTMLElement>("[data-exec]");
+    observed.forEach((el) => io.observe(el));
+    const lastExec = observed[observed.length - 1]?.dataset.exec;
 
     let max = document.documentElement.scrollHeight - window.innerHeight;
     let ticking = false;
@@ -49,6 +49,8 @@ export default function TerminalHUD() {
           pctRef.current = whole;
           setPct(whole);
         }
+        // The footer never reaches the observer band; snap to it at the end.
+        if (p > 0.995 && lastExec) setLabel(lastExec);
       });
     };
     const onResize = () => {
