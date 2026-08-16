@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "gen:halftone": "node scripts/generate-halftone.mjs",
+    "build:office": "cd ../../Desktop/second-brain-viz 2>/dev/null || cd /Users/tayyibarbab/Desktop/second-brain-viz; npm run build -- --outDir \"/Users/tayyibarbab/ai ceo website/public/office\" --emptyOutDir",
+    "poster": "node scripts/capture-poster.mjs",
+    "copylint": "bash scripts/copy-lint.sh",
+    "verify": "node scripts/verify-page.mjs"
   },
   "dependencies": {
     "next": "16.3.1",
