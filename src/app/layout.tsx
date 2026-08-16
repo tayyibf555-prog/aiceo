@@ -8,10 +8,25 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
+const description =
+  "Over 8 live sessions we build systems you own outright: a second brain, a deputy that answers for you, speed to lead, reactivation, and a 7am brief. Your business runs on it. You own every file.";
+
 export const metadata: Metadata = {
   title: "The AI CEO · Run your business like an AI CEO",
-  description:
-    "Over 8 live sessions we build systems you own outright: a second brain, a deputy that answers for you, speed to lead, reactivation, and a 7am brief. Your business runs on it. You own every file.",
+  description,
+  openGraph: {
+    title: "The AI CEO",
+    description,
+    images: [{ url: "/og.png", width: 1200, height: 630 }],
+    type: "website",
+    locale: "en_GB",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The AI CEO",
+    description,
+    images: ["/og.png"],
+  },
 };
 
 export const viewport: Viewport = {

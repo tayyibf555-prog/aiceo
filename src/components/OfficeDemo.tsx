@@ -32,9 +32,14 @@ export default function OfficeDemo() {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
-    const isCoarse = window.matchMedia("(pointer: coarse)").matches;
+    // Reduced-motion users get the poster until they explicitly open it:
+    // the brain auto-rotates and fires constantly, which is exactly the
+    // kind of ambient motion that setting asks us not to autoplay.
+    const isCoarse =
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     setCoarse(isCoarse);
-    if (isCoarse) return; // mobile: poster only until tapped
+    if (isCoarse) return; // poster stays; tap/click opens the dialog
 
     const el = rootRef.current;
     if (!el) return;
@@ -71,7 +76,9 @@ export default function OfficeDemo() {
         type="button"
         onClick={coarse ? openDialog : undefined}
         aria-label={coarse ? "Open the live office demo fullscreen" : undefined}
-        className={`absolute inset-0 z-10 block w-full cursor-${coarse ? "pointer" : "default"} transition-opacity duration-700 ${
+        className={`absolute inset-0 z-10 block w-full ${
+          coarse ? "cursor-pointer" : "cursor-default"
+        } transition-opacity duration-700 ${
           inlineLoaded ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
       >

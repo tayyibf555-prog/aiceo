@@ -9,6 +9,7 @@ import { DitherBlock } from "@/components/Dither";
 */
 export default function LogoHalftone() {
   const { cols, rows, cells } = MARK_GRID;
+  const onCells = cells.reduce<number>((a, b) => a + b, 0);
   const cell = 10;
   const rand = seeded("logo-halftone");
   let d = "";
@@ -68,7 +69,7 @@ export default function LogoHalftone() {
             <span className="live-dot inline-block h-1.5 w-1.5 rounded-full bg-accent" />
             RENDER · {cols}×{rows}
           </span>
-          <span>562 PX</span>
+          <span>{onCells} PX</span>
         </div>
       </div>
     </div>

@@ -16,7 +16,10 @@ export default function Problem() {
             </Reveal>
           ))}
           <Reveal delay={260}>
-            <p className="border-l-2 border-accent pl-5 text-xl font-medium leading-[1.5] text-ink">
+            <p className="text-xl font-medium leading-[1.5] text-ink">
+              <span aria-hidden className="mr-3 font-mono text-accent">
+                ›
+              </span>
               {problem.turn}
             </p>
           </Reveal>

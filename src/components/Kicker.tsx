@@ -12,7 +12,12 @@ export default function Kicker({
 }) {
   return (
     <p className={`kicker-text text-ink-muted ${className}`}>
-      <span className={glyph === "●" ? "live-dot mr-2 inline-block text-accent" : "mr-2 text-accent"}>
+      <span
+        aria-hidden
+        className={
+          glyph === "●" ? "live-dot mr-2 inline-block text-accent" : "mr-2 text-accent"
+        }
+      >
         {glyph}
       </span>
       {children}
