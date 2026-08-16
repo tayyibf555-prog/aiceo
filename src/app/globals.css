@@ -1,26 +1,159 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  The AI CEO — design tokens (docs/brief.md §1–2).
+  Reference design language: thefounderos.com, accent swapped red → blue.
+*/
+@theme {
+  /* Backgrounds */
+  --color-bg: #ffffff;
+  --color-bg-subtle: #fafafa;
+  --color-bg-dark: #0a0a0a;
+
+  /* Text */
+  --color-ink: #0a0a0a;
+  --color-ink-body: #525252;
+  --color-ink-muted: #a3a3a3;
+
+  /* Lines */
+  --color-line: #e5e7eb;
+  --color-line-strong: #d4d4d4;
+
+  /* The accent */
+  --color-accent: #1d6bff;
+  --color-accent-hover: #1557e0;
+  --color-accent-soft: rgb(29 107 255 / 0.12);
+  --color-accent-on: #ffffff;
+
+  /* Warm secondary, tiny doses only */
+  --color-bronze: #b46f37;
+
+  /* Type */
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo,
+    monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Display scale — H1 64px cap, H2 44–48px, both 700 / -0.02em (brief §2) */
+@utility display-1 {
+  font-size: clamp(40px, 7vw, 64px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@utility display-2 {
+  font-size: clamp(31px, 4.5vw, 47px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* Mono kicker base — 12–13px, +0.15em tracking (brief §2) */
+@utility kicker-text {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+html {
+  scroll-padding-top: 56px; /* sticky HUD offset for anchor jumps */
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-accent-on);
+}
+
+/* ── Motif 1: grid-paper background (brief §3.1) ─────────────────────────
+   Faint 1px grid, ~56px cells, fading out via radial mask.
+   Apply to a position:relative section. Pure CSS, zero JS. */
+.grid-paper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+      0deg,
+      var(--color-line) 0 1px,
+      transparent 1px 56px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      var(--color-line) 0 1px,
+      transparent 1px 56px
+    );
+  mask-image: radial-gradient(
+    ellipse 70% 65% at 50% 40%,
+    black 35%,
+    transparent 78%
+  );
+}
+
+/* ── Motif 2: terminal HUD cursor blink ──────────────────────────────── */
+@keyframes hud-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.hud-cursor {
+  animation: hud-blink 1.1s steps(1) infinite;
+}
+
+/* Live-dot pulse (announcement pill, demo panel header) */
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.live-dot {
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+/* ── Scroll reveal (200–400ms, never bouncy — brief §3 motion) ───────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.reveal-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-cursor,
+  .live-dot {
+    animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
 }
