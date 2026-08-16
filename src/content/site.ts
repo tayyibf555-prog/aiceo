@@ -314,6 +314,18 @@ export const faqs = {
   ],
 };
 
+export const leadForm = {
+  nameLabel: "NAME",
+  namePlaceholder: "Your name",
+  emailLabel: "EMAIL",
+  emailPlaceholder: "you@yourbusiness.co.uk",
+  submitting: "▶ RESERVING…",
+  success: "▶ RESERVED · CHECK YOUR INBOX",
+  successNote: "You are on the list. Details land by email before doors open.",
+  invalid: "A real name and a real email, please.",
+  error: "That did not go through. Try again in a minute.",
+};
+
 export const footer = {
   line: "Run your business like an AI CEO.",
   company: "Azen AI Ltd",

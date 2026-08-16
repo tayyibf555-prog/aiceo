@@ -2,6 +2,7 @@ import Section from "@/components/Section";
 import Kicker from "@/components/Kicker";
 import Reveal from "@/components/Reveal";
 import Button from "@/components/Button";
+import LeadForm from "@/components/LeadForm";
 import { pricing, checkoutUrl } from "@/content/site";
 
 export default function Pricing() {
@@ -45,13 +46,20 @@ export default function Pricing() {
                 ))}
               </ul>
               <div className="mt-8">
-                <Button
-                  href={card.id === "cohort" ? checkoutUrl : "#pricing"}
-                  variant={card.featured || card.id === "free" ? "primary" : "secondary"}
-                  className="w-full text-center"
-                >
-                  {card.ctaLabel}
-                </Button>
+                {card.id === "cohort" ? (
+                  <Button
+                    href={checkoutUrl}
+                    variant="primary"
+                    className="w-full text-center"
+                  >
+                    {card.ctaLabel}
+                  </Button>
+                ) : (
+                  <LeadForm
+                    source={card.id === "free" ? "free-brain" : "one-on-one"}
+                    cta={card.ctaLabel}
+                  />
+                )}
               </div>
             </div>
           </Reveal>
