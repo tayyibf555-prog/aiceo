@@ -411,7 +411,7 @@ export const founders = {
   h2a: "This is not a course.",
   h2b: "It is the system our business runs on.",
   body: "We built every one of these systems for our own company first. The cohort does not teach you about them, it installs them. Click a card to meet us.",
-  flipHint: "CLICK TO FLIP",
+  flipHint: "FLIP ME",
   cards: [
     {
       id: "founder-1",

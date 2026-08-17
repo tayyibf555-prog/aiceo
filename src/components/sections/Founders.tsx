@@ -20,6 +20,12 @@ const PHOTOS: Record<string, StaticImageData> = {
   "founder-2": riteshPhoto,
 };
 
+/* Where each portrait's face sits, so the wide card frame crops to it. */
+const OBJ_POS: Record<string, string> = {
+  "founder-1": "50% 26%",
+  "founder-2": "50% 42%",
+};
+
 function FounderCard({
   card,
 }: {
@@ -36,41 +42,34 @@ function FounderCard({
       className="flip-scene block w-full text-left"
     >
       <div className={`flip-inner h-[440px] ${flipped ? "flipped" : ""}`}>
-        {/* front */}
-        <div className="flip-face absolute inset-0 flex flex-col border border-line bg-bg p-6 transition-all duration-300 hover:border-accent hover:shadow-[4px_4px_0_rgba(43,85,176,0.12)]">
-          <p className="mb-4 font-mono text-[10px] tracking-[0.18em] text-ink-muted">
-            <span aria-hidden className="text-accent">
-              ●
-            </span>{" "}
-            {card.role}
-          </p>
+        {/* front: the photo IS the card */}
+        <div className="flip-face absolute inset-0 overflow-hidden border border-line bg-bg-dark transition-all duration-300 hover:border-accent hover:shadow-[4px_4px_0_rgba(43,85,176,0.12)]">
           {PHOTOS[card.id] ? (
-            <div className="relative flex-1 overflow-hidden border border-line">
-              <Image
-                src={PHOTOS[card.id]}
-                alt={card.name}
-                fill
-                sizes="(max-width: 768px) 90vw, 420px"
-                className="object-cover object-center"
-              />
-            </div>
+            <Image
+              src={PHOTOS[card.id]}
+              alt={card.name}
+              fill
+              sizes="(max-width: 768px) 90vw, 420px"
+              className="object-cover"
+              style={{ objectPosition: OBJ_POS[card.id] ?? "center" }}
+            />
           ) : (
-            <div className="grid flex-1 place-items-center border border-dashed border-line-strong">
-              <div className="text-center font-mono text-[11px] tracking-[0.18em] text-ink-muted">
-                <span className="mb-3 block text-3xl" aria-hidden>
-                  ◉
-                </span>
+            <div className="grid h-full place-items-center border border-dashed border-line-strong bg-bg">
+              <span className="font-mono text-[11px] tracking-[0.18em] text-ink-muted">
                 {card.photoLabel}
-              </div>
+              </span>
             </div>
           )}
-          <div className="mt-5 flex items-end justify-between gap-4">
-            {card.name && (
-              <h3 className="text-lg font-bold tracking-tight">{card.name}</h3>
-            )}
-            <span className="ml-auto font-mono text-[10px] tracking-[0.15em] text-accent">
-              {founders.flipHint} ⟳
-            </span>
+          <span className="absolute right-3 top-3 bg-accent px-2.5 py-1 font-mono text-[10px] tracking-[0.15em] text-accent-on">
+            {founders.flipHint} ⟳
+          </span>
+          <div className="absolute inset-x-0 bottom-0 bg-bg-dark/75 px-4 py-3">
+            <h3 className="text-lg font-bold tracking-tight text-white">
+              {card.name}
+            </h3>
+            <p className="mt-0.5 font-mono text-[10px] tracking-[0.18em] text-white/60">
+              {card.role}
+            </p>
           </div>
         </div>
         {/* back */}
