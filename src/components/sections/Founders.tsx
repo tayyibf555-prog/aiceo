@@ -120,7 +120,7 @@ export default function Founders() {
           {founders.body}
         </p>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:max-w-4xl">
+        <div className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
           {founders.cards.map((card, i) => (
             <Reveal key={card.id} delay={i * 90}>
               <FounderCard card={card} />
