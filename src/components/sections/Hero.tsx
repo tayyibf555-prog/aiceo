@@ -10,7 +10,7 @@ export default function Hero() {
   return (
     <Section
       id="hero"
-      className="flex min-h-[calc(100dvh-150px)] items-center py-16 md:py-20"
+      className="flex min-h-[calc(100dvh-150px)] items-center bg-bg py-16 md:py-20"
     >
       <div className="grid items-center gap-14 md:grid-cols-[1.15fr_1fr]">
         <HeroIntro>
