@@ -20,7 +20,9 @@ export default function Section({
   return (
     <section id={id} data-exec={exec} className={`relative ${className}`}>
       {container ? (
-        <div className="relative z-10 mx-auto max-w-6xl px-6">{children}</div>
+        <div className="relative z-10 mx-auto w-full max-w-6xl px-6">
+          {children}
+        </div>
       ) : (
         children
       )}

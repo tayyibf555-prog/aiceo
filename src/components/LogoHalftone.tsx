@@ -29,7 +29,7 @@ export default function LogoHalftone() {
   }
 
   return (
-    <HalftoneFx className="mx-auto w-full max-w-[380px]">
+    <HalftoneFx className="mx-auto w-full max-w-[440px]">
       <svg
         viewBox={`0 0 ${cols * cell} ${rows * cell}`}
         role="img"
