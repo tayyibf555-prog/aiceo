@@ -419,7 +419,7 @@ export const founders = {
       photoLabel: "",
       name: "Tayyib Arbab",
       role: "CO-FOUNDER · THE AI CEO",
-      bio: "Tayyib runs Azen AI, the studio behind the systems in this cohort: second brains, lead engines and client CRMs built for real businesses, not demos. Everything in the programme ran on his own company first. Inside The AI CEO, he builds the brain and the OS.",
+      bio: "Tayyib runs Azen AI, the studio behind the systems in this cohort. He studied cyber security, and the technical grounding shows: years spent inside real businesses building second brains, lead engines and client CRMs, engineered to work and locked down to stay safe. Everything in the programme ran on his own company first.",
       links: [
         { kind: "web", href: "#", label: "Azen AI" },
         { kind: "youtube", href: "#", label: "YouTube" },
@@ -432,7 +432,7 @@ export const founders = {
       photoLabel: "",
       name: "Ritesh Verma",
       role: "CO-FOUNDER · THE AI CEO",
-      bio: "Ritesh is the founder of Slyte, an AI development studio with fifty plus client builds and over $2M generated for the businesses behind them. A computer science graduate and former fintech engineer, he left the day job in 2025 with a seven figure AI business already running and 200,000 people following the work. Inside The AI CEO, he builds the agents.",
+      bio: "Ritesh is the founder of Slyte, an AI development studio with fifty plus client builds and over $2M generated for the businesses behind them. A computer science graduate and former fintech engineer, he left the day job in 2025 with a seven figure AI business already running and 200,000 people following the work. Through Agent Rise, he has mentored 200+ people into AI businesses of their own.",
       links: [
         { kind: "web", href: "#", label: "Azen AI" },
         { kind: "youtube", href: "https://www.youtube.com/@rkumarv", label: "YouTube" },
