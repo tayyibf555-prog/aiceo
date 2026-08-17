@@ -1,8 +1,10 @@
 /*
-  Every word on the site lives here. Copy rules from docs/brief.md §5:
-  British spelling, no em-dashes, banned-word list, all enforced by
-  scripts/copy-lint.sh against this file. Section components consume
-  this, never hard-code copy.
+  Every word on the site lives here. Copy rules from docs/brief.md §5
+  (as amended 17 Aug: "agents" is now allowed vocabulary; the four
+  systems are the second brain, the speed to lead agent, the
+  reactivation agent, and the AI CEO orchestrator; no deputy, no 7am
+  brief). British spelling, no em-dashes, banned-word list enforced by
+  scripts/copy-lint.sh against this file.
 */
 
 export const brand = {
@@ -56,18 +58,18 @@ export const hero = {
   sub: [
     { t: "Over 8 live sessions we build systems you " },
     { t: "own outright", h: "pill" as const },
-    { t: ": a second brain, a deputy that answers for you, speed to lead, reactivation, and a " },
-    { t: "7am brief", h: "dotted" as const },
+    { t: ": a second brain, a speed to lead agent, a reactivation agent, and an AI CEO orchestrator that " },
+    { t: "runs them all", h: "dotted" as const },
     { t: ". Your business runs on it. You own every file." },
   ],
   primary: { label: "Work with us 1-on-1", href: "#pricing" },
   secondary: { label: "See the office", href: "#office" },
   bootLog: [
-    "boot aiceo_v1.0 ........... ok",
-    "brain.load(your_business) . ok",
-    "deputy.voice .......... online",
-    "speed_to_lead .......... armed",
-    "brief.schedule(07:00) .... set",
+    "boot aiceo_v1.0 ............. ok",
+    "brain.load(your_business) ... ok",
+    "agent.speed_to_lead ...... armed",
+    "agent.reactivation ....... ready",
+    "orchestrator.aiceo ....... online",
   ],
 };
 
@@ -107,7 +109,7 @@ export const problem = {
   ],
   bold: "You're not running the business.",
   boldHl: "You're refreshing it.",
-  turn: "None of this is a discipline problem. Your business has no memory and no deputy. Both are systems, and systems can be built.",
+  turn: "None of this is a discipline problem. Your business has no memory and nobody on the desk overnight. Both are systems, and systems can be built.",
   cta: "See it running, live",
   diagram: {
     todayLabel: "TODAY",
@@ -115,8 +117,8 @@ export const problem = {
     tabs: ["CHATGPT", "INBOX", "CRM", "SHEETS", "NOTION", "STRIPE"],
     todayCaption: "NOTHING TALKS TO ANYTHING",
     brainLabel: "WITH THE BRAIN",
-    folder: "aiceo-brain/",
-    rows: ["brain/", "deputy/", "leads/", "inbox/"],
+    folder: "aiceo/",
+    rows: ["brain/", "speed-to-lead/", "reactivation/", "orchestrator/"],
     brainCaption: "ONE FOLDER · EVERYTHING CONNECTED",
   },
 };
@@ -125,7 +127,7 @@ export const introducing = {
   kicker: "INTRODUCING",
   h2: "Introducing The AI CEO.",
   body: [
-    "First we hand you the brain, free: a second mind that holds what your business knows and answers from it. Then, over four weeks, Cohort 1 builds the rest around it: a deputy that answers in your voice, speed to lead, reactivation, and a brief that lands at 7am.",
+    "First we hand you the brain, free: a second mind that holds what your business knows and answers from it. Then, over four weeks, Cohort 1 builds the rest around it: a speed to lead agent answering in your voice, a reactivation agent working your old list, and the AI CEO orchestrator that runs the lot.",
     "Built live, on your business, with you at the desk. When it is done, you own every file it runs on.",
   ],
   boldLine:
@@ -134,12 +136,12 @@ export const introducing = {
   timeline: [
     {
       label: "OVERNIGHT",
-      text: "An enquiry lands at 11:42pm. The deputy answers in your voice, quotes the right price, offers Tuesday or Thursday. You are asleep.",
+      text: "An enquiry lands at 11:42pm. The speed to lead agent answers in your voice, quotes the right price, offers Tuesday or Thursday. You are asleep.",
       accent: false,
     },
     {
       label: "7:00 AM",
-      text: "The brief is on your phone. What came in, what went out, what stalled, and the one thing that needs you today. Coffee still hot.",
+      text: "You open the office. The AI CEO has already set the day: what came in overnight, which leads to chase, the one thing that needs you.",
       accent: false,
     },
     {
@@ -165,34 +167,34 @@ export const mechanism = {
     {
       code: "LAYER 01",
       tag: "WHAT IT KNOWS",
-      name: "The brain",
+      name: "The second brain",
       lead: "Give it your world.",
-      text: "Prices, promises, clients, the way you like things done: one memory it reads before every task. You stop repeating yourself in every new chat.",
+      text: "Prices, promises, clients, the way you like things done: one memory every agent reads before it acts. You stop repeating yourself in every new chat.",
       example: "it knows your offer, your prices, the thing you told a client in March.",
     },
     {
       code: "LAYER 02",
-      tag: "WHO ANSWERS",
-      name: "The deputy",
-      lead: "It writes like you.",
-      text: "Replies, quotes and follow-ups drafted from the brain, in your voice, ready before you wake. You approve, it sends.",
-      example: "an enquiry answered at 11:42pm with the right price and two slots.",
+      tag: "WHO ANSWERS FIRST",
+      name: "The speed to lead agent",
+      lead: "It answers like you.",
+      text: "Every new enquiry answered in minutes, in your voice, with the right price and two slots offered. Day or night.",
+      example: "an enquiry answered at 11:42pm while you were asleep.",
     },
     {
       code: "LAYER 03",
-      tag: "WHAT RUNS",
-      name: "The engines",
-      lead: "Speed to lead and reactivation.",
-      text: "New enquiries answered in minutes, day or night. The list you already paid for, worked properly until it pays again.",
+      tag: "WHO DIGS",
+      name: "The reactivation agent",
+      lead: "It works the old list.",
+      text: "The clients who drifted, messaged properly and consistently until the list you already paid for pays again.",
       example: "a lead from March replies to a message you never sent.",
     },
     {
       code: "LAYER 04",
-      tag: "WHAT YOU SEE",
-      name: "The brief",
-      lead: "Every morning, 7am.",
-      text: "What came in, what went out, what stalled, and the one thing that needs you today. The whole business in one read.",
-      example: "read it with the first coffee, before anyone calls.",
+      tag: "WHO RUNS IT",
+      name: "The AI CEO",
+      lead: "One desk runs them all.",
+      text: "The orchestrator watches every agent, decides what runs when, and hands you the one decision that actually needs an owner.",
+      example: "you open the office at 7am and the day is already set.",
     },
   ],
   close: {
@@ -209,23 +211,23 @@ export const systems = {
   cards: [
     {
       icon: "brain" as const,
-      name: "The Brain & Deputy",
+      name: "The Second Brain",
       pain: "Kills the queue of questions only you can answer.",
     },
     {
       icon: "bolt" as const,
-      name: "Speed to Lead",
+      name: "Speed to Lead Agent",
       pain: "Kills the enquiry that dies overnight in your inbox.",
     },
     {
       icon: "pick" as const,
-      name: "Reactivation",
+      name: "Reactivation Agent",
       pain: "Digs paid-for revenue out of the list you already own.",
     },
     {
-      icon: "sun" as const,
-      name: "The Daily Brief",
-      pain: "Kills the Monday morning spent asking what happened.",
+      icon: "orbit" as const,
+      name: "The AI CEO",
+      pain: "Kills the chaos of running every system yourself.",
     },
   ],
 };
@@ -239,7 +241,7 @@ export const curriculum = {
     {
       code: "S01",
       week: "WK 1 · TUE",
-      name: "The brain",
+      name: "The second brain",
       outcome: "Everything your business knows, loaded into one place that answers.",
     },
     {
@@ -251,38 +253,38 @@ export const curriculum = {
     {
       code: "S03",
       week: "WK 2 · TUE",
-      name: "The deputy",
-      outcome: "Drafts, replies and quotes in your voice, from your brain.",
+      name: "Speed to lead agent",
+      outcome: "Every new enquiry answered in minutes, in your voice.",
     },
     {
       code: "S04",
       week: "WK 2 · THU",
-      name: "The voice check",
-      outcome: "The deputy answers real enquiries while you watch and correct it.",
-    },
-    {
-      code: "S05",
-      week: "WK 3 · TUE",
-      name: "Speed to lead",
-      outcome: "Every new enquiry answered in minutes, day or night.",
-    },
-    {
-      code: "S06",
-      week: "WK 3 · THU",
       name: "Live fire",
       outcome: "A real enquiry handled end to end, while the clock runs.",
     },
     {
+      code: "S05",
+      week: "WK 3 · TUE",
+      name: "Reactivation agent",
+      outcome: "Your dormant list messaged properly. Replies start landing.",
+    },
+    {
+      code: "S06",
+      week: "WK 3 · THU",
+      name: "The dig pays",
+      outcome: "Real replies from the old list, booked in while you watch.",
+    },
+    {
       code: "S07",
       week: "WK 4 · TUE",
-      name: "Reactivation",
-      outcome: "Your dormant list messaged properly. Replies start landing.",
+      name: "The AI CEO",
+      outcome: "The orchestrator takes the desk: every agent running on schedule.",
     },
     {
       code: "S08",
       week: "WK 4 · THU",
-      name: "The 7am brief",
-      outcome: "The morning brief lands. Keys handed over. Every file is yours.",
+      name: "Handover",
+      outcome: "Keys handed over. The office runs itself. Every file is yours.",
     },
   ],
 };
@@ -298,28 +300,28 @@ export const whatYouGet = {
       text: "Built live at the free session, loaded with what your business knows.",
     },
     {
-      label: "THE DEPUTY",
-      icon: "chat" as const,
-      title: "Your voice, encoded.",
-      text: "Replies and quotes drafted the way you would write them.",
+      label: "SPEED TO LEAD",
+      icon: "bolt" as const,
+      title: "The agent that answers first.",
+      text: "Every enquiry answered in minutes, in your voice.",
     },
     {
-      label: "THE ENGINES",
-      icon: "bolt" as const,
-      title: "Speed to lead + reactivation.",
-      text: "Running on your live enquiries and your dormant list.",
+      label: "REACTIVATION",
+      icon: "chat" as const,
+      title: "The agent that digs.",
+      text: "Your dormant list worked until it pays again.",
+    },
+    {
+      label: "THE AI CEO",
+      icon: "network" as const,
+      title: "The orchestrator on the desk.",
+      text: "Every agent scheduled, watched, and reporting to you.",
     },
     {
       label: "LIVE · 8 SESSIONS",
       icon: "wave" as const,
       title: "Eight live builds with us.",
-      text: "Tuesday builds, Thursday proves. Questions answered until done.",
-    },
-    {
-      label: "THE ROOM",
-      icon: "network" as const,
-      title: "Cohort room + recordings.",
-      text: "Miss a session and the replay is waiting for you.",
+      text: "Tuesday builds, Thursday proves, plus the cohort room and every recording.",
     },
     {
       label: "THE KEYS",
@@ -342,10 +344,9 @@ export const tools = {
   belt: "THE BELT IS ROLLING · SCREENS LANDING SOON",
   items: [
     { name: "the-brain/", tag: "the memory" },
-    { name: "deputy/", tag: "your voice" },
     { name: "speed-to-lead/", tag: "minutes, not Monday" },
     { name: "reactivation/", tag: "the dig" },
-    { name: "the-brief/", tag: "7am, every day" },
+    { name: "aiceo-orchestrator/", tag: "one desk, every agent" },
   ],
   placeholder: "SCREEN DROPS IN HERE",
 };
@@ -353,7 +354,7 @@ export const tools = {
 export const roi = {
   kicker: "THE MATHS",
   h2: "One revived client covers the fee.",
-  body: "The cohort is £997. Your old list holds clients who drifted, not clients who left. Reactivation messages them properly, and the ones still interested book in. Put your own number on an average job and run it.",
+  body: "The cohort is £997. Your old list holds clients who drifted, not clients who left. The reactivation agent messages them properly, and the ones still interested book in. Put your own number on an average job and run it.",
   slider: {
     label: "YOUR AVERAGE JOB",
     min: 100,
@@ -450,9 +451,9 @@ export const pricing = {
       whatYouGet: [
         "Eight live sessions: Tuesday builds, Thursday proves",
         "The free second brain, built and loaded on day one",
-        "The deputy, answering in your voice",
-        "Speed to lead + reactivation running on your list",
-        "The 7am brief landing every morning",
+        "The speed to lead agent, answering in your voice",
+        "The reactivation agent working your dormant list",
+        "The AI CEO orchestrator running the lot",
         "Every session recorded + the cohort room",
         "Yours to own: the files, no subscription, transfers with your business",
       ],
@@ -477,7 +478,7 @@ export const pricing = {
       whatYouGet: [
         "The whole system, built privately with you",
         "A full audit of how you run today",
-        "Brain, deputy, engines and brief stood up live",
+        "Brain, agents and orchestrator stood up live",
         "Scheduled around your calendar",
         "A direct line to us while we build",
         "Every file yours outright at handover",

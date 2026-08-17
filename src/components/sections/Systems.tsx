@@ -46,15 +46,14 @@ function SysIcon({ kind }: { kind: string }) {
           <circle cx="30" cy="10" r="1.4" fill="var(--color-accent)" stroke="none" />
         </svg>
       );
-    case "sun":
+    case "orbit":
       return (
         <svg viewBox="0 0 40 40" className="h-8 w-8" aria-hidden>
-          <circle {...common} cx="20" cy="20" r="6" />
-          <path
-            {...common}
-            d="M20 6v4M20 30v4M6 20h4M30 20h4M10 10l3 3M27 27l3 3M30 10l-3 3M13 27l-3 3"
-          />
-          <circle cx="20" cy="20" r="1.6" fill="var(--color-accent)" stroke="none" />
+          <circle {...common} cx="20" cy="20" r="11" strokeDasharray="2.5 3" />
+          <circle cx="20" cy="20" r="3" fill="var(--color-accent)" stroke="none" />
+          <circle {...common} cx="20" cy="9" r="2.4" />
+          <circle {...common} cx="30.5" cy="25" r="2.4" />
+          <circle {...common} cx="9.5" cy="25" r="2.4" />
         </svg>
       );
     default:
@@ -71,7 +70,10 @@ export default function Systems() {
   const activeRef = useRef(0);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const pinnable =
+      window.matchMedia("(min-width: 768px)").matches &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!pinnable) {
       setStaticMode(true);
       if (lineHRef.current) lineHRef.current.style.transform = "scaleX(1)";
       if (lineVRef.current) lineVRef.current.style.transform = "scaleY(1)";
@@ -81,7 +83,7 @@ export default function Systems() {
     if (!el) return;
     const st = ScrollTrigger.create({
       trigger: el,
-      start: "top 22%",
+      start: "top 96px",
       end: `+=${systems.cards.length * 240}`,
       pin: true,
       onUpdate: (self) => {
@@ -104,11 +106,12 @@ export default function Systems() {
   }, []);
 
   return (
-    <Section id="systems" className="py-20 md:py-28">
-      <Kicker>{systems.kicker}</Kicker>
-      <h2 className="display-2 mt-4 max-w-[24ch]">{systems.h2}</h2>
+    <Section id="systems" className="py-20 md:py-24">
+      <div ref={pinRef}>
+        <Kicker>{systems.kicker}</Kicker>
+        <h2 className="display-2 mt-3 max-w-[24ch]">{systems.h2}</h2>
 
-      <div ref={pinRef} className="mt-12 pb-2 pt-2">
+        <div className="mt-10 pb-2 pt-2">
         <div className="relative">
           {/* connector: horizontal through the icon row (desktop) */}
           <div
@@ -162,11 +165,12 @@ export default function Systems() {
           </div>
         </div>
 
-        <p className="mt-6 font-mono text-[11px] tracking-[0.15em] text-ink-muted">
-          {staticMode
-            ? `4 SYSTEMS · ONE BUILD`
-            : `SYSTEM ${Math.min(active + 1, 4)} OF 4 · ONE BUILD`}
-        </p>
+          <p className="mt-6 font-mono text-[11px] tracking-[0.15em] text-ink-muted">
+            {staticMode
+              ? `4 SYSTEMS · ONE BUILD`
+              : `SYSTEM ${Math.min(active + 1, 4)} OF 4 · ONE BUILD`}
+          </p>
+        </div>
       </div>
     </Section>
   );

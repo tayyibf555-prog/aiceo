@@ -8,7 +8,7 @@ brand
 
 ## Product purpose
 
-Launch site for The AI CEO by Azen AI Ltd: a free "second brain" session plus a £997 four-week cohort (10 seats, doors open 20 Aug 2026) where business owners build systems they own outright: a second brain, a deputy that answers in their voice, speed to lead, reactivation, and a 7am brief. Also a private 1-on-1 build tier (£2,500 to £3,500).
+Launch site for The AI CEO by Azen AI Ltd: a free "second brain" session plus a £997 four-week cohort (10 seats, doors open 20 Aug 2026) where business owners build systems they own outright: a second brain, a speed to lead agent, a reactivation agent, and an AI CEO orchestrator that runs them all. Also a private 1-on-1 build tier (£2,500 to £3,500). (Amended 17 Aug: no deputy, no 7am brief; "agents" is allowed vocabulary.)
 
 ## Users
 

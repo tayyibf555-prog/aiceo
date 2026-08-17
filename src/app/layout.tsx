@@ -9,7 +9,7 @@ const jetbrains = JetBrains_Mono({
 });
 
 const description =
-  "Over 8 live sessions we build systems you own outright: a second brain, a deputy that answers for you, speed to lead, reactivation, and a 7am brief. Your business runs on it. You own every file.";
+  "Over 8 live sessions we build systems you own outright: a second brain, a speed to lead agent, a reactivation agent, and an AI CEO orchestrator that runs them all. You own every file.";
 
 export const metadata: Metadata = {
   title: "The AI CEO · Run your business like an AI CEO",
