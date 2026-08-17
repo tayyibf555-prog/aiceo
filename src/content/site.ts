@@ -208,22 +208,22 @@ export const systems = {
   h2: "Four systems. Each one kills a specific pain.",
   cards: [
     {
-      icon: "🧠",
+      icon: "brain" as const,
       name: "The Brain & Deputy",
       pain: "Kills the queue of questions only you can answer.",
     },
     {
-      icon: "⚡",
+      icon: "bolt" as const,
       name: "Speed to Lead",
       pain: "Kills the enquiry that dies overnight in your inbox.",
     },
     {
-      icon: "⛏️",
+      icon: "pick" as const,
       name: "Reactivation",
       pain: "Digs paid-for revenue out of the list you already own.",
     },
     {
-      icon: "☀️",
+      icon: "sun" as const,
       name: "The Daily Brief",
       pain: "Kills the Monday morning spent asking what happened.",
     },
