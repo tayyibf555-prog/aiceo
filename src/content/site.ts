@@ -490,6 +490,7 @@ export const pricing = {
       intro:
         "Consulting for owners who want AI mapped to their business before anything gets built. Just you and us, on your side of the desk.",
       whatYouGet: [
+        "Everything inside the cohort",
         "Two education calls a week, until AI systems make sense",
         "A custom roadmap for bringing AI into your business",
         "The exact systems to build, and the stack to build them on",
