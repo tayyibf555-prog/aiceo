@@ -4,6 +4,7 @@ import Button from "@/components/Button";
 import Highlight from "@/components/Highlight";
 import LogoHalftone from "@/components/LogoHalftone";
 import HeroIntro from "@/components/fx/HeroIntro";
+import BootLog from "@/components/fx/BootLog";
 import { hero } from "@/content/site";
 
 export default function Hero() {
@@ -41,6 +42,9 @@ export default function Hero() {
             <Button href={hero.secondary.href} variant="secondary" arrow="↓">
               {hero.secondary.label}
             </Button>
+          </div>
+          <div data-hero className="mt-10">
+            <BootLog />
           </div>
         </HeroIntro>
         <LogoHalftone />

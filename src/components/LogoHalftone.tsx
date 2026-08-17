@@ -30,17 +30,24 @@ export default function LogoHalftone() {
 
   return (
     <HalftoneFx className="mx-auto w-full max-w-[440px]">
-      <svg
-        viewBox={`0 0 ${cols * cell} ${rows * cell}`}
-        role="img"
-        aria-label="The AI CEO arrow mark, rendered as halftone pixels"
-        className="block w-full"
-      >
-        {paths.map(
-          (d, i) =>
-            d && <path key={i} data-ht d={d} fill="var(--color-accent)" />
-        )}
-      </svg>
+      <div className="relative p-5">
+        {/* blueprint registration ticks where the old frame sat */}
+        <span aria-hidden className="absolute left-0 top-0 h-4 w-4 border-l border-t border-line-strong" />
+        <span aria-hidden className="absolute right-0 top-0 h-4 w-4 border-r border-t border-line-strong" />
+        <span aria-hidden className="absolute bottom-0 left-0 h-4 w-4 border-b border-l border-line-strong" />
+        <span aria-hidden className="absolute bottom-0 right-0 h-4 w-4 border-b border-r border-line-strong" />
+        <svg
+          viewBox={`0 0 ${cols * cell} ${rows * cell}`}
+          role="img"
+          aria-label="The AI CEO arrow mark, rendered as halftone pixels"
+          className="block w-full"
+        >
+          {paths.map(
+            (d, i) =>
+              d && <path key={i} data-ht d={d} fill="var(--color-accent)" />
+          )}
+        </svg>
+      </div>
     </HalftoneFx>
   );
 }

@@ -44,7 +44,7 @@ export const nav = {
     { label: "FAQS", href: "#faqs" },
     { label: "THE OFFICE", href: "#office" },
   ],
-  cta: { label: "Get the free brain", href: "#pricing" },
+  cta: { label: "Work with us 1-on-1", href: "#pricing" },
 };
 
 /** Swapped for the real checkout link when the user supplies it. */
@@ -60,8 +60,15 @@ export const hero = {
     { t: "7am brief", h: "dotted" as const },
     { t: ". Your business runs on it. You own every file." },
   ],
-  primary: { label: "Get the free brain", href: "#pricing" },
+  primary: { label: "Work with us 1-on-1", href: "#pricing" },
   secondary: { label: "See the office", href: "#office" },
+  bootLog: [
+    "boot aiceo_v1.0 ........... ok",
+    "brain.load(your_business) . ok",
+    "deputy.voice .......... online",
+    "speed_to_lead .......... armed",
+    "brief.schedule(07:00) .... set",
+  ],
 };
 
 export const office = {
@@ -146,7 +153,7 @@ export const introducing = {
       accent: false,
     },
   ],
-  cta: { label: "Get the free brain", href: "#pricing" },
+  cta: { label: "Work with us 1-on-1", href: "#pricing" },
 };
 
 export const mechanism = {
