@@ -14,7 +14,7 @@ export const brand = {
 };
 
 export const announcement =
-  "Doors open August 20 · Cohort 1 · 10 seats · £997";
+  "Doors open August 20 · Cohort 1 · 30 seats · $1,299";
 
 /** Section ids double as anchor targets; exec labels feed the terminal HUD. */
 export const sections = [
@@ -53,7 +53,7 @@ export const nav = {
 export const checkoutUrl = "#pricing";
 
 export const hero = {
-  badge: "FREE BRAIN OPEN · COHORT 1: 10 SEATS",
+  badge: "FREE BRAIN OPEN · COHORT 1: 30 SEATS",
   h1: ["Run your business", "like an AI CEO."],
   sub: [
     { t: "Over 8 live sessions we build systems you " },
@@ -354,7 +354,7 @@ export const tools = {
 export const roi = {
   kicker: "THE MATHS",
   h2: "One revived client covers the fee.",
-  body: "The cohort is £997. Your old list holds clients who drifted, not clients who left. The reactivation agent messages them properly, and the ones still interested book in. Put your own number on an average job and run it.",
+  body: "The cohort is $1,299. Your old list holds clients who drifted, not clients who left. The reactivation agent messages them properly, and the ones still interested book in. Put your own number on an average job and run it.",
   slider: {
     label: "YOUR AVERAGE JOB",
     min: 100,
@@ -368,7 +368,7 @@ export const roi = {
     formula: "your job value × ten clients your list can wake",
     note: "One proper reactivation run usually wakes more than ten. The fee is covered by the first.",
   },
-  coverLabel: "clients to cover the £997 fee",
+  coverLabel: "clients to cover the $1,299 fee",
 };
 
 export const fit = {
@@ -447,7 +447,7 @@ export const pricing = {
       badge: "COHORT 1 · DOORS OPEN AUG 20",
       title: "The AI CEO Cohort",
       intro:
-        "Ten owners, four weeks, all four systems built live on your own business. The free second brain is day one.",
+        "Thirty owners, four weeks, all four systems built live on your own business. The free second brain is day one.",
       whatYouGet: [
         "Eight live sessions: Tuesday builds, Thursday proves",
         "The free second brain, built and loaded on day one",
@@ -462,8 +462,8 @@ export const pricing = {
       worthBold:
         "Run it in your own business. One revived client covers the fee. Nothing to renew.",
       priceLabel: "COHORT 1 PRICE",
-      price: "£997",
-      seatChip: "10 SEATS ONLY",
+      price: "$1,299",
+      seatChip: "30 SEATS ONLY",
       priceSub: "Cohort 2 pricing will be higher. The list hears first.",
       cta: "Claim a seat",
       ctaNote: "Doors open August 20.",

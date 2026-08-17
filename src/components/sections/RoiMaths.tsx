@@ -11,7 +11,7 @@ import Kicker from "@/components/Kicker";
 import Reveal from "@/components/Reveal";
 import { roi } from "@/content/site";
 
-const FEE = 997;
+const FEE = 1299;
 
 export default function RoiMaths() {
   const [value, setValue] = useState(roi.slider.initial);
@@ -46,7 +46,7 @@ export default function RoiMaths() {
               {roi.slider.label}
             </p>
             <p className="mt-5 text-4xl font-bold tabular-nums tracking-tight">
-              £{value.toLocaleString("en-GB")}
+              ${value.toLocaleString("en-GB")}
             </p>
             <input
               type="range"
@@ -59,9 +59,9 @@ export default function RoiMaths() {
               className="range-accent mt-6"
             />
             <div className="mt-2 flex justify-between font-mono text-[10px] tracking-[0.12em] text-ink-muted">
-              <span>£{roi.slider.min}</span>
+              <span>${roi.slider.min}</span>
               <span>{roi.slider.hint.toUpperCase()}</span>
-              <span>£{roi.slider.max.toLocaleString("en-GB")}</span>
+              <span>${roi.slider.max.toLocaleString("en-GB")}</span>
             </div>
             <p className="mt-auto border-t border-line pt-5 font-mono text-[12px] leading-relaxed text-ink-muted">
               <span className="text-accent">{cover}</span>{" "}
@@ -79,7 +79,7 @@ export default function RoiMaths() {
               className="mt-4 font-bold tabular-nums tracking-tight"
               style={{ fontSize: "clamp(52px,6vw,84px)", lineHeight: 1.05 }}
             >
-              £{display.toLocaleString("en-GB")}
+              ${display.toLocaleString("en-GB")}
             </p>
             <p className="mt-3 font-mono text-[11px] tracking-[0.1em] text-ink-muted">
               {roi.result.formula.toUpperCase()}
