@@ -59,6 +59,7 @@
 
 html {
   scroll-padding-top: 56px; /* sticky HUD offset for anchor jumps */
+  background: var(--color-bg);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -68,9 +69,29 @@ html {
 }
 
 body {
-  background: var(--color-bg);
+  background: transparent; /* the grid layer below shows through */
   color: var(--color-ink);
   font-family: var(--font-sans);
+}
+
+/* Continuous grid paper behind the whole site (the page bg lives on
+   <html> so this fixed layer can sit between it and the content). */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+      0deg,
+      var(--color-line) 0 1px,
+      transparent 1px 56px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      var(--color-line) 0 1px,
+      transparent 1px 56px
+    );
 }
 
 ::selection {

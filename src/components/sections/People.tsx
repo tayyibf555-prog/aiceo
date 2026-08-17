@@ -27,7 +27,7 @@ function WallCard({ name }: { name: string }) {
 
 export default function People() {
   return (
-    <Section id="people" container={false} className="overflow-hidden bg-bg-subtle py-20 md:py-28">
+    <Section id="people" container={false} className="overflow-hidden py-20 md:py-28">
       <div className="mx-auto max-w-6xl px-6">
         <Kicker>{people.kicker}</Kicker>
         <h2 className="display-2 mt-4">{people.h2}</h2>

@@ -5,7 +5,7 @@ import { fit } from "@/content/site";
 
 export default function FitCheck() {
   return (
-    <Section id="fit" className="bg-bg-subtle py-20 md:py-28">
+    <Section id="fit" className="py-20 md:py-28">
       <Kicker>{fit.kicker}</Kicker>
       <h2 className="display-2 mt-4">{fit.h2}</h2>
 

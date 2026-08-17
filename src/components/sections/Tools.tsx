@@ -16,7 +16,7 @@ export default function Tools() {
     beltRef.current?.scrollBy({ left: dir * 460, behavior: "smooth" });
 
   return (
-    <Section id="tools" className="bg-bg-subtle py-20 md:py-28">
+    <Section id="tools" className="py-20 md:py-28">
       <Kicker>{tools.kicker}</Kicker>
       <h2 className="display-2 mt-4 max-w-[24ch]">{tools.h2}</h2>
       <p className="mt-5 max-w-[58ch] text-lg leading-[1.55] text-ink-body">

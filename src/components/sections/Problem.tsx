@@ -33,7 +33,7 @@ const LINKS: Array<[number, number]> = [
 
 export default function Problem() {
   return (
-    <Section id="problem" className="bg-bg-subtle py-20 md:py-28">
+    <Section id="problem" className="py-20 md:py-28">
       <div className="grid items-start gap-14 lg:grid-cols-[1.05fr_0.85fr]">
         <div>
           <Kicker>{problem.kicker}</Kicker>

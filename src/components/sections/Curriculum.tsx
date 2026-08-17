@@ -50,14 +50,14 @@ export default function Curriculum() {
   const progress = staticMode ? 1 : (active + 1) / curriculum.rows.length;
 
   return (
-    <Section id="curriculum" className="bg-bg-subtle py-20 md:py-28">
+    <Section id="curriculum" className="py-20 md:py-28">
       <Kicker>{curriculum.kicker}</Kicker>
       <h2 className="display-2 mt-4 max-w-[24ch]">{curriculum.h2}</h2>
       <p className="mt-5 max-w-[62ch] text-lg leading-[1.55] text-ink-body">
         {curriculum.sub}
       </p>
 
-      <div ref={pinRef} className="mt-10 bg-bg-subtle pb-2 pt-4">
+      <div ref={pinRef} className="mt-10 pb-2 pt-4">
         <div className="grid grid-cols-[16px_1fr] gap-x-5 md:gap-x-7">
           {/* rail */}
           <div aria-hidden className="relative">
