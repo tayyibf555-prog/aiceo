@@ -60,9 +60,6 @@ function FounderCard({
               </span>
             </div>
           )}
-          <span className="absolute right-3 top-3 bg-accent px-2.5 py-1 font-mono text-[10px] tracking-[0.15em] text-accent-on">
-            {founders.flipHint} ⟳
-          </span>
           <div className="absolute inset-x-0 bottom-0 bg-bg-dark/75 px-4 py-3">
             <h3 className="text-lg font-bold tracking-tight text-white">
               {card.name}
@@ -72,6 +69,11 @@ function FounderCard({
             </p>
           </div>
         </div>
+        {/* the tag overlaps the corner, outside the clipped photo face;
+            its own flip-face class hides it when the card turns */}
+        <span className="flip-face absolute -right-2.5 -top-2.5 z-10 bg-accent px-3 py-1.5 font-mono text-[10px] tracking-[0.15em] text-accent-on shadow-[3px_3px_0_rgba(10,10,10,0.9)]">
+          {founders.flipHint} ⟳
+        </span>
         {/* back */}
         <div className="flip-face flip-back absolute inset-0 flex flex-col border-2 border-accent bg-bg p-7 shadow-[8px_8px_0_rgba(43,85,176,0.15)]">
           <p className="font-mono text-[10px] tracking-[0.18em] text-accent">
