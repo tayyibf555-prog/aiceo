@@ -1,5 +1,4 @@
 import AnnouncementBar from "@/components/AnnouncementBar";
-import TerminalHUD from "@/components/TerminalHUD";
 import Nav from "@/components/Nav";
 import Hero from "@/components/sections/Hero";
 import Problem from "@/components/sections/Problem";
@@ -23,7 +22,6 @@ export default function Home() {
   return (
     <>
       <AnnouncementBar />
-      <TerminalHUD />
       <Nav />
       <main>
         <Hero />

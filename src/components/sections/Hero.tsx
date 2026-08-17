@@ -12,7 +12,7 @@ export default function Hero() {
       id="hero"
       className="flex min-h-[calc(100dvh-150px)] items-center bg-bg py-16 md:py-20"
     >
-      <div className="grid items-center gap-14 md:grid-cols-[1.15fr_1fr]">
+      <div className="grid items-center gap-14 md:grid-cols-[1.15fr_1fr] md:items-start">
         <HeroIntro>
           <div data-hero>
             <span className="kicker-text inline-flex items-center gap-2.5 rounded-full border border-line bg-bg px-4 py-2 text-ink-muted">

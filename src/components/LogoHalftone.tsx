@@ -29,7 +29,7 @@ export default function LogoHalftone() {
   }
 
   return (
-    <HalftoneFx className="mx-auto w-full max-w-[440px]">
+    <HalftoneFx className="mx-auto w-full max-w-[400px] md:mt-2">
       <div className="relative p-5">
         {/* blueprint registration ticks where the old frame sat */}
         <span aria-hidden className="absolute left-0 top-0 h-4 w-4 border-l border-t border-line-strong" />
