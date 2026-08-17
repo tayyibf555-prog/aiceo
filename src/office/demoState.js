@@ -26,6 +26,6 @@ export const SCAN_EXAMPLE = {
     },
     reception: { state: "dark", plaque: "NOBODY ANSWERS AFTER 6PM" },
     archive: { state: "dark", plaque: "2 YEARS OF LEADS ASLEEP" },
-    corner: { state: "dark", plaque: "NO 7AM PICTURE" },
+    corner: { state: "dark", plaque: "NOTHING RUNS THE DAY" },
   },
 };

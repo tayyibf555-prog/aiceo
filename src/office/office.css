@@ -1,34 +1,9 @@
-/* THE OFFICE — pixel discipline. The SVG scales up crisp; any raster
-   sibling would use image-rendering: pixelated. */
+/* THE OFFICE — smooth cartoon render. Vector geometry, antialiased;
+   the pixel-art crispEdges rules left with the old art direction. */
 .office-svg {
   display: block;
   width: 100%;
   height: auto;
-  image-rendering: pixelated;
-  shape-rendering: crispEdges;
   user-select: none;
   touch-action: pan-y;
-}
-
-.office-svg * {
-  shape-rendering: crispEdges;
-}
-
-.office-room {
-  transition: none; /* motion is the clock's job, never CSS easing */
-}
-
-@keyframes office-wired-pulse {
-  0%, 49% { stroke: #143e8f; }
-  50%, 100% { stroke: #1d6bff; }
-}
-
-.office-wired-outline {
-  animation: office-wired-pulse 1s steps(1) infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .office-wired-outline {
-    animation: none;
-  }
 }
