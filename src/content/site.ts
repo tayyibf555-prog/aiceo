@@ -463,10 +463,11 @@ export const pricing = {
       worth:
         "Built with you rather than around you: how you run today audited, the brain stood up live, and everything shaped to the way your business actually works.",
       worthBold: "",
-      priceLabel: "1-ON-1 PRICE",
-      price: "£2,500+",
-      seatChip: "£2,500 TO £3,500",
-      priceSub: "Scoped properly on a short call once you ask.",
+      priceLabel: "HOW YOU START",
+      price: "",
+      seatChip: "",
+      priceSub:
+        "No listed price. Every build is scoped to your business on a short call, and we come back within a day.",
       cta: "Work with us 1-on-1",
       ctaNote: "Limited build slots each month.",
       form: true,

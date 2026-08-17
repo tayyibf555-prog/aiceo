@@ -77,14 +77,18 @@ export default function Pricing() {
                 <p className="font-mono text-[10px] tracking-[0.2em] text-accent">
                   {card.priceLabel}
                 </p>
-                <div className="mt-2 flex flex-wrap items-center gap-4">
-                  <p className="text-5xl font-bold tabular-nums tracking-tight text-ink">
-                    {card.price}
-                  </p>
-                  <span className="bg-bg-dark px-3 py-1.5 font-mono text-[10px] tracking-[0.15em] text-white">
-                    {card.seatChip}
-                  </span>
-                </div>
+                {card.price && (
+                  <div className="mt-2 flex flex-wrap items-center gap-4">
+                    <p className="text-5xl font-bold tabular-nums tracking-tight text-ink">
+                      {card.price}
+                    </p>
+                    {card.seatChip && (
+                      <span className="bg-bg-dark px-3 py-1.5 font-mono text-[10px] tracking-[0.15em] text-white">
+                        {card.seatChip}
+                      </span>
+                    )}
+                  </div>
+                )}
                 <p className="mt-3 font-mono text-[12px] leading-relaxed text-ink-muted">
                   {card.priceSub}
                 </p>
