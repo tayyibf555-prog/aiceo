@@ -26,45 +26,64 @@ gsap.registerPlugin(ScrollTrigger);
 const useIsoLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-/* Mono line icons in the site's stroke style, one accent detail each. */
+/* Mono line icons in the site's stroke style, one accent detail each.
+   24-unit grid, round caps and joins, so they stay crisp at 32px. */
 function SysIcon({ kind }: { kind: string }) {
-  const common = { fill: "none", stroke: "currentColor", strokeWidth: 1.5 } as const;
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.7,
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+  } as const;
   switch (kind) {
     case "brain":
       return (
-        <svg viewBox="0 0 40 40" className="h-8 w-8" aria-hidden>
+        <svg viewBox="0 0 24 24" className="h-8 w-8" aria-hidden>
           <path
             {...common}
-            d="M20 8c-6 0-10 4-10 9 0 3 1 5 3 7l1 3v4h12v-4l1-3c2-2 3-4 3-7 0-5-4-9-10-9z"
+            d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"
           />
-          <path {...common} d="M20 8v23M14 15c2 2 4 2 6 0m0 4c2 2 4 2 6 0" />
-          <circle cx="20" cy="24" r="1.6" fill="var(--color-accent)" stroke="none" />
+          <path
+            {...common}
+            d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"
+          />
+          <path {...common} d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" />
+          <circle cx="12" cy="15.6" r="1.3" fill="var(--color-accent)" stroke="none" />
         </svg>
       );
     case "bolt":
       return (
-        <svg viewBox="0 0 40 40" className="h-8 w-8" aria-hidden>
-          <path {...common} d="M22 7L11 23h7l-2 10 11-16h-7z" />
-          <circle cx="20" cy="20" r="1.4" fill="var(--color-accent)" stroke="none" />
+        <svg viewBox="0 0 24 24" className="h-8 w-8" aria-hidden>
+          <path {...common} d="M14 2.5 6 13h5l-1 8.5L18 11h-5l1-8.5Z" />
+          <path
+            {...common}
+            stroke="var(--color-accent)"
+            d="M3.2 7.5h2.6M2.2 11h2.2"
+          />
         </svg>
       );
     case "pick":
       return (
-        <svg viewBox="0 0 40 40" className="h-8 w-8" aria-hidden>
-          <path {...common} d="M13 27L29 11" />
-          <path {...common} d="M21 8c4-1 9 1 12 4-1-4-4-8-8-9z" fill="none" />
-          <path {...common} d="M11 29l3 3" />
-          <circle cx="30" cy="10" r="1.4" fill="var(--color-accent)" stroke="none" />
+        <svg viewBox="0 0 24 24" className="h-8 w-8" aria-hidden>
+          <path {...common} d="M9 2.5h6M12 2.5V11" />
+          <path
+            {...common}
+            d="M7 11h10v3.6c0 2.9-2.24 5.4-5 5.4s-5-2.5-5-5.4Z"
+          />
+          <circle cx="12" cy="15.2" r="1.4" fill="var(--color-accent)" stroke="none" />
         </svg>
       );
     case "orbit":
       return (
-        <svg viewBox="0 0 40 40" className="h-8 w-8" aria-hidden>
-          <circle {...common} cx="20" cy="20" r="11" strokeDasharray="2.5 3" />
-          <circle cx="20" cy="20" r="3" fill="var(--color-accent)" stroke="none" />
-          <circle {...common} cx="20" cy="9" r="2.4" />
-          <circle {...common} cx="30.5" cy="25" r="2.4" />
-          <circle {...common} cx="9.5" cy="25" r="2.4" />
+        <svg viewBox="0 0 24 24" className="h-8 w-8" aria-hidden>
+          <rect {...common} x="9.3" y="9.3" width="5.4" height="5.4" rx="1.3" />
+          <path {...common} d="M12 9.3V5.9M12 14.7v3.4M9.3 12H5.9M14.7 12h3.4" />
+          <circle {...common} cx="12" cy="4" r="1.9" />
+          <circle {...common} cx="12" cy="20" r="1.9" />
+          <circle {...common} cx="4" cy="12" r="1.9" />
+          <circle {...common} cx="20" cy="12" r="1.9" />
+          <circle cx="12" cy="12" r="1.4" fill="var(--color-accent)" stroke="none" />
         </svg>
       );
     default:
