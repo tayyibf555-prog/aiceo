@@ -1,18 +1,30 @@
 "use client";
 
 /*
-  React chrome around the vanilla office renderer: mono header, right
-  rail fed from the SAME JSON as the scene, footer terminal line,
-  fullscreen dialog re-rendering the same component. Styled in the
-  site's own card language: white panel, accent border, hard blue
-  offset shadow.
+  React chrome around the office renderer: mono header, right rail fed
+  from the SAME JSON as the scene, footer terminal line, fullscreen
+  dialog re-rendering the same component. Styled in the site's card
+  language: white panel, accent border, hard blue offset shadow.
+
+  The heavy three.js engine (office3d) is loaded lazily when the
+  section approaches the viewport; machines without WebGL get the
+  vanilla SVG engine (office) instead. Both share one contract.
 */
 import { useEffect, useRef, useState } from "react";
-import { renderOffice } from "@/office/office";
 import { DEMO_STATE } from "@/office/demoState";
 import "@/office/office.css";
 
-type OfficeApi = ReturnType<typeof renderOffice>;
+type OfficeApi = {
+  destroy: () => void;
+  focusRoom: (id: string) => void;
+  zoomOut: () => void;
+  playReveal?: () => void;
+};
+type RenderFn = (
+  host: HTMLElement,
+  state: typeof DEMO_STATE,
+  opts: { onSelect?: (id: string | null) => void }
+) => OfficeApi | null;
 
 const RAIL = [
   { id: "boardroom", name: "Boardroom", sub: "The Second Brain · wk 1" },
@@ -28,26 +40,88 @@ function roomCount(id: string): string {
   return rs?.state === "lit" ? "4/4" : "0/4";
 }
 
+/* Prefer the 3D engine; fall back to the SVG one without WebGL. */
+async function loadRenderer(): Promise<RenderFn> {
+  const canWebgl = (() => {
+    try {
+      const c = document.createElement("canvas");
+      return !!(c.getContext("webgl2") || c.getContext("webgl"));
+    } catch {
+      return false;
+    }
+  })();
+  if (canWebgl) {
+    try {
+      const m = (await import("@/office/office3d")) as { renderOffice: RenderFn };
+      return m.renderOffice;
+    } catch {
+      /* fall through to the SVG engine */
+    }
+  }
+  const m = (await import("@/office/office")) as { renderOffice: RenderFn };
+  return m.renderOffice;
+}
+
 export default function OfficeScene() {
+  const wrapRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
   const fullRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const apiRef = useRef<OfficeApi | null>(null);
   const fullApiRef = useRef<OfficeApi | null>(null);
+  const renderFnRef = useRef<RenderFn | null>(null);
+  const [ready, setReady] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  /* load the engine when the section approaches the viewport */
   useEffect(() => {
-    if (!sceneRef.current) return;
-    apiRef.current = renderOffice(sceneRef.current, DEMO_STATE, {
-      onSelect: setSelected,
-    });
-    return () => apiRef.current?.destroy();
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    let cancelled = false;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0].isIntersecting) return;
+        io.disconnect();
+        void loadRenderer().then((fn) => {
+          if (cancelled) return;
+          renderFnRef.current = fn;
+          setReady(true);
+        });
+      },
+      { rootMargin: "600px" }
+    );
+    io.observe(wrap);
+    return () => {
+      cancelled = true;
+      io.disconnect();
+    };
   }, []);
 
   useEffect(() => {
-    if (dialogOpen && fullRef.current) {
-      fullApiRef.current = renderOffice(fullRef.current, DEMO_STATE, {});
+    const fn = renderFnRef.current;
+    if (!ready || !fn || !sceneRef.current) return;
+    let api = fn(sceneRef.current, DEMO_STATE, { onSelect: setSelected });
+    if (!api) {
+      /* WebGL context refused at construction: use the SVG engine */
+      void import("@/office/office").then((m) => {
+        if (sceneRef.current) {
+          renderFnRef.current = m.renderOffice as RenderFn;
+          api = (m.renderOffice as RenderFn)(sceneRef.current, DEMO_STATE, {
+            onSelect: setSelected,
+          });
+          apiRef.current = api;
+        }
+      });
+    }
+    apiRef.current = api;
+    return () => apiRef.current?.destroy();
+  }, [ready]);
+
+  useEffect(() => {
+    const fn = renderFnRef.current;
+    if (dialogOpen && fullRef.current && fn) {
+      fullApiRef.current = fn(fullRef.current, DEMO_STATE, {});
       return () => fullApiRef.current?.destroy();
     }
   }, [dialogOpen]);
@@ -74,7 +148,7 @@ export default function OfficeScene() {
   };
 
   return (
-    <figure className="m-0">
+    <figure className="m-0" ref={wrapRef}>
       <div className="overflow-hidden border-2 border-accent bg-bg shadow-[8px_8px_0_rgba(43,85,176,0.15)]">
         {/* header */}
         <div className="flex items-center justify-between gap-4 border-b border-line px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.15em] text-ink-body">
@@ -101,7 +175,19 @@ export default function OfficeScene() {
 
         {/* scene + rail */}
         <div className="grid lg:grid-cols-[1fr_240px]">
-          <div ref={sceneRef} className="min-w-0" />
+          <div className="relative min-w-0">
+            <div ref={sceneRef} className="min-w-0" />
+            {!ready && (
+              <div
+                aria-hidden
+                className="grid aspect-[1.66] w-full place-items-center"
+              >
+                <span className="font-mono text-[11px] tracking-[0.2em] text-ink-muted">
+                  ▶ RENDERING THE OFFICE…
+                </span>
+              </div>
+            )}
+          </div>
           <aside className="border-t border-line px-4 py-4 lg:border-l lg:border-t-0">
             <p className="font-mono text-[10px] tracking-[0.18em] text-ink-muted">
               FLOOR DIRECTORY

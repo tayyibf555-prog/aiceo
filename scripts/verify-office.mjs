@@ -25,9 +25,21 @@ await page.goto(BASE, { waitUntil: "networkidle" });
 for (const id of ["office", "mechanism", "pricing"]) {
   const el = page.locator(`#${id}`);
   await el.scrollIntoViewIfNeeded();
-  await page.waitForTimeout(700);
+  if (id === "office") {
+    // the 3D engine loads lazily; wait for its canvas (or the SVG fallback)
+    await page
+      .waitForSelector("#office canvas, #office svg.office-svg", { timeout: 20000 })
+      .catch(() => {});
+    await page.waitForTimeout(1800);
+  } else {
+    await page.waitForTimeout(700);
+  }
   await el.screenshot({ path: `${OUT}/${id}.png` });
 }
+console.log(
+  "ENGINE:",
+  (await page.$("#office canvas")) ? "webgl" : (await page.$("#office svg.office-svg")) ? "svg" : "none"
+);
 
 // zoom interaction sanity: click the boardroom zone hit poly via rail
 await page.locator("#office").scrollIntoViewIfNeeded();
