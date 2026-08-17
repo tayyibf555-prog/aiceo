@@ -419,7 +419,12 @@ export const founders = {
       photoLabel: "",
       name: "Tayyib Arbab",
       role: "CO-FOUNDER · THE AI CEO",
-      bio: "Bio drops in here: who Tayyib is, what he runs day to day, and why these systems exist. Two or three sentences, written plainly.",
+      bio: "Tayyib runs Azen AI, the studio behind the systems in this cohort: second brains, lead engines and client CRMs built for real businesses, not demos. Everything in the programme ran on his own company first. Inside The AI CEO, he builds the brain and the OS.",
+      links: [
+        { kind: "web", href: "#", label: "Azen AI" },
+        { kind: "youtube", href: "#", label: "YouTube" },
+        { kind: "instagram", href: "#", label: "Instagram" },
+      ],
     },
     {
       id: "founder-2",
@@ -427,7 +432,13 @@ export const founders = {
       photoLabel: "",
       name: "Ritesh Verma",
       role: "CO-FOUNDER · THE AI CEO",
-      bio: "Bio drops in here: who Ritesh is, what he runs day to day, and why these systems exist. Two or three sentences, written plainly.",
+      bio: "Ritesh is the founder of Slyte, an AI development studio with fifty plus client builds and over $2M generated for the businesses behind them. A computer science graduate and former fintech engineer, he left the day job in 2025 with a seven figure AI business already running and 200,000 people following the work. Inside The AI CEO, he builds the agents.",
+      links: [
+        { kind: "web", href: "#", label: "Azen AI" },
+        { kind: "youtube", href: "https://www.youtube.com/@rkumarv", label: "YouTube" },
+        { kind: "instagram", href: "https://www.instagram.com/riteshkv_/", label: "Instagram" },
+        { kind: "slyte", href: "https://www.slyte.app/", label: "Slyte", img: "/founders/slyte-icon.png" },
+      ],
     },
   ],
   wallSub: "Owners from around the build, in their own words. Faces landing here soon.",

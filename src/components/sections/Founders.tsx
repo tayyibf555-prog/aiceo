@@ -26,20 +26,61 @@ const OBJ_POS: Record<string, string> = {
   "founder-2": "50% 42%",
 };
 
+/* Social icons in the site's stroke language. */
+function SocialIcon({ kind }: { kind: string }) {
+  const common = { fill: "none", stroke: "currentColor", strokeWidth: 1.5 } as const;
+  switch (kind) {
+    case "web":
+      return (
+        <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" aria-hidden>
+          <circle {...common} cx="12" cy="12" r="9" />
+          <ellipse {...common} cx="12" cy="12" rx="4" ry="9" />
+          <path {...common} d="M3 12h18" />
+        </svg>
+      );
+    case "youtube":
+      return (
+        <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" aria-hidden>
+          <rect {...common} x="3" y="6.5" width="18" height="11" rx="3" />
+          <path d="M10.5 9.5v5l4.5-2.5z" fill="currentColor" stroke="none" />
+        </svg>
+      );
+    case "instagram":
+      return (
+        <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" aria-hidden>
+          <rect {...common} x="4" y="4" width="16" height="16" rx="4.5" />
+          <circle {...common} cx="12" cy="12" r="4" />
+          <circle cx="17" cy="7" r="1.2" fill="currentColor" stroke="none" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
+
 function FounderCard({
   card,
 }: {
   card: (typeof founders.cards)[number];
 }) {
   const [flipped, setFlipped] = useState(false);
+  const toggle = () => setFlipped((f) => !f);
 
   return (
-    <button
-      type="button"
-      onClick={() => setFlipped((f) => !f)}
+    /* div, not button: the back face holds real links */
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={toggle}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggle();
+        }
+      }}
       aria-pressed={flipped}
       aria-label={`${card.name}: flip card to ${flipped ? "hide" : "show"} bio`}
-      className="flip-scene block w-full text-left"
+      className="flip-scene block w-full cursor-pointer text-left"
     >
       <div className={`flip-inner h-[440px] ${flipped ? "flipped" : ""}`}>
         {/* front: the photo IS the card */}
@@ -79,15 +120,35 @@ function FounderCard({
           <p className="font-mono text-[10px] tracking-[0.18em] text-accent">
             {card.name ? `${card.name} · ${card.role}` : card.role}
           </p>
-          <p className="mt-5 text-[16px] leading-[1.6] text-ink-body">
+          <p className="mt-5 text-[15px] leading-[1.6] text-ink-body">
             {card.bio}
           </p>
+          <div className="mt-6 flex items-center gap-2.5">
+            {card.links.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target={link.href.startsWith("http") ? "_blank" : undefined}
+                rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                aria-label={`${card.name} · ${link.label}`}
+                onClick={(e) => e.stopPropagation()}
+                className="grid h-9 w-9 place-items-center border border-line text-ink-body transition-colors hover:border-accent hover:text-accent"
+              >
+                {"img" in link && link.img ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src={link.img} alt="" className="h-4.5 w-4.5 object-contain" />
+                ) : (
+                  <SocialIcon kind={link.kind} />
+                )}
+              </a>
+            ))}
+          </div>
           <p className="mt-auto font-mono text-[10px] tracking-[0.15em] text-ink-muted">
             {founders.flipHint} ⟲
           </p>
         </div>
       </div>
-    </button>
+    </div>
   );
 }
 
