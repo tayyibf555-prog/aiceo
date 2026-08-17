@@ -19,8 +19,19 @@ export default function TerminalHUD() {
   const pctRef = useRef(0);
 
   useEffect(() => {
+    const observed = document.querySelectorAll<HTMLElement>("[data-exec]");
+    const lastExec = observed[observed.length - 1]?.dataset.exec;
+    const nearEnd = () =>
+      window.scrollY >=
+      (document.documentElement.scrollHeight - window.innerHeight) * 0.995;
     const io = new IntersectionObserver(
       (entries) => {
+        // At the very bottom the footer never reaches the observer band;
+        // hold the final label instead of letting faqs win the race.
+        if (nearEnd() && lastExec) {
+          setLabel(lastExec);
+          return;
+        }
         for (const entry of entries) {
           if (entry.isIntersecting) {
             const exec = (entry.target as HTMLElement).dataset.exec;
@@ -30,11 +41,15 @@ export default function TerminalHUD() {
       },
       { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
     );
-    const observed = document.querySelectorAll<HTMLElement>("[data-exec]");
     observed.forEach((el) => io.observe(el));
-    const lastExec = observed[observed.length - 1]?.dataset.exec;
 
+    // Re-measured by ResizeObserver: ScrollTrigger pinning inserts tall
+    // spacers after mount, which would otherwise leave max stale and make
+    // the percentage hit 100 early.
     let max = document.documentElement.scrollHeight - window.innerHeight;
+    const measure = () => {
+      max = document.documentElement.scrollHeight - window.innerHeight;
+    };
     let ticking = false;
     const onScroll = () => {
       if (ticking) return;
@@ -54,15 +69,18 @@ export default function TerminalHUD() {
       });
     };
     const onResize = () => {
-      max = document.documentElement.scrollHeight - window.innerHeight;
+      measure();
       onScroll();
     };
+    const ro = new ResizeObserver(onResize);
+    ro.observe(document.body);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     onScroll();
 
     return () => {
       io.disconnect();
+      ro.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
     };

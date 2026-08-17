@@ -20,21 +20,25 @@ export const sections = [
   { id: "problem", exec: "01_problem" },
   { id: "office", exec: "02_office" },
   { id: "introducing", exec: "03_aiceo" },
-  { id: "systems", exec: "04_systems" },
-  { id: "curriculum", exec: "05_sessions" },
-  { id: "exam", exec: "06_exam" },
-  { id: "roi", exec: "07_roi" },
-  { id: "fit", exec: "08_fit" },
-  { id: "pricing", exec: "09_pricing" },
-  { id: "faqs", exec: "10_faq" },
-  { id: "footer", exec: "11_end" },
+  { id: "mechanism", exec: "04_brain" },
+  { id: "systems", exec: "05_systems" },
+  { id: "curriculum", exec: "06_sessions" },
+  { id: "get", exec: "07_get" },
+  { id: "tools", exec: "08_tools" },
+  { id: "roi", exec: "09_maths" },
+  { id: "fit", exec: "10_fit" },
+  { id: "founders", exec: "11_founders" },
+  { id: "people", exec: "12_people" },
+  { id: "pricing", exec: "13_pricing" },
+  { id: "faqs", exec: "14_faq" },
+  { id: "footer", exec: "15_end" },
 ] as const;
 
 export type SectionId = (typeof sections)[number]["id"];
 
 export const nav = {
   links: [
-    { label: "WHAT YOU GET", href: "#systems" },
+    { label: "WHAT YOU GET", href: "#get" },
     { label: "HOW IT WORKS", href: "#curriculum" },
     { label: "PRICING", href: "#pricing" },
     { label: "FAQS", href: "#faqs" },
@@ -49,7 +53,6 @@ export const checkoutUrl = "#pricing";
 export const hero = {
   badge: "FREE BRAIN OPEN · COHORT 1: 10 SEATS",
   h1: ["Run your business", "like an AI CEO."],
-  /* Subhead runs; "h" marks a highlight style. */
   sub: [
     { t: "Over 8 live sessions we build systems you " },
     { t: "own outright", h: "pill" as const },
@@ -112,26 +115,89 @@ export const problem = {
 };
 
 export const introducing = {
+  kicker: "INTRODUCING",
   h2: "Introducing The AI CEO.",
-  body: "First we hand you the brain, free: a second mind that holds what your business knows and answers from it. Then, over four weeks, Cohort 1 builds the rest around it: a deputy that answers in your voice, speed to lead, reactivation, and a brief that lands at 7am. Built live, on your business, with you at the desk. When it is done, you own every file it runs on.",
-  vignettes: [
+  body: [
+    "First we hand you the brain, free: a second mind that holds what your business knows and answers from it. Then, over four weeks, Cohort 1 builds the rest around it: a deputy that answers in your voice, speed to lead, reactivation, and a brief that lands at 7am.",
+    "Built live, on your business, with you at the desk. When it is done, you own every file it runs on.",
+  ],
+  boldLine:
+    "Your competitors are already quietly running AI on their businesses. The only real question is why you are not.",
+  timelineTitle: "Picture 30 days from now.",
+  timeline: [
     {
       label: "OVERNIGHT",
-      text: "11:42pm. An enquiry lands. The deputy answers in your voice, quotes the right price, offers Tuesday or Thursday. You are asleep.",
+      text: "An enquiry lands at 11:42pm. The deputy answers in your voice, quotes the right price, offers Tuesday or Thursday. You are asleep.",
+      accent: false,
     },
     {
       label: "7:00 AM",
       text: "The brief is on your phone. What came in, what went out, what stalled, and the one thing that needs you today. Coffee still hot.",
+      accent: false,
     },
     {
       label: "TUESDAY",
       text: "A lead you wrote off in March replies to a message you never sent. Yes, still interested. Can we talk this week?",
+      accent: true,
+    },
+    {
+      label: "AFTER THAT",
+      text: "The rest of the day goes to the work only you can do.",
+      accent: false,
     },
   ],
+  cta: { label: "Get the free brain", href: "#pricing" },
+};
+
+export const mechanism = {
+  kicker: "THE MECHANISM",
+  h2a: "You don't just prompt AI.",
+  h2b: "You give it a second brain.",
+  sub: "The brain is your whole business in one folder your AI reads before it acts. Without one, AI is a clever chatbot with no memory. Yours is built in four parts.",
+  layers: [
+    {
+      code: "LAYER 01",
+      tag: "WHAT IT KNOWS",
+      name: "The brain",
+      lead: "Give it your world.",
+      text: "Prices, promises, clients, the way you like things done: one memory it reads before every task. You stop repeating yourself in every new chat.",
+      example: "it knows your offer, your prices, the thing you told a client in March.",
+    },
+    {
+      code: "LAYER 02",
+      tag: "WHO ANSWERS",
+      name: "The deputy",
+      lead: "It writes like you.",
+      text: "Replies, quotes and follow-ups drafted from the brain, in your voice, ready before you wake. You approve, it sends.",
+      example: "an enquiry answered at 11:42pm with the right price and two slots.",
+    },
+    {
+      code: "LAYER 03",
+      tag: "WHAT RUNS",
+      name: "The engines",
+      lead: "Speed to lead and reactivation.",
+      text: "New enquiries answered in minutes, day or night. The list you already paid for, worked properly until it pays again.",
+      example: "a lead from March replies to a message you never sent.",
+    },
+    {
+      code: "LAYER 04",
+      tag: "WHAT YOU SEE",
+      name: "The brief",
+      lead: "Every morning, 7am.",
+      text: "What came in, what went out, what stalled, and the one thing that needs you today. The whole business in one read.",
+      example: "read it with the first coffee, before anyone calls.",
+    },
+  ],
+  close: {
+    bold: "Master these four and the business stops queueing for you.",
+    rest: " The files are yours, and ",
+    hl: "files move with you.",
+    tail: " You are never behind again.",
+  },
 };
 
 export const systems = {
-  kicker: "WHAT YOU GET",
+  kicker: "WHAT IT KILLS",
   h2: "Four systems. Each one kills a specific pain.",
   cards: [
     {
@@ -159,8 +225,9 @@ export const systems = {
 
 export const curriculum = {
   kicker: "HOW IT WORKS",
-  h2: "Eight sessions. Four weeks. Tuesday builds, Thursday proves.",
-  strapline: "Every session ends with something running in your business.",
+  h2: "Here's exactly what we build together.",
+  sub: "Eight live sessions across four weeks. Tuesday we build it on your business, Thursday it proves itself, and every session ends with something running.",
+  progressLabel: "OF 8 · FOUR WEEKS",
   rows: [
     {
       code: "S01",
@@ -171,8 +238,8 @@ export const curriculum = {
     {
       code: "S02",
       week: "WK 1 · THU",
-      name: "The exam",
-      outcome: "Twenty questions about your own business. It sits the test, you mark it.",
+      name: "The proof",
+      outcome: "The brain answers twenty real questions about your business while you watch.",
     },
     {
       code: "S03",
@@ -213,49 +280,154 @@ export const curriculum = {
   ],
 };
 
-export const exam = {
-  kicker: "THE GUARANTEE",
-  h2: "Week one ends with an exam. You are the marker.",
-  score: "16/20",
-  body: "You ask the brain twenty questions about your own business. Prices, jobs, promises, the thing you told a client in March. You mark the answers yourself.",
-  guarantee:
-    "16 out of 20 or we keep working with you, free, until it passes.",
-  close: "Most businesses never test their systems. Yours starts by passing an exam.",
+export const whatYouGet = {
+  kicker: "WHAT YOU GET",
+  h2: "Everything you get when you join.",
+  cards: [
+    {
+      label: "THE BRAIN",
+      icon: "folder" as const,
+      title: "The second brain, installed.",
+      text: "Built live at the free session, loaded with what your business knows.",
+    },
+    {
+      label: "THE DEPUTY",
+      icon: "chat" as const,
+      title: "Your voice, encoded.",
+      text: "Replies and quotes drafted the way you would write them.",
+    },
+    {
+      label: "THE ENGINES",
+      icon: "bolt" as const,
+      title: "Speed to lead + reactivation.",
+      text: "Running on your live enquiries and your dormant list.",
+    },
+    {
+      label: "LIVE · 8 SESSIONS",
+      icon: "wave" as const,
+      title: "Eight live builds with us.",
+      text: "Tuesday builds, Thursday proves. Questions answered until done.",
+    },
+    {
+      label: "THE ROOM",
+      icon: "network" as const,
+      title: "Cohort room + recordings.",
+      text: "Miss a session and the replay is waiting for you.",
+    },
+    {
+      label: "THE KEYS",
+      icon: "key" as const,
+      title: "Yours outright.",
+      text: "Every file on your machines. No subscription to keep paying.",
+    },
+  ],
+  banner: {
+    label: "YOURS TO OWN",
+    h: ["Built once.", "Owned forever."],
+    text: "Everything we build in the four weeks is yours outright. The files live on your machines. No platform that can take it away. It transfers with your business.",
+  },
+};
+
+export const tools = {
+  kicker: "INSIDE THE BUILD",
+  h2: "Real, working systems ship inside it.",
+  sub: "Not slides. The same screens that run our own business, installed on yours.",
+  belt: "THE BELT IS ROLLING · SCREENS LANDING SOON",
+  items: [
+    { name: "the-brain/", tag: "the memory" },
+    { name: "deputy/", tag: "your voice" },
+    { name: "speed-to-lead/", tag: "minutes, not Monday" },
+    { name: "reactivation/", tag: "the dig" },
+    { name: "the-brief/", tag: "7am, every day" },
+  ],
+  placeholder: "SCREEN DROPS IN HERE",
 };
 
 export const roi = {
   kicker: "THE MATHS",
   h2: "One revived client covers the fee.",
-  body: "The cohort is £997. Your old list holds clients who drifted, not clients who left. Reactivation messages them properly, and the ones still interested book in. One booked job at your usual price and the fee is paid for. Everything after that is margin.",
-  counter: { prefix: "£", target: 997, suffix: "", label: "covered by the first revived client" },
-  stats: [
-    { value: "£997", label: "the fee, once" },
-    { value: "1", label: "revived client to cover it" },
-    { value: "∞", label: "shelf life of what you keep" },
-  ],
+  body: "The cohort is £997. Your old list holds clients who drifted, not clients who left. Reactivation messages them properly, and the ones still interested book in. Put your own number on an average job and run it.",
+  slider: {
+    label: "YOUR AVERAGE JOB",
+    min: 100,
+    max: 2000,
+    step: 50,
+    initial: 350,
+    hint: "drag to your usual job value",
+  },
+  result: {
+    label: "BACK IN THE BUSINESS · TEN REVIVED CLIENTS",
+    formula: "your job value × ten clients your list can wake",
+    note: "One proper reactivation run usually wakes more than ten. The fee is covered by the first.",
+  },
+  coverLabel: "clients to cover the £997 fee",
 };
 
 export const fit = {
   kicker: "FIT CHECK",
-  h2: "Built for owners at the desk, not delegates.",
-  forYou: {
-    title: "THIS IS FOR YOU IF",
-    items: [
-      "You own the business and you attend the sessions yourself.",
-      "The business is live: real enquiries, real clients, a real list.",
-      "You want systems you own, not another subscription you rent.",
-      "You can give it around ten hours across the four weeks.",
-    ],
-  },
-  notYou: {
-    title: "THIS IS NOT FOR YOU IF",
-    items: [
-      "You plan to send someone in your place.",
-      "There is no business yet, only an idea.",
-      "You collect AI tricks for fun and build nothing with them.",
-      "You want it done to you rather than with you.",
-    ],
-  },
+  h2: "Who this is for.",
+  rows: [
+    {
+      n: "01",
+      title: "You own the business",
+      sub: "and you attend the sessions yourself, not a delegate",
+    },
+    {
+      n: "02",
+      title: "The business is live",
+      sub: "real enquiries, real clients, a real list going cold",
+    },
+    {
+      n: "03",
+      title: "Everything lives in your head",
+      sub: "prices, promises, the way you like things done",
+    },
+    {
+      n: "04",
+      title: "You want to own the system",
+      sub: "on your machines, not another subscription to rent",
+    },
+  ],
+  notForLabel: "NOT FOR",
+  notFor: "anyone collecting AI tricks instead of building systems",
+};
+
+export const founders = {
+  kicker: "THE FOUNDERS",
+  h2a: "This is not a course.",
+  h2b: "It is the system our business runs on.",
+  body: "We built every one of these systems for our own company first. The cohort does not teach you about them, it installs them. Click a card to meet us.",
+  flipHint: "CLICK TO FLIP",
+  cards: [
+    {
+      id: "founder-1",
+      photoLabel: "PHOTO_01",
+      name: "FOUNDER_01",
+      role: "AZEN AI LTD",
+      bio: "Bio drops in here: who they are, what they run day to day, and why these systems exist. Two or three sentences, written plainly.",
+    },
+    {
+      id: "founder-2",
+      photoLabel: "PHOTO_02",
+      name: "FOUNDER_02",
+      role: "AZEN AI LTD",
+      bio: "Bio drops in here: who they are, what they run day to day, and why these systems exist. Two or three sentences, written plainly.",
+    },
+  ],
+};
+
+export const people = {
+  kicker: "THE PEOPLE",
+  h2: "The wall.",
+  sub: "Owners from around the build, in their own words. Faces landing here soon.",
+  cards: [
+    { name: "OWNER_01" },
+    { name: "OWNER_02" },
+    { name: "OWNER_03" },
+    { name: "OWNER_04" },
+    { name: "OWNER_05" },
+    { name: "OWNER_06" },
+  ],
 };
 
 export const pricing = {
@@ -284,7 +456,7 @@ export const pricing = {
       features: [
         "Eight live sessions over four weeks",
         "All four systems running in your business",
-        "The exam: 16/20 or we work free until it passes",
+        "Cohort room, recordings, direct answers",
         "Every file yours outright at handover",
         "Optional retainer afterwards to keep it tuned",
       ],
@@ -319,10 +491,6 @@ export const faqs = {
     {
       q: "Is my data safe?",
       a: "Your files live in your accounts, on your machines. We build inside your house rather than taking the furniture away. Nothing you load is shared with other cohort members, ever.",
-    },
-    {
-      q: "What if the brain scores under 16 in the exam?",
-      a: "Then we keep working with you, free, until it passes. That is the whole point of putting an exam at the end of week one: you find out early, and the risk sits with us.",
     },
     {
       q: "Do I need a Mac?",

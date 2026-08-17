@@ -6,14 +6,29 @@ import Highlight from "@/components/Highlight";
 import DiagramFx from "@/components/fx/DiagramFx";
 import { problem } from "@/content/site";
 
-/* Scatter positions for the TODAY tabs, echoing the reference layout. */
-const TAB_POS = [
-  "left-[2%] top-[8%] -rotate-3",
-  "left-[36%] top-[0%] rotate-2",
-  "left-[68%] top-[10%] -rotate-2",
-  "left-[8%] top-[54%] rotate-1",
-  "left-[42%] top-[62%] -rotate-3",
-  "left-[72%] top-[52%] rotate-3",
+/*
+  The TODAY tabs sit on a shared coordinate space (percentages) so the
+  dashed connector lines and the ✕ marks at their midpoints line up with
+  the chip centres exactly. DiagramFx staggers everything in, then
+  floats the chips gently.
+*/
+const CENTERS = [
+  { x: 15, y: 20, r: -3 },
+  { x: 46, y: 11, r: 2 },
+  { x: 77, y: 21, r: -2 },
+  { x: 21, y: 64, r: 1 },
+  { x: 51, y: 73, r: -3 },
+  { x: 80, y: 60, r: 3 },
+];
+
+const LINKS: Array<[number, number]> = [
+  [0, 1],
+  [1, 2],
+  [0, 3],
+  [1, 4],
+  [2, 5],
+  [3, 4],
+  [4, 5],
 ];
 
 export default function Problem() {
@@ -76,21 +91,52 @@ export default function Problem() {
               <span>{problem.diagram.todayCount}</span>
             </div>
 
-            <div className="relative mt-4 h-[140px]" aria-hidden>
-              <span className="absolute left-[24%] top-[38%] font-mono text-[11px] text-ink-muted">
-                ✕
-              </span>
-              <span className="absolute left-[58%] top-[30%] font-mono text-[11px] text-ink-muted">
-                ✕
-              </span>
-              <span className="absolute left-[40%] top-[70%] font-mono text-[11px] text-ink-muted">
-                ✕
-              </span>
+            <div className="relative mt-4 h-[150px]" aria-hidden>
+              {/* dashed connectors, drawn in the same percent space */}
+              <svg
+                className="absolute inset-0 h-full w-full"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+              >
+                {LINKS.map(([a, b]) => (
+                  <line
+                    key={`${a}-${b}`}
+                    x1={CENTERS[a].x}
+                    y1={CENTERS[a].y}
+                    x2={CENTERS[b].x}
+                    y2={CENTERS[b].y}
+                    stroke="var(--color-line-strong)"
+                    strokeWidth="0.5"
+                    strokeDasharray="2 2.4"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                ))}
+              </svg>
+              {/* ✕ at every connector midpoint */}
+              {LINKS.map(([a, b]) => (
+                <span
+                  key={`x-${a}-${b}`}
+                  data-cross
+                  className="absolute -translate-x-1/2 -translate-y-1/2 bg-bg px-0.5 font-mono text-[10px] leading-none text-ink-muted"
+                  style={{
+                    left: `${(CENTERS[a].x + CENTERS[b].x) / 2}%`,
+                    top: `${(CENTERS[a].y + CENTERS[b].y) / 2}%`,
+                  }}
+                >
+                  ✕
+                </span>
+              ))}
               {problem.diagram.tabs.map((tab, i) => (
                 <span
                   key={tab}
                   data-dg
-                  className={`absolute border border-line-strong bg-bg px-2.5 py-1 font-mono text-[10px] tracking-[0.12em] text-ink-body ${TAB_POS[i]}`}
+                  data-float
+                  className="absolute -translate-x-1/2 -translate-y-1/2 border border-line-strong bg-bg px-2.5 py-1 font-mono text-[10px] tracking-[0.12em] text-ink-body"
+                  style={{
+                    left: `${CENTERS[i].x}%`,
+                    top: `${CENTERS[i].y}%`,
+                    rotate: `${CENTERS[i].r}deg`,
+                  }}
                 >
                   {tab}
                 </span>
