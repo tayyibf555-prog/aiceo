@@ -8,6 +8,7 @@
 import { useState } from "react";
 import Image, { type StaticImageData } from "next/image";
 import riteshPhoto from "../../../public/founders/ritesh.webp";
+import tayyibPhoto from "../../../public/founders/tayyib.webp";
 import Section from "@/components/Section";
 import Kicker from "@/components/Kicker";
 import Reveal from "@/components/Reveal";
@@ -15,6 +16,7 @@ import { founders } from "@/content/site";
 
 /* Static imports guarantee the photos resolve at build time. */
 const PHOTOS: Record<string, StaticImageData> = {
+  "founder-1": tayyibPhoto,
   "founder-2": riteshPhoto,
 };
 
@@ -114,7 +116,7 @@ export default function Founders() {
         <h2 className="display-2 mt-4 max-w-[24ch]">
           {founders.h2a}
           <br />
-          <span className="text-ink-body">{founders.h2b}</span>
+          <span className="text-accent">{founders.h2b}</span>
         </h2>
         <p className="mt-5 max-w-[58ch] text-lg leading-[1.55] text-ink-body">
           {founders.body}

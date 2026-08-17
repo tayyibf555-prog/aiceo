@@ -125,7 +125,7 @@ export default function Mechanism() {
         <h2 className="display-2 mt-3">
           {mechanism.h2a}
           <br />
-          <span className="text-ink-body">{mechanism.h2b}</span>
+          <span className="text-accent">{mechanism.h2b}</span>
         </h2>
         <p className="mt-4 max-w-[62ch] text-[16px] leading-[1.5] text-ink-body">
           {mechanism.sub}

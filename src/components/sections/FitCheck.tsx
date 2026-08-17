@@ -32,11 +32,11 @@ export default function FitCheck() {
       </div>
 
       <Reveal delay={200}>
-        <p className="mt-8 flex flex-wrap items-center gap-3 font-mono text-[12px] tracking-[0.1em]">
-          <span className="tracking-[0.18em] text-ink-muted">
+        <p className="mt-8 flex flex-wrap items-center gap-3 font-mono text-[15px] tracking-[0.06em]">
+          <span className="text-[12px] tracking-[0.18em] text-ink-muted">
             {fit.notForLabel}
           </span>
-          <span className="text-ink-body line-through decoration-accent decoration-2">
+          <span className="text-ink-body line-through decoration-accent decoration-1">
             {fit.notFor}
           </span>
           <span aria-hidden className="text-accent">

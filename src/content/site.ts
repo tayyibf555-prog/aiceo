@@ -111,7 +111,7 @@ export const problem = {
   bold: "You're not running the business.",
   boldHl: "You're refreshing it.",
   turn: "None of this is a discipline problem. Your business has no memory and nobody on the desk overnight. Both are systems, and systems can be built.",
-  cta: "See it running, live",
+  cta: "Work with us 1-on-1",
   diagram: {
     todayLabel: "TODAY",
     todayCount: "30 TABS",
@@ -415,11 +415,11 @@ export const founders = {
   cards: [
     {
       id: "founder-1",
-      photo: "",
-      photoLabel: "PHOTO LANDING SOON",
-      name: "",
+      photo: "/founders/tayyib.webp",
+      photoLabel: "",
+      name: "Tayyib Arbab",
       role: "CO-FOUNDER · THE AI CEO",
-      bio: "Bio drops in here: who they are, what they run day to day, and why these systems exist. Two or three sentences, written plainly.",
+      bio: "Bio drops in here: who Tayyib is, what he runs day to day, and why these systems exist. Two or three sentences, written plainly.",
     },
     {
       id: "founder-2",

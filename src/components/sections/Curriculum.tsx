@@ -82,13 +82,9 @@ export default function Curriculum() {
                 key={row.code}
                 className={`border bg-bg px-5 py-4 transition-all duration-500 md:px-6 ${
                   revealed
-                    ? "translate-y-0 opacity-100"
+                    ? "translate-y-0 opacity-100 shadow-[4px_4px_0_rgba(43,85,176,0.12)]"
                     : "translate-y-3 opacity-0"
-                } ${
-                  current
-                    ? "border-accent shadow-[4px_4px_0_rgba(43,85,176,0.12)]"
-                    : "border-line"
-                }`}
+                } ${current ? "border-accent" : "border-line"}`}
               >
                 <p className="font-mono text-[11px] tracking-[0.15em]">
                   <span className={current ? "text-accent" : "text-ink-muted"}>

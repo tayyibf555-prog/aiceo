@@ -40,7 +40,7 @@ export default function Problem() {
           <h2 className="display-2 mt-4">
             {problem.h2a}
             <br />
-            <span className="text-ink-body">{problem.h2b}</span>
+            <span className="text-accent">{problem.h2b}</span>
           </h2>
           <div className="mt-8 max-w-[58ch] space-y-5">
             {problem.paragraphs.map((p, i) => (
@@ -68,7 +68,7 @@ export default function Problem() {
           </div>
           <Reveal delay={380}>
             <div className="mt-9">
-              <Button href="#office" variant="secondary" arrow="↓">
+              <Button href="#pricing">
                 {problem.cta}
               </Button>
             </div>
