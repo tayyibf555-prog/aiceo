@@ -63,9 +63,8 @@ export default function RoiMaths() {
               <span>{roi.slider.hint.toUpperCase()}</span>
               <span>${roi.slider.max.toLocaleString("en-GB")}</span>
             </div>
-            <p className="mt-auto border-t border-line pt-5 font-mono text-[12px] leading-relaxed text-ink-muted">
-              <span className="text-accent">{cover}</span>{" "}
-              {roi.coverLabel}
+            <p className="mt-auto border-t border-line pt-5 text-[15px] font-bold leading-relaxed text-ink">
+              <span className="text-accent">{cover}</span> {roi.coverLabel}
             </p>
           </div>
         </Reveal>

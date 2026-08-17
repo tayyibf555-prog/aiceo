@@ -14,6 +14,12 @@ export default function LiveDemo() {
         <DemoPanel title={office.panelTitle} caption={office.caption}>
           <OfficeDemo />
         </DemoPanel>
+        <p className="mt-3 font-mono text-[10px] leading-relaxed tracking-[0.12em] text-ink-muted">
+          <span aria-hidden className="text-accent">
+            ›
+          </span>{" "}
+          NINE REGIONS: {office.legend}
+        </p>
       </Reveal>
     </Section>
   );

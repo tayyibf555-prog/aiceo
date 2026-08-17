@@ -16,7 +16,7 @@ Owners of live small businesses in the UK. Real enquiries, real client lists, ev
 
 ## Brand and tone
 
-- Voice: "you, running the business like an AI CEO", never "an AI that is the CEO".
+- Voice (resolved 17 Aug): the OWNER becomes an AI-powered CEO; the software they build is THE AI CEO OS. The person is always the CEO; the OS runs the systems for them. Never present the software as replacing the owner.
 - British spelling. No em-dashes. Sentence-case headings with full stops.
 - Banned vocabulary (see scripts/copy-lint.sh): help, adopt, scale, leverage, automations, AI-powered, digital transformation, workforce, agents, empire, unlock, 10x, co-pilot as a name, AI Operating System.
 - Concrete over abstract: times, prices, days of the week, marked exams.

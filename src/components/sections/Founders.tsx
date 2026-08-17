@@ -66,25 +66,60 @@ function FounderCard({
   );
 }
 
+function WallCard({ name }: { name: string }) {
+  return (
+    <figure className="relative h-[220px] w-[180px] shrink-0 border border-line bg-bg">
+      <div className="absolute inset-0 grid place-items-center border-b border-dashed border-line">
+        <span
+          aria-hidden
+          className="grid h-11 w-11 place-items-center border border-line-strong font-mono text-[13px] text-ink-muted"
+        >
+          ▶
+        </span>
+      </div>
+      <figcaption className="absolute inset-x-0 bottom-0 bg-bg/90 px-3 py-2 font-mono text-[10px] tracking-[0.15em] text-ink-body">
+        {name}
+      </figcaption>
+    </figure>
+  );
+}
+
 export default function Founders() {
   return (
-    <Section id="founders" className="py-20 md:py-28">
-      <Kicker>{founders.kicker}</Kicker>
-      <h2 className="display-2 mt-4 max-w-[24ch]">
-        {founders.h2a}
-        <br />
-        <span className="text-ink-body">{founders.h2b}</span>
-      </h2>
-      <p className="mt-5 max-w-[58ch] text-lg leading-[1.55] text-ink-body">
-        {founders.body}
-      </p>
+    <Section id="founders" container={false} className="overflow-hidden py-20 md:py-28">
+      <div className="mx-auto max-w-6xl px-6">
+        <Kicker>{founders.kicker}</Kicker>
+        <h2 className="display-2 mt-4 max-w-[24ch]">
+          {founders.h2a}
+          <br />
+          <span className="text-ink-body">{founders.h2b}</span>
+        </h2>
+        <p className="mt-5 max-w-[58ch] text-lg leading-[1.55] text-ink-body">
+          {founders.body}
+        </p>
 
-      <div className="mt-12 grid gap-6 md:grid-cols-2 lg:max-w-4xl">
-        {founders.cards.map((card, i) => (
-          <Reveal key={card.id} delay={i * 90}>
-            <FounderCard card={card} />
-          </Reveal>
-        ))}
+        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:max-w-4xl">
+          {founders.cards.map((card, i) => (
+            <Reveal key={card.id} delay={i * 90}>
+              <FounderCard card={card} />
+            </Reveal>
+          ))}
+        </div>
+
+        <p className="mt-16 font-mono text-[11px] tracking-[0.18em] text-ink-muted">
+          <span aria-hidden className="text-accent">
+            ●
+          </span>{" "}
+          THE WALL · {founders.wallSub.toUpperCase()}
+        </p>
+      </div>
+
+      <div className="marquee mt-6 [mask-image:linear-gradient(90deg,transparent,black_6%,black_94%,transparent)]">
+        <div className="marquee-track gap-5 pr-5">
+          {[...founders.wall, ...founders.wall].map((card, i) => (
+            <WallCard key={`${card.name}-${i}`} name={card.name} />
+          ))}
+        </div>
       </div>
     </Section>
   );

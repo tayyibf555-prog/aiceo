@@ -7,7 +7,12 @@
   the card stack. On small screens and under prefers-reduced-motion
   there is no pin: everything renders expanded, static.
 */
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Section from "@/components/Section";
@@ -16,13 +21,16 @@ import { curriculum } from "@/content/site";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const useIsoLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
 export default function Curriculum() {
   const [active, setActive] = useState<number>(0);
   const [staticMode, setStaticMode] = useState(false);
   const pinRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef(0);
 
-  useEffect(() => {
+  useIsoLayoutEffect(() => {
     const pinnable =
       window.matchMedia("(min-width: 768px)").matches &&
       !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -32,23 +40,27 @@ export default function Curriculum() {
     }
     const el = pinRef.current;
     if (!el) return;
-    const st = ScrollTrigger.create({
-      trigger: el,
-      start: "top 72px",
-      end: `+=${curriculum.rows.length * 300}`,
-      pin: true,
-      onUpdate: (self) => {
-        const idx = Math.min(
-          curriculum.rows.length - 1,
-          Math.floor(self.progress * curriculum.rows.length)
-        );
-        if (idx !== activeRef.current) {
-          activeRef.current = idx;
-          setActive(idx);
-        }
-      },
-    });
-    return () => st.kill();
+    // gsap.context + revert keeps the pin's DOM surgery in sync with
+    // React across StrictMode double-mounts, HMR and scroll restoration.
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        trigger: el,
+        start: "top 72px",
+        end: `+=${curriculum.rows.length * 260}`,
+        pin: true,
+        onUpdate: (self) => {
+          const idx = Math.min(
+            curriculum.rows.length - 1,
+            Math.floor(self.progress * curriculum.rows.length)
+          );
+          if (idx !== activeRef.current) {
+            activeRef.current = idx;
+            setActive(idx);
+          }
+        },
+      });
+    }, el);
+    return () => ctx.revert();
   }, []);
 
   const progress = staticMode ? 1 : (active + 1) / curriculum.rows.length;

@@ -17,7 +17,7 @@ export default function DemoPanel({
 }) {
   return (
     <figure className="m-0">
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-bg-dark shadow-2xl">
+      <div className="overflow-hidden border border-white/10 bg-bg-dark shadow-[8px_8px_0_rgba(10,10,10,0.2)]">
         <div className="flex items-center justify-between gap-4 border-b border-white/10 px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.15em] text-neutral-400">
           <span className="flex min-w-0 items-center gap-2">
             <span

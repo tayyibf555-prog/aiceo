@@ -15,7 +15,7 @@ const svg = `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
   <rect x="64" y="104" width="380" height="3" fill="#2B55B0"/>
   <text x="60" y="300" font-family="Helvetica Neue, Helvetica, Arial" font-size="84" font-weight="700" letter-spacing="-2" fill="#FFFFFF">Run your business</text>
   <text x="60" y="398" font-family="Helvetica Neue, Helvetica, Arial" font-size="84" font-weight="700" letter-spacing="-2" fill="#2B55B0">like an AI CEO.</text>
-  <text x="64" y="560" font-family="Menlo, monospace" font-size="22" letter-spacing="2" fill="#525252">Doors open August 20 &#183; Free second brain &#183; theaiceo</text>
+  <text x="64" y="560" font-family="Menlo, monospace" font-size="22" letter-spacing="2" fill="#525252">Doors open 20 August &#183; Free second brain &#183; theaiceo</text>
 </svg>`;
 
 const mark = await sharp("public/brand/mark-crop.png")

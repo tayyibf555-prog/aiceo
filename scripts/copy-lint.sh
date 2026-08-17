@@ -4,7 +4,7 @@
 set -u
 TARGET="${1:-src/content/site.ts}"
 
-PATTERN='\bhelps?\b|\badopt|\bscale\b|\bleverage|automations?|AI-powered|digital transformation|workforce|empire|unlock|10x|co-pilot|AI Operating System|—'
+PATTERN='\bhelps?\b|\badopt|\bscale\b|\bleverage|automations?|digital transformation|workforce|empire|unlock|10x|co-pilot|—'
 
 if grep -nEi "$PATTERN" "$TARGET"; then
   echo "COPY_VIOLATIONS_FOUND in $TARGET" >&2

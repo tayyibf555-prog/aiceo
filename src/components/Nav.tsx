@@ -21,9 +21,11 @@ export default function Nav() {
             </a>
           ))}
         </nav>
-        <Button href={nav.cta.href} className="hidden sm:inline-block">
-          {nav.cta.label}
-        </Button>
+        {/* span wrapper: Button's own inline-block would tie with an
+            added `hidden` (same specificity), so display lives out here */}
+        <span className="hidden sm:block">
+          <Button href={nav.cta.href}>{nav.cta.label}</Button>
+        </span>
       </div>
     </header>
   );

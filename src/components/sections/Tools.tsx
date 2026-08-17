@@ -8,7 +8,7 @@
 import { useRef } from "react";
 import Section from "@/components/Section";
 import Kicker from "@/components/Kicker";
-import { tools } from "@/content/site";
+import { tools, type SectionId } from "@/content/site";
 
 export default function Tools() {
   const beltRef = useRef<HTMLDivElement>(null);
@@ -16,7 +16,9 @@ export default function Tools() {
     beltRef.current?.scrollBy({ left: dir * 460, behavior: "smooth" });
 
   return (
-    <Section id="tools" className="py-20 md:py-28">
+    // Parked section: "tools" left out of the sections array until real
+    // screenshots land, so the id is cast for the interim.
+    <Section id={"tools" as SectionId} className="py-20 md:py-28">
       <Kicker>{tools.kicker}</Kicker>
       <h2 className="display-2 mt-4 max-w-[24ch]">{tools.h2}</h2>
       <p className="mt-5 max-w-[58ch] text-lg leading-[1.55] text-ink-body">
@@ -41,7 +43,7 @@ export default function Tools() {
                 {String(i + 1).padStart(2, "0")} / {String(tools.items.length).padStart(2, "0")}
               </span>
             </div>
-            <div className="mt-3 overflow-hidden rounded-lg border border-line bg-bg shadow-sm">
+            <div className="mt-3 overflow-hidden border border-line bg-bg">
               <div className="flex items-center gap-1.5 border-b border-line px-3 py-2">
                 <span aria-hidden className="h-2 w-2 rounded-full bg-line-strong" />
                 <span aria-hidden className="h-2 w-2 rounded-full bg-line-strong" />
@@ -69,7 +71,7 @@ export default function Tools() {
             type="button"
             onClick={() => nudge(-1)}
             aria-label="Previous tool"
-            className="grid h-10 w-10 place-items-center rounded-full border border-line bg-bg font-mono text-ink transition-colors hover:border-accent hover:text-accent"
+            className="grid h-10 w-10 place-items-center border border-line bg-bg font-mono text-ink transition-colors hover:border-accent hover:text-accent"
           >
             ←
           </button>
@@ -77,7 +79,7 @@ export default function Tools() {
             type="button"
             onClick={() => nudge(1)}
             aria-label="Next tool"
-            className="grid h-10 w-10 place-items-center rounded-full border border-line bg-bg font-mono text-ink transition-colors hover:border-accent hover:text-accent"
+            className="grid h-10 w-10 place-items-center border border-line bg-bg font-mono text-ink transition-colors hover:border-accent hover:text-accent"
           >
             →
           </button>

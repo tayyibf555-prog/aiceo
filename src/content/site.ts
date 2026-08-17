@@ -1,10 +1,10 @@
 /*
   Every word on the site lives here. Copy rules from docs/brief.md §5
-  (as amended 17 Aug: "agents" is now allowed vocabulary; the four
-  systems are the second brain, the speed to lead agent, the
-  reactivation agent, and the AI CEO orchestrator; no deputy, no 7am
-  brief). British spelling, no em-dashes, banned-word list enforced by
-  scripts/copy-lint.sh against this file.
+  as amended 17 Aug: the OWNER becomes an AI-powered CEO; the software
+  they build is THE AI CEO OS (second brain + speed to lead agent +
+  reactivation agent + orchestrator). "agents", "AI-powered" and the
+  OS name are allowed vocabulary. British spelling, no em-dashes,
+  banned-word list enforced by scripts/copy-lint.sh against this file.
 */
 
 export const brand = {
@@ -14,7 +14,7 @@ export const brand = {
 };
 
 export const announcement =
-  "Doors open August 20 · Cohort 1 · 30 seats · $1,299";
+  "Doors open 20 August · Cohort 1 · 30 seats · $1,299";
 
 /** Section ids double as anchor targets; exec labels feed the terminal HUD. */
 export const sections = [
@@ -22,18 +22,16 @@ export const sections = [
   { id: "problem", exec: "01_problem" },
   { id: "office", exec: "02_office" },
   { id: "introducing", exec: "03_aiceo" },
-  { id: "mechanism", exec: "04_brain" },
-  { id: "systems", exec: "05_systems" },
-  { id: "curriculum", exec: "06_sessions" },
-  { id: "get", exec: "07_get" },
-  { id: "tools", exec: "08_tools" },
-  { id: "roi", exec: "09_maths" },
-  { id: "fit", exec: "10_fit" },
-  { id: "founders", exec: "11_founders" },
-  { id: "people", exec: "12_people" },
-  { id: "pricing", exec: "13_pricing" },
-  { id: "faqs", exec: "14_faq" },
-  { id: "footer", exec: "15_end" },
+  { id: "mechanism", exec: "04_systems" },
+  { id: "curriculum", exec: "05_sessions" },
+  { id: "get", exec: "06_get" },
+  { id: "roi", exec: "07_maths" },
+  { id: "fit", exec: "08_fit" },
+  { id: "founders", exec: "09_people" },
+  { id: "pricing", exec: "10_pricing" },
+  { id: "faqs", exec: "11_faq" },
+  { id: "close", exec: "12_close" },
+  { id: "footer", exec: "13_end" },
 ] as const;
 
 export type SectionId = (typeof sections)[number]["id"];
@@ -53,23 +51,23 @@ export const nav = {
 export const checkoutUrl = "#pricing";
 
 export const hero = {
-  badge: "FREE BRAIN OPEN · COHORT 1: 30 SEATS",
+  badge: "DOORS OPEN 20 AUGUST · 30 SEATS",
   h1: ["Run your business", "like an AI CEO."],
   sub: [
     { t: "Over 8 live sessions we build systems you " },
     { t: "own outright", h: "pill" as const },
-    { t: ": a second brain, a speed to lead agent, a reactivation agent, and an AI CEO orchestrator that " },
+    { t: ": a second brain, a speed to lead agent, a reactivation agent, and the AI CEO OS that " },
     { t: "runs them all", h: "dotted" as const },
     { t: ". Your business runs on it. You own every file." },
   ],
   primary: { label: "Work with us 1-on-1", href: "#pricing" },
   secondary: { label: "See the office", href: "#office" },
   bootLog: [
-    "boot aiceo_v1.0 ............. ok",
+    "boot aiceo_os.v1 ............ ok",
     "brain.load(your_business) ... ok",
     "agent.speed_to_lead ...... armed",
     "agent.reactivation ....... ready",
-    "orchestrator.aiceo ....... online",
+    "os.orchestrator ......... online",
   ],
 };
 
@@ -78,6 +76,8 @@ export const office = {
   h2: "A live map of everything your business knows.",
   panelTitle: "THE OFFICE · SECOND BRAIN · LIVE",
   caption: "This is a real one, running. You get yours free, on day one.",
+  legend:
+    "BRAND & VOICE · OUTREACH OPS · LEAD ENGINE · SALES PLAYBOOK · ICP LIBRARY · OFFER STACK · CONTENT MACHINE · ONBOARDING SOPS · AGENT WORKFLOWS",
   posterAlt:
     "The Office: a three dimensional map of nine glowing regions of business knowledge, firing",
   openLabel: "▶ LIVE · DRAG TO ROTATE",
@@ -116,19 +116,19 @@ export const problem = {
     todayCount: "30 TABS",
     tabs: ["CHATGPT", "INBOX", "CRM", "SHEETS", "NOTION", "STRIPE"],
     todayCaption: "NOTHING TALKS TO ANYTHING",
-    brainLabel: "WITH THE BRAIN",
-    folder: "aiceo/",
+    brainLabel: "WITH THE OS",
+    folder: "aiceo-os/",
     rows: ["brain/", "speed-to-lead/", "reactivation/", "orchestrator/"],
     brainCaption: "ONE FOLDER · EVERYTHING CONNECTED",
   },
 };
 
 export const introducing = {
-  kicker: "INTRODUCING",
+  kicker: "COHORT 1",
   h2: "Introducing The AI CEO.",
   body: [
-    "First we hand you the brain, free: a second mind that holds what your business knows and answers from it. Then, over four weeks, Cohort 1 builds the rest around it: a speed to lead agent answering in your voice, a reactivation agent working your old list, and the AI CEO orchestrator that runs the lot.",
-    "Built live, on your business, with you at the desk. When it is done, you own every file it runs on.",
+    "First we hand you the brain, free: a second mind that holds what your business knows and answers from it. Then, over four weeks, Cohort 1 builds the rest around it: a speed to lead agent answering in your voice, a reactivation agent working your old list, and the AI CEO OS that runs the lot.",
+    "Built live, on your business, with you at the desk. By handover you are an AI-powered CEO, and every file it runs on is yours.",
   ],
   boldLine:
     "Your competitors are already quietly running AI on their businesses. The only real question is why you are not.",
@@ -141,7 +141,7 @@ export const introducing = {
     },
     {
       label: "7:00 AM",
-      text: "You open the office. The AI CEO has already set the day: what came in overnight, which leads to chase, the one thing that needs you.",
+      text: "You open the office. The OS has already set the day: what came in overnight, which leads to chase, the one thing that needs you.",
       accent: false,
     },
     {
@@ -158,78 +158,59 @@ export const introducing = {
   cta: { label: "Work with us 1-on-1", href: "#pricing" },
 };
 
+/* Merged mechanism + systems: four layers, each with the pain it kills,
+   revealed one at a time along the connector in a pinned sequence. */
 export const mechanism = {
   kicker: "THE MECHANISM",
   h2a: "You don't just prompt AI.",
   h2b: "You give it a second brain.",
-  sub: "The brain is your whole business in one folder your AI reads before it acts. Without one, AI is a clever chatbot with no memory. Yours is built in four parts.",
+  sub: "The AI CEO OS is your whole business in one folder your AI reads before it acts. Without one, AI is a clever chatbot with no memory. Yours is built in four parts, and the last part is the OS itself.",
+  progressTail: "OF 4 · ONE BUILD",
+  staticTail: "4 SYSTEMS · ONE BUILD",
   layers: [
     {
       code: "LAYER 01",
       tag: "WHAT IT KNOWS",
+      icon: "brain" as const,
       name: "The second brain",
-      lead: "Give it your world.",
-      text: "Prices, promises, clients, the way you like things done: one memory every agent reads before it acts. You stop repeating yourself in every new chat.",
+      pain: "Kills the queue of questions only you can answer.",
+      text: "Prices, promises, clients, the way you like things done: one memory every agent reads before it acts.",
       example: "it knows your offer, your prices, the thing you told a client in March.",
     },
     {
       code: "LAYER 02",
       tag: "WHO ANSWERS FIRST",
+      icon: "bolt" as const,
       name: "The speed to lead agent",
-      lead: "It answers like you.",
-      text: "Every new enquiry answered in minutes, in your voice, with the right price and two slots offered. Day or night.",
+      pain: "Kills the enquiry that dies overnight in your inbox.",
+      text: "Every new enquiry answered in minutes, in your voice, with the right price and two slots offered.",
       example: "an enquiry answered at 11:42pm while you were asleep.",
     },
     {
       code: "LAYER 03",
       tag: "WHO DIGS",
+      icon: "pick" as const,
       name: "The reactivation agent",
-      lead: "It works the old list.",
-      text: "The clients who drifted, messaged properly and consistently until the list you already paid for pays again.",
+      pain: "Digs paid-for revenue out of the list you already own.",
+      text: "The clients who drifted, messaged properly and consistently until the old list pays again.",
       example: "a lead from March replies to a message you never sent.",
     },
     {
       code: "LAYER 04",
       tag: "WHO RUNS IT",
-      name: "The AI CEO",
-      lead: "One desk runs them all.",
-      text: "The orchestrator watches every agent, decides what runs when, and hands you the one decision that actually needs an owner.",
+      icon: "orbit" as const,
+      name: "The AI CEO OS",
+      pain: "Kills the chaos of running every system yourself.",
+      text: "The orchestrator watches every agent, decides what runs when, and hands you the one decision that needs a CEO.",
       example: "you open the office at 7am and the day is already set.",
     },
   ],
   close: {
-    bold: "Master these four and the business stops queueing for you.",
+    bold: "Master these four and you are an AI-powered CEO of a business that runs itself.",
     rest: " The files are yours, and ",
     hl: "files move with you.",
     tail: " You are never behind again.",
   },
-};
-
-export const systems = {
-  kicker: "WHAT IT KILLS",
-  h2: "Four systems. Each one kills a specific pain.",
-  cards: [
-    {
-      icon: "brain" as const,
-      name: "The Second Brain",
-      pain: "Kills the queue of questions only you can answer.",
-    },
-    {
-      icon: "bolt" as const,
-      name: "Speed to Lead Agent",
-      pain: "Kills the enquiry that dies overnight in your inbox.",
-    },
-    {
-      icon: "pick" as const,
-      name: "Reactivation Agent",
-      pain: "Digs paid-for revenue out of the list you already own.",
-    },
-    {
-      icon: "orbit" as const,
-      name: "The AI CEO",
-      pain: "Kills the chaos of running every system yourself.",
-    },
-  ],
 };
 
 export const curriculum = {
@@ -277,8 +258,8 @@ export const curriculum = {
     {
       code: "S07",
       week: "WK 4 · TUE",
-      name: "The AI CEO",
-      outcome: "The orchestrator takes the desk: every agent running on schedule.",
+      name: "The AI CEO OS",
+      outcome: "The OS takes the desk: every agent running on schedule.",
     },
     {
       code: "S08",
@@ -312,9 +293,9 @@ export const whatYouGet = {
       text: "Your dormant list worked until it pays again.",
     },
     {
-      label: "THE AI CEO",
+      label: "THE AI CEO OS",
       icon: "network" as const,
-      title: "The orchestrator on the desk.",
+      title: "The OS on the desk.",
       text: "Every agent scheduled, watched, and reporting to you.",
     },
     {
@@ -337,6 +318,7 @@ export const whatYouGet = {
   },
 };
 
+/* Unrendered until real screenshots land; restore <Tools /> in page.tsx. */
 export const tools = {
   kicker: "INSIDE THE BUILD",
   h2: "Real, working systems ship inside it.",
@@ -346,7 +328,7 @@ export const tools = {
     { name: "the-brain/", tag: "the memory" },
     { name: "speed-to-lead/", tag: "minutes, not Monday" },
     { name: "reactivation/", tag: "the dig" },
-    { name: "aiceo-orchestrator/", tag: "one desk, every agent" },
+    { name: "aiceo-os/", tag: "one desk, every agent" },
   ],
   placeholder: "SCREEN DROPS IN HERE",
 };
@@ -366,9 +348,9 @@ export const roi = {
   result: {
     label: "BACK IN THE BUSINESS · TEN REVIVED CLIENTS",
     formula: "your job value × ten clients your list can wake",
-    note: "One proper reactivation run usually wakes more than ten. The fee is covered by the first.",
+    note: "One proper reactivation run usually wakes more than ten.",
   },
-  coverLabel: "clients to cover the $1,299 fee",
+  coverLabel: "revived clients cover the $1,299 fee. Everything after is margin.",
 };
 
 export const fit = {
@@ -401,7 +383,7 @@ export const fit = {
 };
 
 export const founders = {
-  kicker: "THE FOUNDERS",
+  kicker: "THE PEOPLE",
   h2a: "This is not a course.",
   h2b: "It is the system our business runs on.",
   body: "We built every one of these systems for our own company first. The cohort does not teach you about them, it installs them. Click a card to meet us.",
@@ -422,13 +404,8 @@ export const founders = {
       bio: "Bio drops in here: who they are, what they run day to day, and why these systems exist. Two or three sentences, written plainly.",
     },
   ],
-};
-
-export const people = {
-  kicker: "THE PEOPLE",
-  h2: "The wall.",
-  sub: "Owners from around the build, in their own words. Faces landing here soon.",
-  cards: [
+  wallSub: "Owners from around the build, in their own words. Faces landing here soon.",
+  wall: [
     { name: "OWNER_01" },
     { name: "OWNER_02" },
     { name: "OWNER_03" },
@@ -444,7 +421,7 @@ export const pricing = {
   cards: [
     {
       id: "cohort",
-      badge: "COHORT 1 · DOORS OPEN AUG 20",
+      badge: "COHORT 1 · DOORS OPEN 20 AUG",
       title: "The AI CEO Cohort",
       intro:
         "Thirty owners, four weeks, all four systems built live on your own business. The free second brain is day one.",
@@ -453,7 +430,7 @@ export const pricing = {
         "The free second brain, built and loaded on day one",
         "The speed to lead agent, answering in your voice",
         "The reactivation agent working your dormant list",
-        "The AI CEO orchestrator running the lot",
+        "The AI CEO OS running the lot",
         "Every session recorded + the cohort room",
         "Yours to own: the files, no subscription, transfers with your business",
       ],
@@ -466,7 +443,7 @@ export const pricing = {
       seatChip: "30 SEATS ONLY",
       priceSub: "Cohort 2 pricing will be higher. The list hears first.",
       cta: "Claim a seat",
-      ctaNote: "Doors open August 20.",
+      ctaNote: "Doors open 20 August.",
       form: false,
     },
     {
@@ -478,7 +455,7 @@ export const pricing = {
       whatYouGet: [
         "The whole system, built privately with you",
         "A full audit of how you run today",
-        "Brain, agents and orchestrator stood up live",
+        "Brain, agents and the OS stood up live",
         "Scheduled around your calendar",
         "A direct line to us while we build",
         "Every file yours outright at handover",
@@ -522,6 +499,14 @@ export const faqs = {
       a: "It keeps running, because you own it. Some owners take the optional retainer so we keep tuning it as the business changes. Plenty just run it themselves.",
     },
   ],
+};
+
+export const closer = {
+  h2: "Doors open 20 August.",
+  line: "COHORT 1 · 30 SEATS · $1,299",
+  body: "Thirty owners build the AI CEO OS live, on their own businesses. The list hears first when seats move.",
+  cta: "Claim a seat",
+  href: "#pricing",
 };
 
 export const leadForm = {

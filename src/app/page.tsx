@@ -6,18 +6,18 @@ import Problem from "@/components/sections/Problem";
 import LiveDemo from "@/components/sections/LiveDemo";
 import Introducing from "@/components/sections/Introducing";
 import Mechanism from "@/components/sections/Mechanism";
-import Systems from "@/components/sections/Systems";
 import Curriculum from "@/components/sections/Curriculum";
 import WhatYouGet from "@/components/sections/WhatYouGet";
-import Tools from "@/components/sections/Tools";
 import RoiMaths from "@/components/sections/RoiMaths";
 import FitCheck from "@/components/sections/FitCheck";
 import Founders from "@/components/sections/Founders";
-import People from "@/components/sections/People";
 import Pricing from "@/components/sections/Pricing";
 import Faqs from "@/components/sections/Faqs";
+import Closer from "@/components/sections/Closer";
 import Footer from "@/components/sections/Footer";
 
+/* Tools (the screenshot belt) is built but unrendered until real
+   screens land — re-import and slot it after WhatYouGet then. */
 export default function Home() {
   return (
     <>
@@ -30,16 +30,14 @@ export default function Home() {
         <LiveDemo />
         <Introducing />
         <Mechanism />
-        <Systems />
         <Curriculum />
         <WhatYouGet />
-        <Tools />
         <RoiMaths />
         <FitCheck />
         <Founders />
-        <People />
         <Pricing />
         <Faqs />
+        <Closer />
       </main>
       <Footer />
     </>

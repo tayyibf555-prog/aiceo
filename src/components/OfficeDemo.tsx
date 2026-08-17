@@ -76,6 +76,8 @@ export default function OfficeDemo() {
         type="button"
         onClick={coarse ? openDialog : undefined}
         aria-label={coarse ? "Open the live office demo fullscreen" : undefined}
+        aria-hidden={coarse ? undefined : true}
+        tabIndex={coarse ? 0 : -1}
         className={`absolute inset-0 z-10 block w-full ${
           coarse ? "cursor-pointer" : "cursor-default"
         } transition-opacity duration-700 ${
@@ -105,8 +107,9 @@ export default function OfficeDemo() {
         </button>
       )}
 
-      {/* inline iframe, desktop only */}
-      {!coarse && inlineActive && (
+      {/* inline iframe, desktop only; unmounted while the dialog is up
+          so only one WebGL context runs at a time */}
+      {!coarse && inlineActive && !dialogOpen && (
         <iframe
           src={EMBED_URL}
           title="The Office, a live second brain"
