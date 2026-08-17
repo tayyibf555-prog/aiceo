@@ -133,6 +133,16 @@ export const introducing = {
   ],
   boldLine:
     "Your competitors are already quietly running AI on their businesses. The only real question is why you are not.",
+  status: {
+    title: "AICEO_OS · RUNNING",
+    rows: [
+      "brain ................ loaded",
+      "speed_to_lead ......... armed",
+      "reactivation .......... ready",
+      "orchestrator ......... online",
+    ],
+    foot: "EVERY FILE OWNED BY YOU",
+  },
 };
 
 /* One day, 30 days from now, one beat per system. Pinned stop-scroll:
@@ -406,17 +416,17 @@ export const founders = {
     {
       id: "founder-1",
       photo: "",
-      photoLabel: "PHOTO_01",
-      name: "FOUNDER_01",
-      role: "AZEN AI LTD",
+      photoLabel: "PHOTO LANDING SOON",
+      name: "",
+      role: "CO-FOUNDER · THE AI CEO",
       bio: "Bio drops in here: who they are, what they run day to day, and why these systems exist. Two or three sentences, written plainly.",
     },
     {
       id: "founder-2",
       photo: "/founders/ritesh.webp",
-      photoLabel: "PHOTO_02",
+      photoLabel: "",
       name: "Ritesh Verma",
-      role: "AZEN AI LTD",
+      role: "CO-FOUNDER · THE AI CEO",
       bio: "Bio drops in here: who Ritesh is, what he runs day to day, and why these systems exist. Two or three sentences, written plainly.",
     },
   ],

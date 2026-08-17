@@ -6,9 +6,9 @@ import Button from "@/components/Button";
 export default function Nav() {
   return (
     <header className="border-b border-line bg-bg">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+      <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-6">
         <a href="#hero" aria-label="The AI CEO — back to top">
-          <Image src={logo} alt="AI CEO" priority className="h-7 w-auto" />
+          <Image src={logo} alt="AI CEO" priority className="h-10 w-auto" />
         </a>
         <nav className="hidden items-center gap-7 lg:flex">
           {nav.links.map((link) => (

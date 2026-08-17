@@ -1,5 +1,4 @@
 import Section from "@/components/Section";
-import Kicker from "@/components/Kicker";
 import Button from "@/components/Button";
 import Highlight from "@/components/Highlight";
 import LogoHalftone from "@/components/LogoHalftone";
@@ -16,7 +15,13 @@ export default function Hero() {
       <div className="grid items-center gap-14 md:grid-cols-[1.15fr_1fr]">
         <HeroIntro>
           <div data-hero>
-            <Kicker glyph="●">{hero.badge}</Kicker>
+            <span className="kicker-text inline-flex items-center gap-2.5 rounded-full border border-line bg-bg px-4 py-2 text-ink-muted">
+              <span
+                aria-hidden
+                className="live-dot h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
+              />
+              {hero.badge}
+            </span>
           </div>
           <h1 data-hero className="display-1 mt-6">
             {hero.h1[0]}

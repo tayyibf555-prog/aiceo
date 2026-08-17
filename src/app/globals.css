@@ -36,17 +36,17 @@
 
 /* Display scale — H1 64px cap, H2 44–48px, both 700 / -0.02em (brief §2) */
 @utility display-1 {
-  font-size: clamp(40px, 7vw, 64px);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.05;
+  font-size: clamp(44px, 7.5vw, 74px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.04;
 }
 
 @utility display-2 {
-  font-size: clamp(31px, 4.5vw, 47px);
-  font-weight: 700;
+  font-size: clamp(32px, 4.8vw, 50px);
+  font-weight: 800;
   letter-spacing: -0.02em;
-  line-height: 1.1;
+  line-height: 1.08;
 }
 
 /* Mono kicker base — 12–13px, +0.15em tracking (brief §2) */

@@ -111,7 +111,7 @@ export default function Days() {
                   </span>
                   <span className="ml-3 text-ink-muted">· {entry.tag}</span>
                 </p>
-                <p className="mt-2 max-w-[58ch] text-[16px] leading-relaxed text-ink-body">
+                <p className="mt-2 max-w-[58ch] text-[17px] font-medium leading-relaxed text-ink">
                   {entry.text}
                 </p>
               </div>

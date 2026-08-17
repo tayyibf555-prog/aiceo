@@ -6,18 +6,22 @@
   are placeholders in site.ts until the real ones land.
 */
 import { useState } from "react";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
+import riteshPhoto from "../../../public/founders/ritesh.webp";
 import Section from "@/components/Section";
 import Kicker from "@/components/Kicker";
 import Reveal from "@/components/Reveal";
 import { founders } from "@/content/site";
 
+/* Static imports guarantee the photos resolve at build time. */
+const PHOTOS: Record<string, StaticImageData> = {
+  "founder-2": riteshPhoto,
+};
+
 function FounderCard({
   card,
-  index,
 }: {
   card: (typeof founders.cards)[number];
-  index: number;
 }) {
   const [flipped, setFlipped] = useState(false);
 
@@ -32,18 +36,20 @@ function FounderCard({
       <div className={`flip-inner h-[440px] ${flipped ? "flipped" : ""}`}>
         {/* front */}
         <div className="flip-face absolute inset-0 flex flex-col border border-line bg-bg p-6 transition-all duration-300 hover:border-accent hover:shadow-[4px_4px_0_rgba(43,85,176,0.12)]">
-          <p className="mb-4 font-mono text-[10px] tracking-[0.18em]">
-            <span className="text-accent">F_0{index + 1}</span>
-            <span className="ml-2 text-ink-muted">· {card.role}</span>
+          <p className="mb-4 font-mono text-[10px] tracking-[0.18em] text-ink-muted">
+            <span aria-hidden className="text-accent">
+              ●
+            </span>{" "}
+            {card.role}
           </p>
-          {card.photo ? (
+          {PHOTOS[card.id] ? (
             <div className="relative flex-1 overflow-hidden border border-line">
               <Image
-                src={card.photo}
+                src={PHOTOS[card.id]}
                 alt={card.name}
                 fill
                 sizes="(max-width: 768px) 90vw, 420px"
-                className="object-cover"
+                className="object-cover object-center"
               />
             </div>
           ) : (
@@ -57,8 +63,10 @@ function FounderCard({
             </div>
           )}
           <div className="mt-5 flex items-end justify-between gap-4">
-            <h3 className="text-lg font-bold tracking-tight">{card.name}</h3>
-            <span className="font-mono text-[10px] tracking-[0.15em] text-accent">
+            {card.name && (
+              <h3 className="text-lg font-bold tracking-tight">{card.name}</h3>
+            )}
+            <span className="ml-auto font-mono text-[10px] tracking-[0.15em] text-accent">
               {founders.flipHint} ⟳
             </span>
           </div>
@@ -66,7 +74,7 @@ function FounderCard({
         {/* back */}
         <div className="flip-face flip-back absolute inset-0 flex flex-col border-2 border-accent bg-bg p-7 shadow-[8px_8px_0_rgba(43,85,176,0.15)]">
           <p className="font-mono text-[10px] tracking-[0.18em] text-accent">
-            {card.name} · {card.role}
+            {card.name ? `${card.name} · ${card.role}` : card.role}
           </p>
           <p className="mt-5 text-[16px] leading-[1.6] text-ink-body">
             {card.bio}
@@ -115,7 +123,7 @@ export default function Founders() {
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:max-w-4xl">
           {founders.cards.map((card, i) => (
             <Reveal key={card.id} delay={i * 90}>
-              <FounderCard card={card} index={i} />
+              <FounderCard card={card} />
             </Reveal>
           ))}
         </div>
