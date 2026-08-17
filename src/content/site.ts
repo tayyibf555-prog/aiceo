@@ -14,7 +14,7 @@ export const brand = {
 };
 
 export const announcement =
-  "Doors open 20 August · Cohort 1 · 30 seats · $1,299";
+  "Doors open 20 August · Cohort 1 · 30 seats · $997";
 
 /** Section ids double as anchor targets; exec labels feed the terminal HUD. */
 export const sections = [
@@ -360,7 +360,7 @@ export const tools = {
 export const roi = {
   kicker: "THE MATHS",
   h2: "One revived client covers the fee.",
-  body: "The cohort is $1,299. Your old list holds clients who drifted, not clients who left. The reactivation agent messages them properly, and the ones still interested book in. Put your own number on an average job and run it.",
+  body: "The cohort is $997. Your old list holds clients who drifted, not clients who left. The reactivation agent messages them properly, and the ones still interested book in. Put your own number on an average job and run it.",
   slider: {
     label: "YOUR AVERAGE JOB",
     min: 100,
@@ -374,7 +374,7 @@ export const roi = {
     formula: "your job value × ten clients your list can wake",
     note: "One proper reactivation run usually wakes more than ten.",
   },
-  coverLabel: "revived clients cover the $1,299 fee. Everything after is margin.",
+  coverLabel: "revived clients cover the $997 fee. Everything after is margin.",
 };
 
 export const fit = {
@@ -476,7 +476,7 @@ export const pricing = {
       worthBold:
         "Run it in your own business. One revived client covers the fee. Nothing to renew.",
       priceLabel: "COHORT 1 PRICE",
-      price: "$1,299",
+      price: "$997",
       seatChip: "30 SEATS ONLY",
       priceSub: "Cohort 2 pricing will be higher. The list hears first.",
       cta: "Claim a seat",
@@ -541,7 +541,7 @@ export const faqs = {
 
 export const closer = {
   h2: "Doors open 20 August.",
-  line: "COHORT 1 · 30 SEATS · $1,299",
+  line: "COHORT 1 · 30 SEATS · $997",
   body: "Thirty owners build the AI CEO OS live, on their own businesses. The list hears first when seats move.",
   cta: "Claim a seat",
   href: "#pricing",

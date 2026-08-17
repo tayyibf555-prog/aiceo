@@ -11,7 +11,7 @@ import Kicker from "@/components/Kicker";
 import Reveal from "@/components/Reveal";
 import { roi } from "@/content/site";
 
-const FEE = 1299;
+const FEE = 997;
 
 export default function RoiMaths() {
   const [value, setValue] = useState(roi.slider.initial);
