@@ -1,10 +1,8 @@
 "use client";
 
 /*
-  Scroll reveal, GSAP-driven. Children server-render visible; the hide
-  only applies on mount for elements still below the viewport, so no-JS
-  visitors and the LCP never see blank content. Skipped entirely under
-  prefers-reduced-motion via gsap.matchMedia.
+  Problem-section diagram: [data-dg] pieces stagger in when the panel
+  scrolls into view (tabs scatter in, then the arrow, then the folder).
 */
 import { useEffect, useRef, type ReactNode } from "react";
 import gsap from "gsap";
@@ -12,15 +10,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Reveal({
+export default function DiagramFx({
   children,
-  delay = 0,
-  y = 20,
   className = "",
 }: {
   children: ReactNode;
-  delay?: number;
-  y?: number;
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -32,20 +26,20 @@ export default function Reveal({
     mm.add("(prefers-reduced-motion: no-preference)", () => {
       if (el.getBoundingClientRect().top < window.innerHeight * 0.92) return;
       gsap.fromTo(
-        el,
-        { autoAlpha: 0, y },
+        el.querySelectorAll("[data-dg]"),
+        { autoAlpha: 0, y: 14 },
         {
           autoAlpha: 1,
           y: 0,
-          duration: 0.6,
-          ease: "power3.out",
-          delay: delay / 1000,
-          scrollTrigger: { trigger: el, start: "top 88%", once: true },
+          duration: 0.45,
+          ease: "power2.out",
+          stagger: 0.07,
+          scrollTrigger: { trigger: el, start: "top 80%", once: true },
         }
       );
     });
     return () => mm.revert();
-  }, [delay, y]);
+  }, []);
 
   return (
     <div ref={ref} className={className}>

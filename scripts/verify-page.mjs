@@ -44,7 +44,7 @@ for (const id of ids) {
     const y = el.getBoundingClientRect().top + window.scrollY;
     window.scrollTo({ top: y - window.innerHeight * 0.42 + 10, behavior: "instant" });
   }, id);
-  await page.waitForTimeout(250);
+  await page.waitForTimeout(450);
   const label = await page.evaluate(
     () => document.querySelector(".hud-cursor")?.parentElement?.textContent ?? "?"
   );

@@ -7,7 +7,7 @@ import { pricing, checkoutUrl } from "@/content/site";
 
 export default function Pricing() {
   return (
-    <Section id="pricing" grid className="py-20 md:py-28">
+    <Section id="pricing" className="py-20 md:py-28">
       <Kicker>{pricing.kicker}</Kicker>
       <h2 className="display-2 mt-4">{pricing.h2}</h2>
       <div className="mt-12 grid items-stretch gap-5 lg:grid-cols-3">

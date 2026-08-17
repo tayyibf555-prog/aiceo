@@ -5,7 +5,7 @@ import { systems } from "@/content/site";
 
 export default function Systems() {
   return (
-    <Section id="systems" grid className="py-20 md:py-28">
+    <Section id="systems" className="py-20 md:py-28">
       <Kicker>{systems.kicker}</Kicker>
       <h2 className="display-2 mt-4 max-w-[24ch]">{systems.h2}</h2>
       <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

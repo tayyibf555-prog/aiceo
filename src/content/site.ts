@@ -17,8 +17,8 @@ export const announcement =
 /** Section ids double as anchor targets; exec labels feed the terminal HUD. */
 export const sections = [
   { id: "hero", exec: "00_boot" },
-  { id: "office", exec: "01_office" },
-  { id: "problem", exec: "02_problem" },
+  { id: "problem", exec: "01_problem" },
+  { id: "office", exec: "02_office" },
   { id: "introducing", exec: "03_aiceo" },
   { id: "systems", exec: "04_systems" },
   { id: "curriculum", exec: "05_sessions" },
@@ -75,15 +75,40 @@ export const office = {
 };
 
 export const problem = {
-  kicker: "READ THIS IF YOU RUN THE PLACE",
-  h2: "The whole business runs on what only you know.",
+  kicker: "THE PROBLEM",
+  h2a: "You're using AI every day.",
+  h2b: "So why does the business still run on you?",
   paragraphs: [
-    "An enquiry lands at 9pm. By the time you see it, they have booked the company that replied at 9:04.",
-    "Prices, promises, the way you like things done: all of it lives in your head. So every question in the building queues for you, and the queue never shortens.",
-    "Monday morning is you asking people what happened last week. Then chasing the things that did not.",
-    "You have tried the tools. Thirty tabs, six subscriptions, a folder of prompts. None of it knows your business, so none of it did the work.",
+    { t: "You have thirty tabs open right now." },
+    { t: "Your CRM does not talk to your inbox. Your notes talk to nobody." },
+    {
+      t: "Your AI workflow is ",
+      hl: "copy-pasting into a chatbot",
+      t2: " that forgets you by lunchtime.",
+    },
+    {
+      t: "An enquiry lands at 9pm. By the time you see it, they have booked the company that replied at ",
+      hl: "9:04",
+      t2: ".",
+    },
+    {
+      t: "Monday morning is you asking people what happened last week. Then chasing the things that did not.",
+    },
   ],
+  bold: "You're not running the business.",
+  boldHl: "You're refreshing it.",
   turn: "None of this is a discipline problem. Your business has no memory and no deputy. Both are systems, and systems can be built.",
+  cta: "See it running, live",
+  diagram: {
+    todayLabel: "TODAY",
+    todayCount: "30 TABS",
+    tabs: ["CHATGPT", "INBOX", "CRM", "SHEETS", "NOTION", "STRIPE"],
+    todayCaption: "NOTHING TALKS TO ANYTHING",
+    brainLabel: "WITH THE BRAIN",
+    folder: "aiceo-brain/",
+    rows: ["brain/", "deputy/", "leads/", "inbox/"],
+    brainCaption: "ONE FOLDER · EVERYTHING CONNECTED",
+  },
 };
 
 export const introducing = {

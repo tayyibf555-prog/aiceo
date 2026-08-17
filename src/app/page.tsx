@@ -1,10 +1,9 @@
 import AnnouncementBar from "@/components/AnnouncementBar";
 import TerminalHUD from "@/components/TerminalHUD";
 import Nav from "@/components/Nav";
-import { DitherBand } from "@/components/Dither";
 import Hero from "@/components/sections/Hero";
-import LiveDemo from "@/components/sections/LiveDemo";
 import Problem from "@/components/sections/Problem";
+import LiveDemo from "@/components/sections/LiveDemo";
 import Introducing from "@/components/sections/Introducing";
 import Systems from "@/components/sections/Systems";
 import Curriculum from "@/components/sections/Curriculum";
@@ -23,17 +22,14 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
-        <DitherBand seed="hero-office" direction="edges" />
-        <LiveDemo />
         <Problem />
-        <DitherBand seed="into-aiceo" direction="down" />
+        <LiveDemo />
         <Introducing />
         <Systems />
         <Curriculum />
         <Exam />
         <RoiMaths />
         <FitCheck />
-        <DitherBand seed="into-pricing" direction="edges" rows={7} />
         <Pricing />
         <Faqs />
       </main>

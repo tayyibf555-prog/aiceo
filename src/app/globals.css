@@ -20,9 +20,9 @@
   --color-line-strong: #d4d4d4;
 
   /* The accent */
-  --color-accent: #1d6bff;
-  --color-accent-hover: #1557e0;
-  --color-accent-soft: rgb(29 107 255 / 0.12);
+  --color-accent: #1557e0;
+  --color-accent-hover: #0f45c2;
+  --color-accent-soft: rgb(21 87 224 / 0.12);
   --color-accent-on: #ffffff;
 
   /* Warm secondary, tiny doses only */
@@ -83,33 +83,7 @@ body {
   outline-offset: 2px;
 }
 
-/* ── Motif 1: grid-paper background (brief §3.1) ─────────────────────────
-   Faint 1px grid, ~56px cells, fading out via radial mask.
-   Apply to a position:relative section. Pure CSS, zero JS. */
-.grid-paper::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: repeating-linear-gradient(
-      0deg,
-      var(--color-line) 0 1px,
-      transparent 1px 56px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      var(--color-line) 0 1px,
-      transparent 1px 56px
-    );
-  mask-image: radial-gradient(
-    ellipse 70% 65% at 50% 40%,
-    black 35%,
-    transparent 78%
-  );
-}
-
-/* ── Motif 2: terminal HUD cursor blink ──────────────────────────────── */
+/* ── Terminal HUD cursor blink ───────────────────────────────────────── */
 @keyframes hud-blink {
   0%,
   100% {
@@ -139,26 +113,11 @@ body {
   animation: live-pulse 2s ease-in-out infinite;
 }
 
-/* ── Scroll reveal (200–400ms, never bouncy — brief §3 motion) ───────── */
-.reveal {
-  opacity: 0;
-  transform: translateY(14px);
-}
-
-.reveal-in {
-  opacity: 1;
-  transform: none;
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-  transition-delay: var(--reveal-delay, 0ms);
-}
-
+/* Scroll and entrance motion is GSAP-driven (see src/components/fx/),
+   gated per component with gsap.matchMedia on prefers-reduced-motion. */
 @media (prefers-reduced-motion: reduce) {
   .hud-cursor,
   .live-dot {
     animation: none;
-  }
-  .reveal {
-    opacity: 1;
-    transform: none;
   }
 }
