@@ -60,11 +60,11 @@ function FounderCard({
               </span>
             </div>
           )}
-          <div className="absolute inset-x-0 bottom-0 bg-bg-dark/75 px-4 py-3">
+          <div className="absolute inset-x-0 bottom-0 px-4 py-3 [text-shadow:0_1px_8px_rgba(0,0,0,0.9)]">
             <h3 className="text-lg font-bold tracking-tight text-white">
               {card.name}
             </h3>
-            <p className="mt-0.5 font-mono text-[10px] tracking-[0.18em] text-white/60">
+            <p className="mt-0.5 font-mono text-[10px] tracking-[0.18em] text-white/75">
               {card.role}
             </p>
           </div>

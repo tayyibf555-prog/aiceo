@@ -32,13 +32,7 @@ export default function Pricing() {
         {pricing.cards.map((card, i) => (
           <Reveal key={card.id} delay={i * 100} className="h-full">
             <div className="flex h-full flex-col border-2 border-accent bg-bg p-7 shadow-[8px_8px_0_rgba(43,85,176,0.15)] md:p-8">
-              <p className="font-mono text-[10px] tracking-[0.2em] text-ink-muted">
-                <span aria-hidden className="text-accent">
-                  ›
-                </span>{" "}
-                {card.badge}
-              </p>
-              <h3 className="mt-5 text-3xl font-bold tracking-tight text-ink">
+              <h3 className="text-3xl font-bold tracking-tight text-ink">
                 {card.title}
               </h3>
               <p className="mt-3 text-[15px] leading-relaxed text-ink-body">
