@@ -85,7 +85,7 @@ export default function Curriculum() {
                   key={row.code}
                   className={`border px-5 py-4 transition-all duration-300 md:px-6 ${
                     open
-                      ? "border-accent bg-accent-soft/40 bg-bg shadow-[4px_4px_0_rgba(21,87,224,0.12)]"
+                      ? "border-accent bg-accent-soft/40 bg-bg shadow-[4px_4px_0_rgba(43,85,176,0.12)]"
                       : "border-line bg-bg"
                   } ${passed ? "opacity-70" : ""}`}
                 >

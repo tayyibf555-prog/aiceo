@@ -20,9 +20,9 @@
   --color-line-strong: #d4d4d4;
 
   /* The accent */
-  --color-accent: #1557e0;
-  --color-accent-hover: #0f45c2;
-  --color-accent-soft: rgb(21 87 224 / 0.12);
+  --color-accent: #2b55b0;
+  --color-accent-hover: #22458f;
+  --color-accent-soft: rgb(43 85 176 / 0.12);
   --color-accent-on: #ffffff;
 
   /* Warm secondary, tiny doses only */

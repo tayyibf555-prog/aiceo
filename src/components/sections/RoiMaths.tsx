@@ -71,7 +71,7 @@ export default function RoiMaths() {
         </Reveal>
 
         <Reveal delay={90}>
-          <div className="flex h-full flex-col border-2 border-accent bg-bg p-8 shadow-[8px_8px_0_rgba(21,87,224,0.15)]">
+          <div className="flex h-full flex-col border-2 border-accent bg-bg p-8 shadow-[8px_8px_0_rgba(43,85,176,0.15)]">
             <p className="font-mono text-[11px] tracking-[0.18em] text-accent">
               {roi.result.label}
             </p>

@@ -19,7 +19,7 @@ import { writeFileSync } from "node:fs";
 const SRC = "public/brand/logo-lockup.png";
 const GRID_COLS = 40; // halftone resolution across the mark
 const COVERAGE_ON = 0.3; // fraction of blue pixels in a cell to switch it on
-const ACCENT = { r: 0x15, g: 0x57, b: 0xe0 };
+const ACCENT = { r: 0x2b, g: 0x55, b: 0xb0 };
 
 const img = sharp(SRC);
 const meta = await img.metadata();

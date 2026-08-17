@@ -31,7 +31,7 @@ export default function Pricing() {
       <div className="mt-12 grid items-stretch gap-8 lg:grid-cols-2">
         {pricing.cards.map((card, i) => (
           <Reveal key={card.id} delay={i * 100} className="h-full">
-            <div className="flex h-full flex-col border-2 border-accent bg-bg p-7 shadow-[8px_8px_0_rgba(21,87,224,0.15)] md:p-8">
+            <div className="flex h-full flex-col border-2 border-accent bg-bg p-7 shadow-[8px_8px_0_rgba(43,85,176,0.15)] md:p-8">
               <span className="self-start bg-bg-dark px-4 py-1.5 font-mono text-[10px] tracking-[0.2em] text-white">
                 {card.badge}
               </span>
