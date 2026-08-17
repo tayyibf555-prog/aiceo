@@ -421,9 +421,9 @@ export const founders = {
       role: "CO-FOUNDER · THE AI CEO",
       bio: "Tayyib runs Azen AI, the studio behind the systems in this cohort. He studied cyber security, and the technical grounding shows: years spent inside real businesses building second brains, lead engines and client CRMs, engineered to work and locked down to stay safe. Everything in the programme ran on his own company first.",
       links: [
-        { kind: "web", href: "#", label: "Azen AI" },
-        { kind: "youtube", href: "#", label: "YouTube" },
-        { kind: "instagram", href: "#", label: "Instagram" },
+        { kind: "web", href: "https://www.azen.io/", label: "Azen AI" },
+        { kind: "youtube", href: "https://www.youtube.com/@TayyibArbab", label: "YouTube" },
+        { kind: "instagram", href: "https://www.instagram.com/tayyib_ai/", label: "Instagram" },
       ],
     },
     {
@@ -437,7 +437,7 @@ export const founders = {
         { kind: "web", href: "#", label: "Azen AI" },
         { kind: "youtube", href: "https://www.youtube.com/@rkumarv", label: "YouTube" },
         { kind: "instagram", href: "https://www.instagram.com/riteshkv_/", label: "Instagram" },
-        { kind: "slyte", href: "https://www.slyte.app/", label: "Slyte", img: "/founders/slyte-icon.png" },
+        { kind: "agentrise", href: "https://www.becomeabotdeveloper.com/", label: "Agent Rise", img: "/founders/agentrise-icon.png" },
       ],
     },
   ],
