@@ -22,16 +22,17 @@ export const sections = [
   { id: "problem", exec: "01_problem" },
   { id: "office", exec: "02_office" },
   { id: "introducing", exec: "03_aiceo" },
-  { id: "mechanism", exec: "04_systems" },
-  { id: "curriculum", exec: "05_sessions" },
-  { id: "get", exec: "06_get" },
-  { id: "roi", exec: "07_maths" },
-  { id: "fit", exec: "08_fit" },
-  { id: "founders", exec: "09_people" },
-  { id: "pricing", exec: "10_pricing" },
-  { id: "faqs", exec: "11_faq" },
-  { id: "close", exec: "12_close" },
-  { id: "footer", exec: "13_end" },
+  { id: "days", exec: "04_30days" },
+  { id: "mechanism", exec: "05_systems" },
+  { id: "curriculum", exec: "06_sessions" },
+  { id: "get", exec: "07_get" },
+  { id: "roi", exec: "08_maths" },
+  { id: "fit", exec: "09_fit" },
+  { id: "founders", exec: "10_people" },
+  { id: "pricing", exec: "11_pricing" },
+  { id: "faqs", exec: "12_faq" },
+  { id: "close", exec: "13_close" },
+  { id: "footer", exec: "14_end" },
 ] as const;
 
 export type SectionId = (typeof sections)[number]["id"];
@@ -132,29 +133,42 @@ export const introducing = {
   ],
   boldLine:
     "Your competitors are already quietly running AI on their businesses. The only real question is why you are not.",
-  timelineTitle: "Picture 30 days from now.",
-  timeline: [
+};
+
+/* One day, 30 days from now, one beat per system. Pinned stop-scroll:
+   the accent line draws down the rail and each beat reveals as the
+   line reaches its dot. */
+export const days = {
+  h2: "Picture 30 days from now.",
+  entries: [
     {
-      label: "OVERNIGHT",
-      text: "An enquiry lands at 11:42pm. The speed to lead agent answers in your voice, quotes the right price, offers Tuesday or Thursday. You are asleep.",
-      accent: false,
+      time: "11:42 PM",
+      tag: "SPEED TO LEAD",
+      text: "An enquiry lands. The agent answers in your voice, quotes the right price, offers Tuesday or Thursday. You are asleep.",
     },
     {
-      label: "7:00 AM",
-      text: "You open the office. The OS has already set the day: what came in overnight, which leads to chase, the one thing that needs you.",
-      accent: false,
+      time: "2:00 AM",
+      tag: "REACTIVATION",
+      text: "The reactivation agent works the old list: the right message, to the right forty people, without you lifting a finger.",
     },
     {
-      label: "TUESDAY",
-      text: "A lead you wrote off in March replies to a message you never sent. Yes, still interested. Can we talk this week?",
-      accent: true,
+      time: "7:00 AM",
+      tag: "THE AI CEO OS",
+      text: "You open the office. The OS has set the day: what came in overnight, which leads to chase, the one thing that needs you.",
     },
     {
-      label: "AFTER THAT",
+      time: "9:15 AM",
+      tag: "THE BRAIN",
+      text: "A client asks about the quote from March. The answer is one question away, not twenty minutes of digging.",
+    },
+    {
+      time: "AFTER THAT",
+      tag: "YOU",
       text: "The rest of the day goes to the work only you can do.",
-      accent: false,
     },
   ],
+  tail: "OF 5 · ONE ORDINARY DAY",
+  staticTail: "5 BEATS · ONE ORDINARY DAY",
   cta: { label: "Work with us 1-on-1", href: "#pricing" },
 };
 
@@ -252,7 +266,7 @@ export const curriculum = {
     {
       code: "S06",
       week: "WK 3 · THU",
-      name: "The dig pays",
+      name: "The list wakes up",
       outcome: "Real replies from the old list, booked in while you watch.",
     },
     {
@@ -391,6 +405,7 @@ export const founders = {
   cards: [
     {
       id: "founder-1",
+      photo: "",
       photoLabel: "PHOTO_01",
       name: "FOUNDER_01",
       role: "AZEN AI LTD",
@@ -398,10 +413,11 @@ export const founders = {
     },
     {
       id: "founder-2",
+      photo: "/founders/ritesh.webp",
       photoLabel: "PHOTO_02",
-      name: "FOUNDER_02",
+      name: "Ritesh Verma",
       role: "AZEN AI LTD",
-      bio: "Bio drops in here: who they are, what they run day to day, and why these systems exist. Two or three sentences, written plainly.",
+      bio: "Bio drops in here: who Ritesh is, what he runs day to day, and why these systems exist. Two or three sentences, written plainly.",
     },
   ],
   wallSub: "Owners from around the build, in their own words. Faces landing here soon.",

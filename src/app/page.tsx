@@ -5,6 +5,7 @@ import Hero from "@/components/sections/Hero";
 import Problem from "@/components/sections/Problem";
 import LiveDemo from "@/components/sections/LiveDemo";
 import Introducing from "@/components/sections/Introducing";
+import Days from "@/components/sections/Days";
 import Mechanism from "@/components/sections/Mechanism";
 import Curriculum from "@/components/sections/Curriculum";
 import WhatYouGet from "@/components/sections/WhatYouGet";
@@ -29,6 +30,7 @@ export default function Home() {
         <Problem />
         <LiveDemo />
         <Introducing />
+        <Days />
         <Mechanism />
         <Curriculum />
         <WhatYouGet />

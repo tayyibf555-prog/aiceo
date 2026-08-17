@@ -6,6 +6,7 @@
   are placeholders in site.ts until the real ones land.
 */
 import { useState } from "react";
+import Image from "next/image";
 import Section from "@/components/Section";
 import Kicker from "@/components/Kicker";
 import Reveal from "@/components/Reveal";
@@ -13,8 +14,10 @@ import { founders } from "@/content/site";
 
 function FounderCard({
   card,
+  index,
 }: {
   card: (typeof founders.cards)[number];
+  index: number;
 }) {
   const [flipped, setFlipped] = useState(false);
 
@@ -26,31 +29,42 @@ function FounderCard({
       aria-label={`${card.name}: flip card to ${flipped ? "hide" : "show"} bio`}
       className="flip-scene block w-full text-left"
     >
-      <div className={`flip-inner h-[420px] ${flipped ? "flipped" : ""}`}>
+      <div className={`flip-inner h-[440px] ${flipped ? "flipped" : ""}`}>
         {/* front */}
-        <div className="flip-face absolute inset-0 flex flex-col border border-line bg-bg p-6 transition-colors hover:border-accent">
-          <div className="grid flex-1 place-items-center border border-dashed border-line-strong">
-            <div className="text-center font-mono text-[11px] tracking-[0.18em] text-ink-muted">
-              <span className="mb-3 block text-3xl" aria-hidden>
-                ◉
-              </span>
-              {card.photoLabel}
+        <div className="flip-face absolute inset-0 flex flex-col border border-line bg-bg p-6 transition-all duration-300 hover:border-accent hover:shadow-[4px_4px_0_rgba(43,85,176,0.12)]">
+          <p className="mb-4 font-mono text-[10px] tracking-[0.18em]">
+            <span className="text-accent">F_0{index + 1}</span>
+            <span className="ml-2 text-ink-muted">· {card.role}</span>
+          </p>
+          {card.photo ? (
+            <div className="relative flex-1 overflow-hidden border border-line">
+              <Image
+                src={card.photo}
+                alt={card.name}
+                fill
+                sizes="(max-width: 768px) 90vw, 420px"
+                className="object-cover"
+              />
             </div>
-          </div>
+          ) : (
+            <div className="grid flex-1 place-items-center border border-dashed border-line-strong">
+              <div className="text-center font-mono text-[11px] tracking-[0.18em] text-ink-muted">
+                <span className="mb-3 block text-3xl" aria-hidden>
+                  ◉
+                </span>
+                {card.photoLabel}
+              </div>
+            </div>
+          )}
           <div className="mt-5 flex items-end justify-between gap-4">
-            <div>
-              <h3 className="text-lg font-bold tracking-tight">{card.name}</h3>
-              <p className="mt-0.5 font-mono text-[10px] tracking-[0.18em] text-ink-muted">
-                {card.role}
-              </p>
-            </div>
+            <h3 className="text-lg font-bold tracking-tight">{card.name}</h3>
             <span className="font-mono text-[10px] tracking-[0.15em] text-accent">
               {founders.flipHint} ⟳
             </span>
           </div>
         </div>
         {/* back */}
-        <div className="flip-face flip-back absolute inset-0 flex flex-col border-2 border-accent bg-bg p-7">
+        <div className="flip-face flip-back absolute inset-0 flex flex-col border-2 border-accent bg-bg p-7 shadow-[8px_8px_0_rgba(43,85,176,0.15)]">
           <p className="font-mono text-[10px] tracking-[0.18em] text-accent">
             {card.name} · {card.role}
           </p>
@@ -101,7 +115,7 @@ export default function Founders() {
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:max-w-4xl">
           {founders.cards.map((card, i) => (
             <Reveal key={card.id} delay={i * 90}>
-              <FounderCard card={card} />
+              <FounderCard card={card} index={i} />
             </Reveal>
           ))}
         </div>
