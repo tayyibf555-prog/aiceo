@@ -26,7 +26,9 @@ export default function Hero() {
           <h1 data-hero className="display-1 mt-6">
             {hero.h1[0]}
             <br />
-            <span className="text-accent">{hero.h1[1]}</span>
+            <span className="text-accent [text-shadow:5px_5px_0_rgba(43,85,176,0.25)]">
+              {hero.h1[1]}
+            </span>
           </h1>
           <p
             data-hero
