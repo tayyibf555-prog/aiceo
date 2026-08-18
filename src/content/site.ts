@@ -14,7 +14,7 @@ export const brand = {
 };
 
 export const announcement =
-  "Doors open 20 August · Cohort 1 · 30 seats · $997";
+  "Cohort 1 starts 18 September · 30 seats · $997";
 
 /** Section ids double as anchor targets; exec labels feed the terminal HUD. */
 export const sections = [
@@ -45,14 +45,14 @@ export const nav = {
     { label: "FAQS", href: "#faqs" },
     { label: "THE OFFICE", href: "#office" },
   ],
-  cta: { label: "Work with us 1-on-1", href: "#pricing" },
+  cta: { label: "Claim your seat", href: "#pricing" },
 };
 
 /** The live Commas checkout for the cohort seat. */
 export const checkoutUrl = "https://commas.com/checkout/q8g1pMuWskUnus";
 
 export const hero = {
-  badge: "DOORS OPEN 20 AUGUST · 30 SEATS",
+  badge: "COHORT 1 STARTS 18 SEPTEMBER · 30 SEATS",
   h1: ["Run your business", "like an AI CEO."],
   sub: [
     { t: "Over 8 live sessions we build systems you " },
@@ -61,7 +61,7 @@ export const hero = {
     { t: "runs them all", h: "dotted" as const },
     { t: ". Your business runs on it. You own every file." },
   ],
-  primary: { label: "Work with us 1-on-1", href: "#pricing" },
+  primary: { label: "Claim your seat", href: "#pricing" },
   secondary: { label: "See the office", href: "#office" },
   bootLog: [
     "boot aiceo_os.v1 ............ ok",
@@ -111,7 +111,7 @@ export const problem = {
   bold: "You're not running the business.",
   boldHl: "You're refreshing it.",
   turn: "None of this is a discipline problem. Your business has no memory and nobody on the desk overnight. Both are systems, and systems can be built.",
-  cta: "Work with us 1-on-1",
+  cta: "Claim your seat",
   diagram: {
     todayLabel: "TODAY",
     todayCount: "30 TABS",
@@ -179,7 +179,7 @@ export const days = {
   ],
   tail: "OF 5 · ONE ORDINARY DAY",
   staticTail: "5 BEATS · ONE ORDINARY DAY",
-  cta: { label: "Work with us 1-on-1", href: "#pricing" },
+  cta: { label: "Claim your seat", href: "#pricing" },
 };
 
 /* Merged mechanism + systems: four layers, each with the pain it kills,
@@ -338,7 +338,7 @@ export const whatYouGet = {
   banner: {
     label: "YOURS TO OWN",
     h: ["Built once.", "Owned forever."],
-    text: "Everything we build in the four weeks is yours outright. The files live on your machines. No platform that can take it away. It transfers with your business.",
+    text: "Everything we build in the four weeks is yours outright. The files live on your machines. No platform that can take it away. It transfers with your business. And the value keeps landing: one sharp AI tip in your inbox every day, through the cohort and for ten days after handover.",
   },
 };
 
@@ -458,7 +458,7 @@ export const pricing = {
   cards: [
     {
       id: "cohort",
-      badge: "COHORT 1 · DOORS OPEN 20 AUG",
+      badge: "COHORT 1 · STARTS 18 SEPTEMBER",
       title: "The AI CEO Cohort",
       intro:
         "Thirty owners, four weeks, all four systems built live on your own business. The free second brain is day one.",
@@ -479,8 +479,8 @@ export const pricing = {
       price: "$997",
       seatChip: "30 SEATS ONLY",
       priceSub: "Cohort 2 pricing will be higher. The list hears first.",
-      cta: "Claim a seat",
-      ctaNote: "Doors open 20 August.",
+      cta: "Claim your seat",
+      ctaNote: "Cohort 1 starts 18 September.",
       form: false,
     },
     {
@@ -496,7 +496,7 @@ export const pricing = {
         "The exact systems to build, and the stack to build them on",
         "Your first system, built for you, free",
         "A dedicated AI architect inside your business if we build together",
-        "Team education, whenever you want everyone fluent",
+        "Team education for your staff, priced separately",
       ],
       worth:
         "You leave with a plan you actually understand, not a subscription you rent: the systems named, the stack chosen, and the first one already running.",
@@ -541,10 +541,10 @@ export const faqs = {
 };
 
 export const closer = {
-  h2: "Doors open 20 August.",
+  h2: "Cohort 1 starts 18 September.",
   line: "COHORT 1 · 30 SEATS · $997",
   body: "Thirty owners build the AI CEO OS live, on their own businesses. The list hears first when seats move.",
-  cta: "Claim a seat",
+  cta: "Claim your seat",
   href: "#pricing",
 };
 
@@ -572,7 +572,7 @@ export const footer = {
 export const thankYou = {
   kicker: "PAYMENT CONFIRMED · COHORT 1",
   h1: "You're in.",
-  sub: "Your seat is locked for 20 August. Three things before day one. They take five minutes and you arrive ready.",
+  sub: "Your seat is locked for 18 September. Three things before day one. They take five minutes and you arrive ready.",
   steps: [
     {
       code: "STEP 01",

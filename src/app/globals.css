@@ -120,6 +120,26 @@ body::before {
 }
 
 /* Live-dot pulse (announcement pill, demo panel header) */
+/* the Days OS screen swaps per beat with a soft rise */
+@keyframes os-shot {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.os-shot-enter {
+  animation: os-shot 0.35s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .os-shot-enter {
+    animation: none;
+  }
+}
+
 @keyframes live-pulse {
   0%,
   100% {
