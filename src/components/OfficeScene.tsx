@@ -26,8 +26,8 @@ type RenderFn = (
   opts: { onSelect?: (id: string | null) => void }
 ) => OfficeApi | null;
 
-/* What lives in each system: the branch contents the rail displays,
-   mirroring the scene's zones. Example-office data, same voice as
+/* What lives in each system: shown only when a zone is opened, with a
+   search over all of it otherwise. Example-office data, same voice as
    site copy. */
 const INVENTORY = [
   {
@@ -36,6 +36,14 @@ const INVENTORY = [
     sys: "The Second Brain",
     week: "WK 1",
     role: "Answers with what the business knows",
+    files: [
+      "offer.md",
+      "price-list.md",
+      "promises.md",
+      "voice-and-tone.md",
+      "clients/march-notes.md",
+      "way-we-work.md",
+    ],
     tasks: ["Read every new file", "Answer the team's questions"],
     tools: ["FILES", "NOTES", "INBOX"],
   },
@@ -45,6 +53,7 @@ const INVENTORY = [
     sys: "Speed to Lead",
     week: "WK 2",
     role: "Replies to every enquiry in minutes",
+    files: ["reply-templates.md", "pricing-rules.md", "booking-slots.md", "enquiries.log"],
     tasks: ["Reply in your voice, price attached", "Offer two slots, book it in"],
     tools: ["WHATSAPP", "EMAIL", "CALENDAR"],
   },
@@ -54,6 +63,7 @@ const INVENTORY = [
     sys: "Reactivation",
     week: "WK 3",
     role: "Wakes the clients who drifted",
+    files: ["old-client-list.csv", "win-back-messages.md", "do-not-contact.md", "replies.log"],
     tasks: ["Message the dormant list properly", "Book the ones still interested"],
     tools: ["OLD LIST", "SMS", "EMAIL"],
   },
@@ -63,10 +73,17 @@ const INVENTORY = [
     sys: "The AI CEO",
     week: "WK 4",
     role: "Runs all three, hands you one decision",
+    files: ["today.md", "what-ran-overnight.md", "needs-you.md", "numbers.md"],
     tasks: ["Decide what runs when", "Flag the one thing needing you"],
     tools: ["BRAIN", "LEADS", "LIST"],
   },
 ];
+
+type SearchHit = {
+  label: string;
+  kind: string;
+  zone: (typeof INVENTORY)[number];
+};
 
 /* Prefer the 3D engine; fall back to the SVG one without WebGL. */
 async function loadRenderer(): Promise<RenderFn> {
@@ -101,6 +118,7 @@ export default function OfficeScene() {
   const [ready, setReady] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [query, setQuery] = useState("");
 
   /* load the engine when the section approaches the viewport */
   useEffect(() => {
@@ -174,8 +192,25 @@ export default function OfficeScene() {
     }
   };
 
-  /* the open branch: the selected zone, or the first system by default */
-  const openZone = selected ?? "boardroom";
+  const sel = INVENTORY.find((z) => z.id === selected) ?? null;
+  const q = query.trim().toLowerCase();
+  const results: SearchHit[] = q
+    ? INVENTORY.flatMap((zone): SearchHit[] => [
+        { label: zone.sys, kind: "SYSTEM", zone },
+        { label: zone.role, kind: "AGENT", zone },
+        ...zone.files.map((f) => ({ label: f, kind: "FILE", zone })),
+        ...zone.tasks.map((t) => ({ label: t, kind: "TASK", zone })),
+        ...zone.tools.map((t) => ({ label: t, kind: "TOOL", zone })),
+      ])
+        .filter((r) => r.label.toLowerCase().includes(q))
+        .slice(0, 9)
+    : [];
+
+  const openFromSearch = (id: string) => {
+    setQuery("");
+    apiRef.current?.focusRoom(id);
+    setSelected(id);
+  };
 
   return (
     <figure className="m-0" ref={wrapRef}>
@@ -219,83 +254,139 @@ export default function OfficeScene() {
             )}
           </div>
           <aside className="flex flex-col border-t border-line lg:border-l lg:border-t-0">
-            <p className="px-4 pt-4 font-mono text-[10px] tracking-[0.18em] text-ink-muted">
-              WHAT LIVES WHERE
-            </p>
-            <ul className="mt-2 flex-1">
-              {INVENTORY.map((z) => {
-                const lit =
-                  DEMO_STATE.rooms[z.id as keyof typeof DEMO_STATE.rooms]
-                    ?.state === "lit";
-                const open = openZone === z.id;
-                return (
-                  <li key={z.id} className="border-t border-line">
-                    <button
-                      type="button"
-                      onClick={() => railClick(z.id)}
-                      aria-expanded={open}
-                      className={`flex w-full items-baseline gap-2.5 px-4 py-2.5 text-left transition-colors ${
-                        open ? "bg-accent-soft" : "hover:bg-bg-subtle"
-                      }`}
-                    >
-                      <span
-                        aria-hidden
-                        className={`h-[7px] w-[7px] self-center ${
-                          lit ? "bg-accent" : "border border-line-strong"
-                        }`}
-                      />
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate text-[13px] font-semibold text-ink">
-                          {z.sys}
+            {sel ? (
+              /* an open section: everything filed inside it */
+              <div className="flex min-h-0 flex-1 flex-col">
+                <div className="flex items-center gap-2.5 border-b border-line bg-accent-soft px-4 py-3">
+                  <span aria-hidden className="h-[7px] w-[7px] bg-accent" />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[13px] font-semibold text-ink">
+                      {sel.sys}
+                    </span>
+                    <span className="block font-mono text-[9.5px] tracking-[0.1em] text-ink-muted">
+                      {sel.room.toUpperCase()} · {sel.week}
+                    </span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => railClick(sel.id)}
+                    aria-label={`Close ${sel.sys}`}
+                    className="border border-line px-1.5 py-0.5 font-mono text-[10px] text-ink-body transition-colors hover:border-accent hover:text-accent"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4">
+                  <p className="font-mono text-[10.5px] leading-relaxed text-ink-body">
+                    <span className="tracking-[0.1em] text-accent">AGENT</span>{" "}
+                    {sel.role}
+                  </p>
+                  <div>
+                    <p className="font-mono text-[9px] tracking-[0.18em] text-ink-muted">
+                      FILED HERE
+                    </p>
+                    <ul className="mt-1.5 space-y-1">
+                      {sel.files.map((f) => (
+                        <li
+                          key={f}
+                          className="flex items-center gap-2 font-mono text-[10.5px] text-ink-body"
+                        >
+                          <span aria-hidden className="text-ink-muted">
+                            ▤
+                          </span>
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-mono text-[9px] tracking-[0.18em] text-ink-muted">
+                      RUNS
+                    </p>
+                    <ul className="mt-1.5 space-y-1">
+                      {sel.tasks.map((t) => (
+                        <li
+                          key={t}
+                          className="flex gap-2 font-mono text-[10.5px] leading-snug text-ink-body"
+                        >
+                          <span aria-hidden className="text-accent">
+                            ▸
+                          </span>
+                          {t}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-mono text-[9px] tracking-[0.18em] text-ink-muted">
+                      PLUGGED IN
+                    </p>
+                    <div className="mt-1.5 flex flex-wrap gap-1.5">
+                      {sel.tools.map((t) => (
+                        <span
+                          key={t}
+                          className="border border-line px-1.5 py-0.5 font-mono text-[9px] tracking-[0.12em] text-ink-muted"
+                        >
+                          {t}
                         </span>
-                        <span className="block font-mono text-[9.5px] tracking-[0.1em] text-ink-muted">
-                          {z.room.toUpperCase()}
-                        </span>
-                      </span>
-                      <span className="font-mono text-[10px] text-ink-muted">
-                        {z.week}
-                      </span>
-                    </button>
-                    {open && (
-                      <div className="space-y-2.5 px-4 pb-4 pt-1">
-                        <p className="font-mono text-[10.5px] leading-relaxed text-ink-body">
-                          <span className="tracking-[0.1em] text-accent">
-                            AGENT
-                          </span>{" "}
-                          {z.role}
-                        </p>
-                        <ul className="space-y-1">
-                          {z.tasks.map((t) => (
-                            <li
-                              key={t}
-                              className="flex gap-2 font-mono text-[10.5px] leading-snug text-ink-body"
-                            >
-                              <span aria-hidden className="text-accent">
-                                ▸
-                              </span>
-                              {t}
-                            </li>
-                          ))}
-                        </ul>
-                        <div className="flex flex-wrap gap-1.5">
-                          {z.tools.map((t) => (
-                            <span
-                              key={t}
-                              className="border border-line px-1.5 py-0.5 font-mono text-[9px] tracking-[0.12em] text-ink-muted"
-                            >
-                              {t}
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* nothing open: a quiet search over everything filed */
+              <div className="flex flex-1 flex-col px-4 py-4">
+                <label className="block">
+                  <span className="sr-only">Search the office</span>
+                  <input
+                    type="search"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search the office…"
+                    className="w-full border border-line bg-bg px-3 py-2.5 font-mono text-[12px] text-ink placeholder:text-ink-muted focus:border-accent focus:outline-none"
+                  />
+                </label>
+                {q ? (
+                  results.length ? (
+                    <ul className="mt-3 space-y-1">
+                      {results.map((r, i) => (
+                        <li key={`${r.zone.id}-${r.kind}-${i}`}>
+                          <button
+                            type="button"
+                            onClick={() => openFromSearch(r.zone.id)}
+                            className="flex w-full items-baseline gap-2 border border-transparent px-2 py-1.5 text-left transition-colors hover:border-line-strong"
+                          >
+                            <span className="w-12 shrink-0 font-mono text-[8.5px] tracking-[0.1em] text-accent">
+                              {r.kind}
                             </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-            <p className="border-t border-line px-4 py-3 font-mono text-[9.5px] tracking-[0.14em] text-ink-muted">
-              + THE CORRIDOR · 12 DOORS · LOCKED
-            </p>
+                            <span className="min-w-0 flex-1 truncate font-mono text-[11px] text-ink-body">
+                              {r.label}
+                            </span>
+                            <span className="shrink-0 font-mono text-[8.5px] tracking-[0.08em] text-ink-muted">
+                              {r.zone.room.toUpperCase()}
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="mt-4 font-mono text-[10.5px] tracking-[0.06em] text-ink-muted">
+                      Nothing filed under that. Yet.
+                    </p>
+                  )
+                ) : (
+                  <p className="mt-4 font-mono text-[10.5px] leading-relaxed text-ink-muted">
+                    Tap a zone on the floor to open everything inside it, or
+                    search: try &quot;prices&quot;, &quot;old list&quot;,
+                    &quot;whatsapp&quot;.
+                  </p>
+                )}
+                <p className="mt-auto pt-4 font-mono text-[9.5px] tracking-[0.14em] text-ink-muted">
+                  + THE CORRIDOR · 12 DOORS · LOCKED
+                </p>
+              </div>
+            )}
           </aside>
         </div>
 

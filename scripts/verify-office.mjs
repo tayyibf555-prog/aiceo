@@ -46,8 +46,11 @@ await page.locator("#office").scrollIntoViewIfNeeded();
 await page.waitForTimeout(2600);
 await page.locator("#office").screenshot({ path: `${OUT}/office-b.png` });
 
-// zoom interaction sanity: focus the boardroom via the rail
-await page.getByRole("button", { name: /second brain/i }).first().click();
+// search flow: type a query, open the matching section, see its contents
+await page.getByPlaceholder("Search the office…").fill("old");
+await page.waitForTimeout(300);
+await page.locator("#office").screenshot({ path: `${OUT}/office-search.png` });
+await page.getByRole("button", { name: /old-client-list/i }).first().click();
 await page.waitForTimeout(900);
 await page.locator("#office").screenshot({ path: `${OUT}/office-zoom.png` });
 
