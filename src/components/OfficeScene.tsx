@@ -344,7 +344,7 @@ export default function OfficeScene() {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search the office…"
-                    className="w-full border border-line bg-bg px-3 py-2.5 font-mono text-[12px] text-ink placeholder:text-ink-muted focus:border-accent focus:outline-none"
+                    className="w-full border border-accent bg-bg px-3 py-2.5 font-mono text-[12px] text-ink caret-accent shadow-[3px_3px_0_rgba(43,85,176,0.12)] placeholder:text-accent/70 focus:outline-none focus:shadow-[4px_4px_0_rgba(43,85,176,0.18)]"
                   />
                 </label>
                 {q ? (

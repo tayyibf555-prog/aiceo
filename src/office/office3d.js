@@ -175,8 +175,8 @@ export function renderOffice(host, state, opts = {}) {
     for (let gz = 8; gz < 56; gz += 8) {
       ctx.beginPath(); ctx.moveTo(0, gz * PX); ctx.lineTo(1152, gz * PX); ctx.stroke();
     }
-    /* halftone arrow inlay */
-    ctx.fillStyle = "rgba(43,85,176,0.10)";
+    /* halftone arrow inlay: the brand mark, properly blue */
+    ctx.fillStyle = "rgba(43,85,176,0.32)";
     const MS = 2;
     for (let r = 0; r < MARK_GRID.rows; r += MS) {
       for (let c = 0; c < MARK_GRID.cols; c += MS) {

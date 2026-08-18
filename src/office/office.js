@@ -160,7 +160,7 @@ export function renderOffice(host, state, opts = {}) {
       const wx = 33 + (c / MS) * 1.05;
       const wy = 6 + (r / MS) * 0.82;
       const [sx, sy] = iso(wx, wy, 0);
-      rrect(markG, sx - 0.9, sy - 0.55, 1.8, 1.1, 0.4, "rgba(43,85,176,0.09)");
+      rrect(markG, sx - 0.9, sy - 0.55, 1.8, 1.1, 0.4, "rgba(43,85,176,0.32)");
     }
   }
 
