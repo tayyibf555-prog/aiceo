@@ -41,10 +41,14 @@ console.log(
   (await page.$("#office canvas")) ? "webgl" : (await page.$("#office svg.office-svg")) ? "svg" : "none"
 );
 
-// zoom interaction sanity: click the boardroom zone hit poly via rail
+// movement sanity: a second frame a few seconds later should differ
 await page.locator("#office").scrollIntoViewIfNeeded();
-await page.getByRole("button", { name: /Boardroom/ }).click();
-await page.waitForTimeout(700);
+await page.waitForTimeout(2600);
+await page.locator("#office").screenshot({ path: `${OUT}/office-b.png` });
+
+// zoom interaction sanity: focus the boardroom via the rail
+await page.getByRole("button", { name: /second brain/i }).first().click();
+await page.waitForTimeout(900);
 await page.locator("#office").screenshot({ path: `${OUT}/office-zoom.png` });
 
 // all four mechanism icons render revealed in static (narrow) mode

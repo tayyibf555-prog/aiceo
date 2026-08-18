@@ -629,10 +629,56 @@ export function renderOffice(host, state, opts = {}) {
       inner.add(fall);
     }
 
-    anim.bobs.push(inner);
+    g.userData.inner = inner;
+    if (o.wander) inner.position.y = 0.2; /* walkers drive their own gait */
+    else anim.bobs.push(inner);
     parent.add(g);
     return g;
   };
+
+  /* ── walkers: people who actually move around the office ───────── */
+  const walkers = [];
+  const addWalker = (g, pts, opts = {}) => {
+    walkers.push({
+      g,
+      inner: g.userData.inner,
+      pts,
+      /* pts[0] is the spawn point; head for the next stop first */
+      idx: 1 % pts.length,
+      speed: opts.speed || 0.055,
+      pause: 20 + Math.floor(Math.random() * 90),
+      phase: Math.random() * 100,
+    });
+  };
+  function stepWalkers() {
+    for (const w of walkers) {
+      const inner = w.inner;
+      if (w.pause > 0) {
+        w.pause--;
+        inner.position.y = 0.2 + 0.16 * Math.sin((tick + w.phase) / 34);
+        inner.rotation.z *= 0.9;
+        continue;
+      }
+      const [tx, tz] = w.pts[w.idx];
+      const dx = tx - w.g.position.x;
+      const dz = tz - w.g.position.z;
+      const dist = Math.hypot(dx, dz);
+      if (dist < 0.2) {
+        w.idx = (w.idx + 1) % w.pts.length;
+        w.pause = 40 + Math.floor(Math.random() * 180);
+        continue;
+      }
+      w.g.position.x += (dx / dist) * w.speed;
+      w.g.position.z += (dz / dist) * w.speed;
+      const target = Math.atan2(dx, dz);
+      let a = target - w.g.rotation.y;
+      a = Math.atan2(Math.sin(a), Math.cos(a));
+      w.g.rotation.y += a * 0.12;
+      const step = (tick + w.phase) * 0.3;
+      inner.position.y = 0.34 * Math.abs(Math.sin(step));
+      inner.rotation.z = 0.05 * Math.sin(step);
+    }
+  }
 
   /* ── furnish the floor ─────────────────────────────────────────── */
   /* ARCHIVE — reactivation digs through the old list */
@@ -643,10 +689,11 @@ export function renderOffice(host, state, opts = {}) {
   cabinet(zg("archive"), 20.8, 3);
   desk(zg("archive"), 10, 13, 8, 4.2, { papers: true });
   chair(zg("archive"), 14, 20.4, Math.PI);
-  person(zg("archive"), 19.5, 15.5, {
+  const agentArchive = person(zg("archive"), 19.5, 15.5, {
     shirt: C.accentDeep, skin: C.skinB, hair: C.hairBrown,
-    hairStyle: "crop", pose: "work", rotY: -Math.PI / 2,
+    hairStyle: "crop", wander: true,
   });
+  addWalker(agentArchive, [[19.5, 15.5], [20, 10], [9, 9.5]]);
 
   /* BOARDROOM — the second brain holds what the business knows */
   bookcase(zg("boardroom"), 90.5, 5.5);
@@ -654,7 +701,10 @@ export function renderOffice(host, state, opts = {}) {
   chair(zg("boardroom"), 74, 7.4, 0);
   chair(zg("boardroom"), 68.2, 12.2, Math.PI / 2);
   chair(zg("boardroom"), 80.2, 16.4, -Math.PI / 2);
-  person(zg("boardroom"), 70.6, 17.6, { shirt: C.accent, hairStyle: "part", rotY: 2.5 });
+  const agentBoard = person(zg("boardroom"), 70.6, 17.6, {
+    shirt: C.accent, hairStyle: "part", wander: true,
+  });
+  addWalker(agentBoard, [[70.6, 17.6], [74.5, 19.6], [78, 17.8]], { speed: 0.045 });
   person(zg("boardroom"), 74, 7.4, {
     seated: true, shirt: C.wallDeep, hair: C.hairLight,
     hairStyle: "bun", pose: "work",
@@ -662,7 +712,10 @@ export function renderOffice(host, state, opts = {}) {
 
   /* RECEPTION — speed to lead answers before anyone else */
   desk(zg("reception"), 8, 34, 10, 4.6, { papers: true });
-  person(zg("reception"), 10.5, 32.4, { shirt: C.accent, hairStyle: "long", pose: "work" });
+  const agentReception = person(zg("reception"), 10.5, 32.4, {
+    shirt: C.accent, hairStyle: "long", wander: true,
+  });
+  addWalker(agentReception, [[10.5, 32.4], [19, 32.6], [22.5, 38.5]], { speed: 0.05 });
   desk(zg("reception"), 24, 40, 8, 4.2);
   chair(zg("reception"), 28, 47, Math.PI);
   person(zg("reception"), 28, 47, {
@@ -681,16 +734,32 @@ export function renderOffice(host, state, opts = {}) {
   lowT.position.set(49.3, 0.8, 38);
   plant(commons, 57.5, 27.5, 0.9);
   plant(commons, 41.5, 50.5, 0.9);
+  /* a working desk cluster + roaming staff make it a full office */
+  desk(commons, 44, 46, 8, 4.2);
+  chair(commons, 48, 53, Math.PI);
+  person(commons, 48, 53, {
+    seated: true, shirt: C.wallDeep, hair: C.hairBrown,
+    hairStyle: "crop", pose: "work", rotY: Math.PI,
+  });
+  const staffA = person(commons, 33, 52, {
+    shirt: C.wallDeep, hairStyle: "bun", hair: C.hairLight, wander: true,
+  });
+  addWalker(staffA, [[33, 52], [33, 44], [42, 34], [52, 29]]);
+  const staffB = person(commons, 10, 26, {
+    shirt: C.inkSoft, skin: C.skinB, hairStyle: "crop", hair: C.hairLight, wander: true,
+  });
+  addWalker(staffB, [[10, 26], [28, 24], [50, 23]], { speed: 0.06 });
 
   /* CORNER OFFICE — the AI CEO runs the whole floor */
   rug(zg("corner"), 66, 34, 22, 15);
   desk(zg("corner"), 72, 38, 10, 5, { ms: 0.95 });
   monitor(zg("corner"), 79.8, 39.9, 0.8, -0.25);
   chair(zg("corner"), 77, 35.4, 0);
-  person(zg("corner"), 70, 47, {
+  const agentBoss = person(zg("corner"), 70, 47, {
     scale: 1.14, shirt: C.ink, tie: C.accent, collar: "white",
-    hairStyle: "part", rotY: 0.7,
+    hairStyle: "part", rotY: 0.7, wander: true,
   });
+  addWalker(agentBoss, [[70, 47], [66, 41], [73.5, 44.5]], { speed: 0.04 });
   lamp(zg("corner"), 88, 35);
   plant(zg("corner"), 90.5, 50.5);
 
@@ -768,7 +837,14 @@ export function renderOffice(host, state, opts = {}) {
     overlay.appendChild(el);
     return el;
   };
-  for (const p of PILLS) pillEls.push({ p, el: mkPill(p), v: new THREE.Vector3() });
+  const agentRefs = {
+    archive: agentArchive,
+    boardroom: agentBoard,
+    reception: agentReception,
+    corner: agentBoss,
+  };
+  for (const p of PILLS)
+    pillEls.push({ p, el: mkPill(p), v: new THREE.Vector3(), target: agentRefs[p.zone] });
 
   const plateEl = document.createElement("div");
   Object.assign(plateEl.style, {
@@ -955,8 +1031,10 @@ export function renderOffice(host, state, opts = {}) {
 
   function projectOverlay() {
     const w = el.clientWidth, h = el.clientHeight;
-    for (const { p, el: pe, v, center } of pillEls) {
-      v.set(p.at[0], p.h, p.at[1]).project(camera);
+    for (const { p, el: pe, v, center, target } of pillEls) {
+      const ax = target ? target.position.x : p.at[0];
+      const az = target ? target.position.z : p.at[1];
+      v.set(ax, p.h, az).project(camera);
       const sx = (v.x * 0.5 + 0.5) * w;
       const sy = (-v.y * 0.5 + 0.5) * h;
       pe.style.left = `${sx}px`;
@@ -1027,6 +1105,7 @@ export function renderOffice(host, state, opts = {}) {
       r.m.position.set(r.path[idx][0], 0.7 + 0.25 * Math.sin(r.i / 2.2), r.path[idx][1]);
     }
     if (tick % 170 === 0) spawnRunner();
+    stepWalkers();
 
     renderOnce();
   }

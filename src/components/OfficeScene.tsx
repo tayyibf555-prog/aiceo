@@ -26,19 +26,47 @@ type RenderFn = (
   opts: { onSelect?: (id: string | null) => void }
 ) => OfficeApi | null;
 
-const RAIL = [
-  { id: "boardroom", name: "Boardroom", sub: "The Second Brain · wk 1" },
-  { id: "reception", name: "Reception", sub: "Speed to Lead · wk 2" },
-  { id: "archive", name: "Archive", sub: "Reactivation · wk 3" },
-  { id: "corner", name: "Corner Office", sub: "The AI CEO OS · wk 4" },
-  { id: "corridor", name: "The Corridor", sub: "12 doors · locked" },
+/* What lives in each system: the branch contents the rail displays,
+   mirroring the scene's zones. Example-office data, same voice as
+   site copy. */
+const INVENTORY = [
+  {
+    id: "boardroom",
+    room: "Boardroom",
+    sys: "The Second Brain",
+    week: "WK 1",
+    role: "Answers with what the business knows",
+    tasks: ["Read every new file", "Answer the team's questions"],
+    tools: ["FILES", "NOTES", "INBOX"],
+  },
+  {
+    id: "reception",
+    room: "Reception",
+    sys: "Speed to Lead",
+    week: "WK 2",
+    role: "Replies to every enquiry in minutes",
+    tasks: ["Reply in your voice, price attached", "Offer two slots, book it in"],
+    tools: ["WHATSAPP", "EMAIL", "CALENDAR"],
+  },
+  {
+    id: "archive",
+    room: "Archive",
+    sys: "Reactivation",
+    week: "WK 3",
+    role: "Wakes the clients who drifted",
+    tasks: ["Message the dormant list properly", "Book the ones still interested"],
+    tools: ["OLD LIST", "SMS", "EMAIL"],
+  },
+  {
+    id: "corner",
+    room: "Corner Office",
+    sys: "The AI CEO",
+    week: "WK 4",
+    role: "Runs all three, hands you one decision",
+    tasks: ["Decide what runs when", "Flag the one thing needing you"],
+    tools: ["BRAIN", "LEADS", "LIST"],
+  },
 ];
-
-function roomCount(id: string): string {
-  if (id === "corridor") return "0/12";
-  const rs = DEMO_STATE.rooms[id as keyof typeof DEMO_STATE.rooms];
-  return rs?.state === "lit" ? "4/4" : "0/4";
-}
 
 /* Prefer the 3D engine; fall back to the SVG one without WebGL. */
 async function loadRenderer(): Promise<RenderFn> {
@@ -137,7 +165,6 @@ export default function OfficeScene() {
   };
 
   const railClick = (id: string) => {
-    if (id === "corridor") return;
     if (selected === id) {
       apiRef.current?.zoomOut();
       setSelected(null);
@@ -146,6 +173,9 @@ export default function OfficeScene() {
       setSelected(id);
     }
   };
+
+  /* the open branch: the selected zone, or the first system by default */
+  const openZone = selected ?? "boardroom";
 
   return (
     <figure className="m-0" ref={wrapRef}>
@@ -188,24 +218,24 @@ export default function OfficeScene() {
               </div>
             )}
           </div>
-          <aside className="border-t border-line px-4 py-4 lg:border-l lg:border-t-0">
-            <p className="font-mono text-[10px] tracking-[0.18em] text-ink-muted">
-              FLOOR DIRECTORY
+          <aside className="flex flex-col border-t border-line lg:border-l lg:border-t-0">
+            <p className="px-4 pt-4 font-mono text-[10px] tracking-[0.18em] text-ink-muted">
+              WHAT LIVES WHERE
             </p>
-            <ul className="mt-3 space-y-1.5">
-              {RAIL.map((room) => {
-                const active = selected === room.id;
-                const count = roomCount(room.id);
-                const lit = count.startsWith("4");
+            <ul className="mt-2 flex-1">
+              {INVENTORY.map((z) => {
+                const lit =
+                  DEMO_STATE.rooms[z.id as keyof typeof DEMO_STATE.rooms]
+                    ?.state === "lit";
+                const open = openZone === z.id;
                 return (
-                  <li key={room.id}>
+                  <li key={z.id} className="border-t border-line">
                     <button
                       type="button"
-                      onClick={() => railClick(room.id)}
-                      className={`grid w-full grid-cols-[10px_1fr_auto] items-baseline gap-2.5 border px-2.5 py-2 text-left transition-colors ${
-                        active
-                          ? "border-accent bg-accent-soft"
-                          : "border-transparent hover:border-line-strong"
+                      onClick={() => railClick(z.id)}
+                      aria-expanded={open}
+                      className={`flex w-full items-baseline gap-2.5 px-4 py-2.5 text-left transition-colors ${
+                        open ? "bg-accent-soft" : "hover:bg-bg-subtle"
                       }`}
                     >
                       <span
@@ -214,22 +244,58 @@ export default function OfficeScene() {
                           lit ? "bg-accent" : "border border-line-strong"
                         }`}
                       />
-                      <span className="min-w-0">
+                      <span className="min-w-0 flex-1">
                         <span className="block truncate text-[13px] font-semibold text-ink">
-                          {room.name}
+                          {z.sys}
                         </span>
-                        <span className="block truncate font-mono text-[10px] tracking-[0.08em] text-ink-muted">
-                          {room.sub}
+                        <span className="block font-mono text-[9.5px] tracking-[0.1em] text-ink-muted">
+                          {z.room.toUpperCase()}
                         </span>
                       </span>
-                      <span className="font-mono text-[11px] tabular-nums text-ink-body">
-                        {count}
+                      <span className="font-mono text-[10px] text-ink-muted">
+                        {z.week}
                       </span>
                     </button>
+                    {open && (
+                      <div className="space-y-2.5 px-4 pb-4 pt-1">
+                        <p className="font-mono text-[10.5px] leading-relaxed text-ink-body">
+                          <span className="tracking-[0.1em] text-accent">
+                            AGENT
+                          </span>{" "}
+                          {z.role}
+                        </p>
+                        <ul className="space-y-1">
+                          {z.tasks.map((t) => (
+                            <li
+                              key={t}
+                              className="flex gap-2 font-mono text-[10.5px] leading-snug text-ink-body"
+                            >
+                              <span aria-hidden className="text-accent">
+                                ▸
+                              </span>
+                              {t}
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="flex flex-wrap gap-1.5">
+                          {z.tools.map((t) => (
+                            <span
+                              key={t}
+                              className="border border-line px-1.5 py-0.5 font-mono text-[9px] tracking-[0.12em] text-ink-muted"
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </li>
                 );
               })}
             </ul>
+            <p className="border-t border-line px-4 py-3 font-mono text-[9.5px] tracking-[0.14em] text-ink-muted">
+              + THE CORRIDOR · 12 DOORS · LOCKED
+            </p>
           </aside>
         </div>
 
