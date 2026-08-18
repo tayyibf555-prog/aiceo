@@ -650,33 +650,42 @@ export function renderOffice(host, state, opts = {}) {
       phase: Math.random() * 100,
     });
   };
-  function stepWalkers() {
+  /* Delta-timed gait: ~2 gentle steps a second, a slight forward lean,
+     speed ramps out of pauses and eases into stops, and the walk blends
+     to an idle breath instead of snapping. dt is in 1/60s ticks. */
+  function stepWalkers(dt, ease) {
     for (const w of walkers) {
       const inner = w.inner;
       if (w.pause > 0) {
-        w.pause--;
-        inner.position.y = 0.2 + 0.16 * Math.sin((tick + w.phase) / 34);
-        inner.rotation.z *= 0.9;
-        continue;
+        w.pause -= dt;
+        w.moveT = 0;
+        w.gait = Math.max(0, (w.gait || 0) - 0.045 * dt);
+      } else {
+        const [tx, tz] = w.pts[w.idx];
+        const dx = tx - w.g.position.x;
+        const dz = tz - w.g.position.z;
+        const dist = Math.hypot(dx, dz);
+        if (dist < 0.35) {
+          w.idx = (w.idx + 1) % w.pts.length;
+          w.pause = 60 + Math.random() * 240;
+          continue;
+        }
+        w.moveT = (w.moveT || 0) + dt;
+        w.gait = Math.min(1, (w.gait || 0) + 0.04 * dt);
+        const v = w.speed * Math.min(1, w.moveT / 20, dist / 3);
+        w.g.position.x += (dx / dist) * v * dt;
+        w.g.position.z += (dz / dist) * v * dt;
+        const heading = Math.atan2(dx, dz);
+        let a = heading - w.g.rotation.y;
+        a = Math.atan2(Math.sin(a), Math.cos(a));
+        w.g.rotation.y += a * ease(0.09);
       }
-      const [tx, tz] = w.pts[w.idx];
-      const dx = tx - w.g.position.x;
-      const dz = tz - w.g.position.z;
-      const dist = Math.hypot(dx, dz);
-      if (dist < 0.2) {
-        w.idx = (w.idx + 1) % w.pts.length;
-        w.pause = 40 + Math.floor(Math.random() * 180);
-        continue;
-      }
-      w.g.position.x += (dx / dist) * w.speed;
-      w.g.position.z += (dz / dist) * w.speed;
-      const target = Math.atan2(dx, dz);
-      let a = target - w.g.rotation.y;
-      a = Math.atan2(Math.sin(a), Math.cos(a));
-      w.g.rotation.y += a * 0.12;
-      const step = (tick + w.phase) * 0.3;
-      inner.position.y = 0.34 * Math.abs(Math.sin(step));
-      inner.rotation.z = 0.05 * Math.sin(step);
+      const g = w.gait || 0;
+      const step = (tick + w.phase) * 0.11;
+      inner.position.y =
+        0.2 + 0.07 * Math.sin((tick + w.phase) / 40) + g * 0.09 * Math.abs(Math.sin(step));
+      inner.rotation.z = g * 0.016 * Math.sin(step);
+      inner.rotation.x = g * 0.05;
     }
   }
 
@@ -1054,21 +1063,37 @@ export function renderOffice(host, state, opts = {}) {
     renderer.render(scene, camera);
   }
 
-  function frame() {
+  let last = 0;
+  const crossedEvery = (period, offset = 0) =>
+    Math.floor((tick + offset) / period) !==
+    Math.floor((tick + offset - lastDt) / period);
+  let lastDt = 0;
+
+  function frame(now) {
     raf = requestAnimationFrame(frame);
-    tick++;
+    if (!last) {
+      last = now;
+      return;
+    }
+    /* dt in 1/60s ticks, so motion is identical on 60Hz, 120Hz and
+       throttled displays */
+    const dt = Math.min((now - last) / 16.67, 3);
+    last = now;
+    tick += dt;
+    lastDt = dt;
+    const ease = (k) => 1 - Math.pow(1 - k, dt);
 
     /* camera easing */
-    view.target.lerp(view.goalTarget, 0.09);
-    view.zoom += (view.goalZoom - view.zoom) * 0.09;
-    view.par.lerp(view.goalPar, 0.05);
+    view.target.lerp(view.goalTarget, ease(0.06));
+    view.zoom += (view.goalZoom - view.zoom) * ease(0.06);
+    view.par.lerp(view.goalPar, ease(0.035));
     applyCamera();
 
     /* zone washes */
     for (const z of ZONES) {
       const m = washes[z.id].material;
       const goal = hoverZone === z ? 0.07 : 0;
-      m.opacity += (goal - m.opacity) * 0.18;
+      m.opacity += (goal - m.opacity) * ease(0.14);
     }
 
     /* life */
@@ -1084,17 +1109,17 @@ export function renderOffice(host, state, opts = {}) {
       k.material.emissiveIntensity = ph < 18 ? 1.6 * (1 - ph / 18) : 0;
     });
     anim.bobs.forEach((b, i) => {
-      b.position.y = 0.22 * Math.sin((tick + i * 29) / 38) + 0.22;
+      b.position.y = 0.1 * Math.sin((tick + i * 29) / 45) + 0.15;
     });
     anim.bars.forEach(({ mesh, base }, i) => {
-      if ((tick + i * 90) % 420 === 0) mesh.scale.y = base + ((tick / 60 + i) % 3) * 1.2;
+      if (crossedEvery(420, i * 90)) mesh.scale.y = base + ((tick / 60 + i) % 3) * 1.2;
     });
     if (anim.lamp) anim.lamp.intensity = 56 + 7 * Math.sin(tick / 50);
 
     /* runners */
     for (let i = runners.length - 1; i >= 0; i--) {
       const r = runners[i];
-      r.i += 0.6;
+      r.i += 0.6 * dt;
       const idx = Math.floor(r.i);
       if (idx >= r.path.length) {
         scene.remove(r.m);
@@ -1104,8 +1129,8 @@ export function renderOffice(host, state, opts = {}) {
       }
       r.m.position.set(r.path[idx][0], 0.7 + 0.25 * Math.sin(r.i / 2.2), r.path[idx][1]);
     }
-    if (tick % 170 === 0) spawnRunner();
-    stepWalkers();
+    if (crossedEvery(170)) spawnRunner();
+    stepWalkers(dt, ease);
 
     renderOnce();
   }
@@ -1113,6 +1138,7 @@ export function renderOffice(host, state, opts = {}) {
   function start() {
     if (running || reduced) return;
     running = true;
+    last = 0; /* re-seed dt after a pause so nothing jumps */
     raf = requestAnimationFrame(frame);
   }
   function stop() {
