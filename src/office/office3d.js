@@ -62,6 +62,8 @@ export function renderOffice(host, state, opts = {}) {
     greenDeep: new THREE.Color("#7e9880"),
     skinA: new THREE.Color("#efcfae"),
     skinB: new THREE.Color("#b9885c"),
+    hairBrown: new THREE.Color("#4a3728"),
+    hairLight: new THREE.Color("#8a6440"),
     grey: new THREE.Color("#a3a3a3"),
   };
   const fontStack =
@@ -499,40 +501,134 @@ export function renderOffice(host, state, opts = {}) {
     return m;
   };
 
+  /* little cartoon worker, deliberately faceless: silhouette, colour
+     blocking, pose and hair do all the talking. o.pose "work" puts the
+     arms forward over a desk; o.seated bends real legs onto a chair. */
   const person = (parent, x, z, o = {}) => {
     const s = o.scale || 1;
     const g = new THREE.Group();
     g.position.set(x, 0, z);
+    if (o.rotY) g.rotation.y = o.rotY;
     const inner = new THREE.Group();
     g.add(inner);
     const shirt = o.shirt || C.accent;
-    if (!o.seated) {
-      for (const lx of [-0.62, 0.62]) {
-        const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.5 * s, 1.9 * s, 3, 8), mat(o.trousers || C.inkSoft));
-        leg.position.set(lx * s, 1.6 * s, 0);
-        leg.castShadow = true;
-        inner.add(leg);
+    const trousers = o.trousers || C.inkSoft;
+    const skin = o.skin || C.skinA;
+    const hairC = o.hair || C.ink;
+    const seated = !!o.seated;
+
+    const cap = (r, len, color, rough) => {
+      const m = new THREE.Mesh(new THREE.CapsuleGeometry(r, len, 4, 10), mat(color, { rough: rough ?? 0.9 }));
+      m.castShadow = true;
+      inner.add(m);
+      return m;
+    };
+    const sph = (r, color, rough) => {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(r, 18, 16), mat(color, { rough: rough ?? 0.85 }));
+      m.castShadow = true;
+      inner.add(m);
+      return m;
+    };
+    const shoe = (lx, lz = 0) => {
+      const m = box(inner, 0.9 * s, 0.55 * s, 1.4 * s, C.ink, { radius: 0.2 });
+      m.position.set(lx * s, 0.28 * s, (lz + 0.18) * s);
+      return m;
+    };
+
+    let hipY;
+    if (!seated) {
+      shoe(-0.6);
+      shoe(0.6);
+      for (const lx of [-0.58, 0.58]) {
+        const leg = cap(0.46 * s, 2.1 * s, trousers);
+        leg.position.set(lx * s, 2.15 * s, 0);
+      }
+      hipY = 3.4;
+    } else {
+      /* thighs forward, shins down: actually sitting on the chair */
+      for (const lx of [-0.58, 0.58]) {
+        const thigh = cap(0.48 * s, 1.4 * s, trousers);
+        thigh.rotation.x = Math.PI / 2;
+        thigh.position.set(lx * s, 2.85 * s, 1.05 * s);
+        const shin = cap(0.4 * s, 1.3 * s, trousers);
+        shin.position.set(lx * s, 1.3 * s, 1.95 * s);
+        shoe(lx, 2.0);
+      }
+      hipY = 2.95;
+    }
+
+    /* torso with shoulders, and a collar in a deeper shade */
+    const torso = cap(1.32 * s, 2.6 * s, shirt);
+    torso.scale.set(1.18, 1, 0.9);
+    torso.position.y = (hipY + 2.05) * s;
+    const collarCol =
+      o.collar === "white" ? C.white : shirt.clone().lerp(C.ink, 0.28);
+    const collar = new THREE.Mesh(
+      new THREE.CylinderGeometry(1.02 * s, 1.14 * s, 0.42 * s, 16),
+      mat(collarCol)
+    );
+    collar.position.y = (hipY + 3.95) * s;
+    collar.castShadow = true;
+    inner.add(collar);
+
+    /* arms with skin-tone hands; "work" pose reaches over the desk */
+    for (const side of [-1, 1]) {
+      const arm = cap(0.4 * s, 1.9 * s, shirt);
+      const hand = sph(0.42 * s, skin, 0.75);
+      if (o.pose === "work") {
+        arm.rotation.x = -1.12;
+        arm.position.set(side * 1.6 * s, (hipY + 2.6) * s, 0.95 * s);
+        hand.position.set(side * 1.6 * s, (hipY + 2.05) * s, 2.05 * s);
+      } else {
+        arm.rotation.z = side * 0.14;
+        arm.position.set(side * 1.82 * s, (hipY + 1.55) * s, 0);
+        hand.position.set(side * 2 * s, (hipY + 0.25) * s, 0);
       }
     }
-    const baseY = o.seated ? 1.6 : 3.1;
-    const body = new THREE.Mesh(new THREE.CapsuleGeometry(1.5 * s, 2.5 * s, 4, 12), mat(shirt));
-    body.position.y = (baseY + 2.4) * s;
-    body.castShadow = true;
-    inner.add(body);
+
     if (o.tie) {
-      const tie = box(inner, 0.55 * s, 2 * s, 0.2, o.tie, { radius: 0.08, cast: false });
-      tie.position.set(0, (baseY + 2.9) * s, 1.44 * s);
+      const knot = box(inner, 0.52 * s, 0.42 * s, 0.24, o.tie, { radius: 0.1, cast: false });
+      knot.position.set(0, (hipY + 3.68) * s, 1.22 * s);
+      const tie = box(inner, 0.56 * s, 1.9 * s, 0.22, o.tie, { radius: 0.12, cast: false });
+      tie.position.set(0, (hipY + 2.5) * s, 1.27 * s);
+      tie.rotation.x = 0.09;
     }
-    const head = new THREE.Mesh(new THREE.SphereGeometry(1.75 * s, 18, 18), mat(o.skin || C.skinA, { rough: 0.8 }));
-    head.position.y = (baseY + 6.1) * s;
-    head.castShadow = true;
-    inner.add(head);
-    const hair = new THREE.Mesh(
-      new THREE.SphereGeometry(1.82 * s, 18, 12, 0, Math.PI * 2, 0, Math.PI * 0.55),
-      mat(o.hair || C.ink, { rough: 0.85 })
+
+    /* neck + faceless head */
+    const neck = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.5 * s, 0.56 * s, 0.6 * s, 12),
+      mat(skin, { rough: 0.75 })
     );
-    hair.position.y = (baseY + 6.35) * s;
-    inner.add(hair);
+    neck.position.y = (hipY + 4.32) * s;
+    inner.add(neck);
+    const headY = hipY + 5.8;
+    const head = sph(1.6 * s, skin, 0.72);
+    head.position.y = headY * s;
+
+    /* hair does the characterisation */
+    const hs = o.hairStyle || "crop";
+    const hairCap = new THREE.Mesh(
+      new THREE.SphereGeometry(1.68 * s, 18, 12, 0, Math.PI * 2, 0, Math.PI * 0.52),
+      mat(hairC, { rough: 0.92 })
+    );
+    hairCap.position.y = (headY + 0.24) * s;
+    hairCap.castShadow = true;
+    inner.add(hairCap);
+    if (hs === "part") {
+      const fringe = box(inner, 1.8 * s, 0.5 * s, 0.55 * s, hairC, { radius: 0.18, cast: false });
+      fringe.position.set(0.3 * s, (headY + 0.92) * s, 1.22 * s);
+      fringe.rotation.x = 0.35;
+    } else if (hs === "bun") {
+      const bun = sph(0.6 * s, hairC, 0.92);
+      bun.position.set(0, (headY + 1.32) * s, -1.02 * s);
+    } else if (hs === "long") {
+      const fall = new THREE.Mesh(new THREE.CapsuleGeometry(1.02 * s, 1.6 * s, 4, 12), mat(hairC, { rough: 0.92 }));
+      fall.scale.set(1.18, 1, 0.6);
+      fall.position.set(0, (headY - 1.1) * s, -0.92 * s);
+      fall.castShadow = true;
+      inner.add(fall);
+    }
+
     anim.bobs.push(inner);
     parent.add(g);
     return g;
@@ -547,23 +643,32 @@ export function renderOffice(host, state, opts = {}) {
   cabinet(zg("archive"), 20.8, 3);
   desk(zg("archive"), 10, 13, 8, 4.2, { papers: true });
   chair(zg("archive"), 14, 20.4, Math.PI);
-  person(zg("archive"), 19.5, 15.5, { shirt: C.accentDeep, skin: C.skinB });
+  person(zg("archive"), 19.5, 15.5, {
+    shirt: C.accentDeep, skin: C.skinB, hair: C.hairBrown,
+    hairStyle: "crop", pose: "work", rotY: -Math.PI / 2,
+  });
 
   /* BOARDROOM — the second brain holds what the business knows */
   bookcase(zg("boardroom"), 90.5, 5.5);
   roundTable(zg("boardroom"), 74, 13);
-  chair(zg("boardroom"), 74, 7.4, Math.PI);
+  chair(zg("boardroom"), 74, 7.4, 0);
   chair(zg("boardroom"), 68.2, 12.2, Math.PI / 2);
   chair(zg("boardroom"), 80.2, 16.4, -Math.PI / 2);
-  person(zg("boardroom"), 70.6, 17.6, { shirt: C.accent });
-  person(zg("boardroom"), 78.6, 9.2, { seated: true, shirt: C.wallDeep, hair: C.skinB });
+  person(zg("boardroom"), 70.6, 17.6, { shirt: C.accent, hairStyle: "part", rotY: 2.5 });
+  person(zg("boardroom"), 74, 7.4, {
+    seated: true, shirt: C.wallDeep, hair: C.hairLight,
+    hairStyle: "bun", pose: "work",
+  });
 
   /* RECEPTION — speed to lead answers before anyone else */
   desk(zg("reception"), 8, 34, 10, 4.6, { papers: true });
-  person(zg("reception"), 10.5, 32.4, { shirt: C.accent });
+  person(zg("reception"), 10.5, 32.4, { shirt: C.accent, hairStyle: "long", pose: "work" });
   desk(zg("reception"), 24, 40, 8, 4.2);
   chair(zg("reception"), 28, 47, Math.PI);
-  person(zg("reception"), 28, 45.6, { seated: true, shirt: C.accentDeep, skin: C.skinB });
+  person(zg("reception"), 28, 47, {
+    seated: true, shirt: C.accentDeep, skin: C.skinB, hair: C.hairBrown,
+    hairStyle: "crop", pose: "work", rotY: Math.PI,
+  });
   plant(zg("reception"), 6, 50);
   cooler(zg("reception"), 20.5, 36);
 
@@ -582,7 +687,10 @@ export function renderOffice(host, state, opts = {}) {
   desk(zg("corner"), 72, 38, 10, 5, { ms: 0.95 });
   monitor(zg("corner"), 79.8, 39.9, 0.8, -0.25);
   chair(zg("corner"), 77, 35.4, 0);
-  person(zg("corner"), 70, 47, { scale: 1.14, shirt: C.ink, tie: C.accent });
+  person(zg("corner"), 70, 47, {
+    scale: 1.14, shirt: C.ink, tie: C.accent, collar: "white",
+    hairStyle: "part", rotY: 0.7,
+  });
   lamp(zg("corner"), 88, 35);
   plant(zg("corner"), 90.5, 50.5);
 
