@@ -566,3 +566,41 @@ export const footer = {
   year: "2026",
   note: "MADE IN THE OFFICE · EVERY FILE OWNED",
 };
+
+/* /thank-you: what a buyer sees the second after paying. Linked from
+   the payment redirect only; not in the nav, not indexed. */
+export const thankYou = {
+  kicker: "PAYMENT CONFIRMED · COHORT 1",
+  h1: "You're in.",
+  sub: "Your seat is locked for 20 August. Three things before day one. They take five minutes and you arrive ready.",
+  steps: [
+    {
+      code: "STEP 01",
+      title: "Watch the two welcome videos.",
+      body: "Fifteen minutes total. The first shows how the four weeks run. The second shows how to get your files ready for the second brain, so day one builds on your real business.",
+      videos: [
+        { tag: "VIDEO 01", title: "How the cohort runs", length: "07:42" },
+        { tag: "VIDEO 02", title: "Get your files ready", length: "06:58" },
+      ],
+    },
+    {
+      code: "STEP 02",
+      title: "Accept the calendar invites.",
+      body: "Eight session invites are on their way to the email you paid with, each with its Google Meet link. Say yes to all of them and the four weeks guard their own place in your diary.",
+      caption: "They look like this. Hit yes on every one.",
+    },
+    {
+      code: "STEP 03",
+      title: "Join the cohort HQ.",
+      body: "One link, one space, for the whole four weeks. The timeline ticked off as we build, every call recording the morning after, announcements, and answers between sessions.",
+      caption: "The welcome email lands within ten minutes of payment. Check promotions if it hides.",
+      cta: "Open the cohort HQ",
+      href: "#",
+    },
+  ],
+  closing: {
+    line: "That is everything. See you on day one.",
+    note: "Bring a real business problem. We build on it.",
+  },
+  backLink: "BACK TO THE SITE",
+};
