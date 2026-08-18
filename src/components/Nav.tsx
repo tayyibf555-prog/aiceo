@@ -1,5 +1,3 @@
-import Image from "next/image";
-import logo from "../../public/brand/logo-lockup-clean.png";
 import { nav } from "@/content/site";
 import Button from "@/components/Button";
 
@@ -8,7 +6,10 @@ export default function Nav() {
     <header className="border-b border-line bg-bg">
       <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-6">
         <a href="#hero" aria-label="The AI CEO — back to top">
-          <Image src={logo} alt="AI CEO" priority className="h-10 w-auto" />
+          {/* typed wordmark with the card shadow, soft blue offset */}
+          <span className="text-[26px] font-black tracking-[-0.02em] text-accent [text-shadow:3px_3px_0_rgba(43,85,176,0.25)]">
+            AI CEO.
+          </span>
         </a>
         <nav className="hidden items-center gap-7 lg:flex">
           {nav.links.map((link) => (
