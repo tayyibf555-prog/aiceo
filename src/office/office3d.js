@@ -667,7 +667,7 @@ export function renderOffice(host, state, opts = {}) {
         const dist = Math.hypot(dx, dz);
         if (dist < 0.35) {
           w.idx = (w.idx + 1) % w.pts.length;
-          w.pause = 60 + Math.random() * 240;
+          w.pause = 90 + Math.random() * 330;
           continue;
         }
         w.moveT = (w.moveT || 0) + dt;
@@ -678,14 +678,16 @@ export function renderOffice(host, state, opts = {}) {
         const heading = Math.atan2(dx, dz);
         let a = heading - w.g.rotation.y;
         a = Math.atan2(Math.sin(a), Math.cos(a));
-        w.g.rotation.y += a * ease(0.09);
+        w.g.rotation.y += a * ease(0.13);
       }
+      /* gait: a soft vertical step and a slight forward lean only; any
+         roll at the feet reads as a metronome, so there is none */
       const g = w.gait || 0;
       const step = (tick + w.phase) * 0.11;
       inner.position.y =
-        0.2 + 0.07 * Math.sin((tick + w.phase) / 40) + g * 0.09 * Math.abs(Math.sin(step));
-      inner.rotation.z = g * 0.016 * Math.sin(step);
-      inner.rotation.x = g * 0.05;
+        0.2 + 0.07 * Math.sin((tick + w.phase) / 40) + g * 0.06 * Math.abs(Math.sin(step));
+      inner.rotation.z = 0;
+      inner.rotation.x = g * 0.04;
     }
   }
 
@@ -697,23 +699,27 @@ export function renderOffice(host, state, opts = {}) {
   cabinet(zg("archive"), 16.4, 3);
   cabinet(zg("archive"), 20.8, 3);
   desk(zg("archive"), 10, 13, 8, 4.2, { papers: true });
-  chair(zg("archive"), 14, 20.4, Math.PI);
+  chair(zg("archive"), 14, 11.5, 0);
   const agentArchive = person(zg("archive"), 19.5, 15.5, {
     shirt: C.accentDeep, skin: C.skinB, hair: C.hairBrown,
     hairStyle: "crop", wander: true,
   });
-  addWalker(agentArchive, [[19.5, 15.5], [20, 10], [9, 9.5]]);
+  addWalker(agentArchive, [[19.5, 15.5], [21, 21], [9, 21], [8.2, 14], [12, 9], [20, 9.5]]);
 
   /* BOARDROOM — the second brain holds what the business knows */
   bookcase(zg("boardroom"), 90.5, 5.5);
   roundTable(zg("boardroom"), 74, 13);
   chair(zg("boardroom"), 74, 7.4, 0);
-  chair(zg("boardroom"), 68.2, 12.2, Math.PI / 2);
+  chair(zg("boardroom"), 81, 11, -Math.PI / 2);
   chair(zg("boardroom"), 80.2, 16.4, -Math.PI / 2);
-  const agentBoard = person(zg("boardroom"), 70.6, 17.6, {
+  const agentBoard = person(zg("boardroom"), 68.5, 18.5, {
     shirt: C.accent, hairStyle: "part", wander: true,
   });
-  addWalker(agentBoard, [[70.6, 17.6], [74.5, 19.6], [78, 17.8]], { speed: 0.045 });
+  addWalker(
+    agentBoard,
+    [[68.5, 18.5], [64, 15.5], [63, 9.5], [68, 4.6]],
+    { speed: 0.045 }
+  );
   person(zg("boardroom"), 74, 7.4, {
     seated: true, shirt: C.wallDeep, hair: C.hairLight,
     hairStyle: "bun", pose: "work",
@@ -724,7 +730,11 @@ export function renderOffice(host, state, opts = {}) {
   const agentReception = person(zg("reception"), 10.5, 32.4, {
     shirt: C.accent, hairStyle: "long", wander: true,
   });
-  addWalker(agentReception, [[10.5, 32.4], [19, 32.6], [22.5, 38.5]], { speed: 0.05 });
+  addWalker(
+    agentReception,
+    [[10.5, 32.4], [19, 32.6], [22.5, 38.5], [19, 41.5], [6, 41], [5.5, 32.5]],
+    { speed: 0.05 }
+  );
   desk(zg("reception"), 24, 40, 8, 4.2);
   chair(zg("reception"), 28, 47, Math.PI);
   person(zg("reception"), 28, 47, {
@@ -753,22 +763,26 @@ export function renderOffice(host, state, opts = {}) {
   const staffA = person(commons, 33, 52, {
     shirt: C.wallDeep, hairStyle: "bun", hair: C.hairLight, wander: true,
   });
-  addWalker(staffA, [[33, 52], [33, 44], [42, 34], [52, 29]]);
+  addWalker(staffA, [[33, 52], [33, 44], [42, 34], [52, 29], [45, 33.5]]);
   const staffB = person(commons, 10, 26, {
     shirt: C.inkSoft, skin: C.skinB, hairStyle: "crop", hair: C.hairLight, wander: true,
   });
-  addWalker(staffB, [[10, 26], [28, 24], [50, 23]], { speed: 0.06 });
+  addWalker(staffB, [[10, 26], [28, 23.5], [50, 23], [55, 26.5], [30, 27.5]], { speed: 0.06 });
 
   /* CORNER OFFICE — the AI CEO runs the whole floor */
   rug(zg("corner"), 66, 34, 22, 15);
   desk(zg("corner"), 72, 38, 10, 5, { ms: 0.95 });
   monitor(zg("corner"), 79.8, 39.9, 0.8, -0.25);
-  chair(zg("corner"), 77, 35.4, 0);
+  chair(zg("corner"), 77, 36.8, 0);
   const agentBoss = person(zg("corner"), 70, 47, {
     scale: 1.14, shirt: C.ink, tie: C.accent, collar: "white",
     hairStyle: "part", rotY: 0.7, wander: true,
   });
-  addWalker(agentBoss, [[70, 47], [66, 41], [73.5, 44.5]], { speed: 0.04 });
+  addWalker(
+    agentBoss,
+    [[70, 47], [65.5, 41], [68, 36], [74, 33.5], [84, 34.5], [86.5, 42.5], [80, 46.5]],
+    { speed: 0.04 }
+  );
   lamp(zg("corner"), 88, 35);
   plant(zg("corner"), 90.5, 50.5);
 
