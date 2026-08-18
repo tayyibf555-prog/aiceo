@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const jetbrains = JetBrains_Mono({
@@ -12,6 +13,8 @@ const description =
   "Over 8 live sessions we build systems you own outright: a second brain, a speed to lead agent, a reactivation agent, and an AI CEO orchestrator that runs them all. You own every file.";
 
 export const metadata: Metadata = {
+  /* moves to the custom domain when it is chosen */
+  metadataBase: new URL("https://aiceo-site.vercel.app"),
   title: "The AI CEO · Run your business like an AI CEO",
   description,
   openGraph: {
@@ -36,7 +39,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en-GB" className={`${jetbrains.variable} h-full antialiased`}>
-      <body className="min-h-full bg-bg font-sans text-ink">{children}</body>
+      <body className="min-h-full bg-bg font-sans text-ink">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }

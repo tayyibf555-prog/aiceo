@@ -27,7 +27,14 @@ export default function Footer() {
       </div>
       <div className="mt-10 flex flex-col gap-2 border-t border-line pt-6 font-mono text-[11px] tracking-[0.1em] text-ink-muted md:flex-row md:items-center md:justify-between">
         <span>
-          © {footer.year} {footer.company}
+          © {footer.year} {footer.company} ·{" "}
+          <a href="/terms" className="transition-colors hover:text-accent">
+            TERMS
+          </a>{" "}
+          ·{" "}
+          <a href="/privacy" className="transition-colors hover:text-accent">
+            PRIVACY
+          </a>
         </span>
         <span>
           <span className="text-accent">●</span> {footer.note}

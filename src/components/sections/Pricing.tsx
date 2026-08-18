@@ -2,7 +2,8 @@ import Section from "@/components/Section";
 import Kicker from "@/components/Kicker";
 import Reveal from "@/components/Reveal";
 import LeadForm from "@/components/LeadForm";
-import { pricing, checkoutUrl } from "@/content/site";
+import CheckoutLink from "@/components/CheckoutLink";
+import { pricing } from "@/content/site";
 
 /*
   Two cards in the site's featured-card language (see the ROI result
@@ -94,13 +95,7 @@ export default function Pricing() {
                   {card.form ? (
                     <LeadForm source="one-on-one" cta={card.cta} />
                   ) : (
-                    <a
-                      href={checkoutUrl}
-                      className="block w-full rounded-lg bg-accent px-6 py-3.5 text-center font-bold text-accent-on shadow-[3px_3px_0_rgba(10,10,10,0.9)] transition-all duration-150 hover:translate-x-[1px] hover:translate-y-[1px] hover:bg-accent-hover hover:shadow-[2px_2px_0_rgba(10,10,10,0.9)]"
-                    >
-                      {card.cta}
-                      <span className="ml-2">→</span>
-                    </a>
+                    <CheckoutLink cta={card.cta} location="pricing" />
                   )}
                 </div>
                 <p className="mt-3 font-mono text-[11px] tracking-[0.08em] text-ink-muted">

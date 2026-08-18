@@ -48,8 +48,8 @@ export const nav = {
   cta: { label: "Work with us 1-on-1", href: "#pricing" },
 };
 
-/** Swapped for the real checkout link when the user supplies it. */
-export const checkoutUrl = "#pricing";
+/** The live Commas checkout for the cohort seat. */
+export const checkoutUrl = "https://commas.com/checkout/q8g1pMuWskUnus";
 
 export const hero = {
   badge: "DOORS OPEN 20 AUGUST · 30 SEATS",
@@ -595,8 +595,8 @@ export const thankYou = {
       body: "One link, one space, for the whole four weeks. The timeline ticked off as we build, every call recording the morning after, announcements, and answers between sessions.",
       caption: "The welcome email lands within ten minutes of payment. Check promotions if it hides.",
       cta: "Open the cohort HQ",
-      /* local HQ app while we build; swapped for the hosted HQ at deploy */
-      href: "http://localhost:3001",
+      /* the hosted cohort HQ; moves to the custom domain when chosen */
+      href: "https://aiceo-hq.vercel.app",
     },
   ],
   closing: {
