@@ -595,7 +595,8 @@ export const thankYou = {
       body: "One link, one space, for the whole four weeks. The timeline ticked off as we build, every call recording the morning after, announcements, and answers between sessions.",
       caption: "The welcome email lands within ten minutes of payment. Check promotions if it hides.",
       cta: "Open the cohort HQ",
-      href: "#",
+      /* local HQ app while we build; swapped for the hosted HQ at deploy */
+      href: "http://localhost:3001",
     },
   ],
   closing: {

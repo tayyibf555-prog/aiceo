@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 3000
+    },
+    {
+      "name": "hq",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "/Users/tayyibarbab/aiceo-hq", "run", "dev"],
+      "port": 3001
     }
   ]
 }
