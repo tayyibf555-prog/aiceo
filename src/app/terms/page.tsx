@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brand } from "@/content/site";
 
 /*
   Plain-English terms. The refund rule (full refund before the first
@@ -13,7 +14,7 @@ const SECTIONS: { h: string; p: string[] }[] = [
   {
     h: "Who we are",
     p: [
-      "The AI CEO is a programme run by Azen AI Ltd. These terms cover buying a seat on the cohort, and consulting engagements agreed with us directly.",
+      "The AI CEO runs this programme, and in these terms we means us. They cover buying a seat on the cohort, and consulting engagements agreed with us directly.",
     ],
   },
   {
@@ -56,7 +57,7 @@ const SECTIONS: { h: string; p: string[] }[] = [
   {
     h: "The boring but true",
     p: [
-      "These terms are governed by the law of England and Wales. If a term proves unenforceable, the rest still stand. Questions to cohort@azen.io.",
+      `These terms are governed by the law of England and Wales. If a term proves unenforceable, the rest still stand. Questions to ${brand.contactEmail}.`,
     ],
   },
 ];
@@ -71,7 +72,7 @@ export default function TermsPage() {
         Terms of purchase.
       </h1>
       <p className="mt-3 font-mono text-[11px] tracking-[0.1em] text-ink-muted">
-        AZEN AI LTD · LAST UPDATED 18 AUGUST 2026
+        THE AI CEO · LAST UPDATED 18 AUGUST 2026
       </p>
       <div className="mt-10 space-y-8">
         {SECTIONS.map((s) => (

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import Track from "@/components/Track";
 import "./globals.css";
 
 const jetbrains = JetBrains_Mono({
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en-GB" className={`${jetbrains.variable} h-full antialiased`}>
       <body className="min-h-full bg-bg font-sans text-ink">
         {children}
+        <Track />
         <Analytics />
       </body>
     </html>

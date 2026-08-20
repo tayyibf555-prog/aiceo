@@ -382,7 +382,7 @@ export default function OfficeScene() {
                     &quot;whatsapp&quot;.
                   </p>
                 )}
-                <p className="mt-auto pt-4 font-mono text-[9.5px] tracking-[0.14em] text-ink-muted">
+                <p className="mt-auto pt-4 font-mono text-[10.5px] tracking-[0.14em] text-ink-muted sm:text-[9.5px]">
                   + THE CORRIDOR · 12 DOORS · LOCKED
                 </p>
               </div>

@@ -8,6 +8,7 @@
 import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { track } from "@vercel/analytics";
+import { trackEvent } from "@/lib/track";
 import { submitLead, type LeadState } from "@/app/actions/lead";
 import { leadForm } from "@/content/site";
 
@@ -65,7 +66,10 @@ export default function LeadForm({
 
   /* all-things-tracked: a lead in the table is a conversion */
   useEffect(() => {
-    if (state.status === "success") track("lead_submitted", { source });
+    if (state.status === "success") {
+      track("lead_submitted", { source });
+      trackEvent("lead_submitted", { source });
+    }
   }, [state.status, source]);
 
   if (state.status === "success") {

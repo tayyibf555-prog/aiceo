@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brand } from "@/content/site";
 
 /* Plain-English privacy notice for the lead form, checkout and
    cookieless analytics. */
@@ -40,7 +41,7 @@ const SECTIONS: { h: string; p: string[] }[] = [
   {
     h: "Your rights",
     p: [
-      "You can ask what we hold about you, ask for a copy, ask us to correct it, or ask us to delete it. One email to cohort@azen.io does it, and we answer within a month, usually much faster.",
+      `You can ask what we hold about you, ask for a copy, ask us to correct it, or ask us to delete it. One email to ${brand.contactEmail} does it, and we answer within a month, usually much faster.`,
     ],
   },
 ];
@@ -55,7 +56,7 @@ export default function PrivacyPage() {
         Privacy, plainly.
       </h1>
       <p className="mt-3 font-mono text-[11px] tracking-[0.1em] text-ink-muted">
-        AZEN AI LTD · LAST UPDATED 18 AUGUST 2026
+        THE AI CEO · LAST UPDATED 18 AUGUST 2026
       </p>
       <div className="mt-10 space-y-8">
         {SECTIONS.map((s) => (

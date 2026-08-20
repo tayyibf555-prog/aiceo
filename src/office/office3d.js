@@ -1054,6 +1054,9 @@ export function renderOffice(host, state, opts = {}) {
 
   function projectOverlay() {
     const w = el.clientWidth, h = el.clientHeight;
+    /* the pills are fixed-size DOM, so on a phone-width canvas they
+       would collide: shrink them with the scene */
+    const pillScale = w < 420 ? 0.6 : w < 560 ? 0.75 : w < 720 ? 0.88 : 1;
     for (const { p, el: pe, v, center, target } of pillEls) {
       const ax = target ? target.position.x : p.at[0];
       const az = target ? target.position.z : p.at[1];
@@ -1062,7 +1065,10 @@ export function renderOffice(host, state, opts = {}) {
       const sy = (-v.y * 0.5 + 0.5) * h;
       pe.style.left = `${sx}px`;
       pe.style.top = `${sy}px`;
-      if (center) pe.style.transform = "translate(-50%,-50%)";
+      pe.style.transformOrigin = center ? "center" : "bottom center";
+      pe.style.transform = center
+        ? `translate(-50%,-50%) scale(${pillScale})`
+        : `translate(-50%,-100%) scale(${pillScale})`;
       pe.style.display = sx < -40 || sx > w + 40 || sy < -20 || sy > h + 20 ? "none" : "flex";
     }
     if (hoverZone) {

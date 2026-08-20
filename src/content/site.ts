@@ -9,7 +9,9 @@
 
 export const brand = {
   name: "The AI CEO",
-  company: "Azen AI Ltd",
+  company: "The AI CEO",
+  /* one place to change the contact address everywhere */
+  contactEmail: "hello@theaiceo.io",
   hudLabel: "AICEO_V1.0",
 };
 
@@ -419,7 +421,7 @@ export const founders = {
       photoLabel: "",
       name: "Tayyib Arbab",
       role: "CO-FOUNDER · THE AI CEO",
-      bio: "Tayyib runs Azen AI, the studio behind the systems in this cohort. He studied cyber security, and the technical grounding shows: years spent inside real businesses building second brains, lead engines and client CRMs, engineered to work and locked down to stay safe. Everything in the programme ran on his own company first.",
+      bio: "Tayyib is the owner of Azen AI, the studio behind the systems in this cohort. He studied cyber security, and the technical grounding shows: years spent inside real businesses building second brains, lead engines and client CRMs, engineered to work and locked down to stay safe. Everything in the programme ran on his own company first.",
       links: [
         { kind: "web", href: "https://www.azen.io/", label: "Azen AI" },
         { kind: "youtube", href: "https://www.youtube.com/@TayyibArbab", label: "YouTube" },
@@ -434,7 +436,7 @@ export const founders = {
       role: "CO-FOUNDER · THE AI CEO",
       bio: "Ritesh is the founder of Slyte, an AI development studio with fifty plus client builds and over $2M generated for the businesses behind them. A computer science graduate and former fintech engineer, he left the day job in 2025 with a seven figure AI business already running and 200,000 people following the work. Through Agent Rise, he has mentored 200+ people into AI businesses of their own.",
       links: [
-        { kind: "web", href: "#", label: "Azen AI" },
+        { kind: "web", href: "https://www.slyte.app/", label: "Slyte" },
         { kind: "youtube", href: "https://www.youtube.com/@rkumarv", label: "YouTube" },
         { kind: "instagram", href: "https://www.instagram.com/riteshkv_/", label: "Instagram" },
         { kind: "agentrise", href: "https://www.becomeabotdeveloper.com/", label: "Agent Rise", img: "/founders/agentrise-icon.png" },
@@ -485,7 +487,7 @@ export const pricing = {
     },
     {
       id: "private",
-      badge: "AZEN AI · 1-ON-1",
+      badge: "THE AI CEO · 1-ON-1",
       title: "Work with us 1-on-1",
       intro:
         "Consulting for owners who want AI mapped to their business before anything gets built. Just you and us, on your side of the desk.",
@@ -562,7 +564,7 @@ export const leadForm = {
 
 export const footer = {
   line: "Run your business like an AI CEO.",
-  company: "Azen AI Ltd",
+  company: "The AI CEO",
   year: "2026",
   note: "MADE IN THE OFFICE · EVERY FILE OWNED",
 };
