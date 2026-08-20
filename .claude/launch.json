@@ -23,6 +23,20 @@
         "dev"
       ],
       "port": 3002
+    },
+    {
+      "name": "claude-office",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "/Users/tayyibarbab/claude-office/frontend",
+        "run",
+        "dev",
+        "--",
+        "-p",
+        "3003"
+      ],
+      "port": 3003
     }
   ]
 }

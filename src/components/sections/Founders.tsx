@@ -192,21 +192,25 @@ export default function Founders() {
           ))}
         </div>
 
-        <p className="mt-16 font-mono text-[11px] tracking-[0.18em] text-ink-muted">
-          <span aria-hidden className="text-accent">
-            ●
-          </span>{" "}
-          THE WALL · {founders.wallSub.toUpperCase()}
-        </p>
       </div>
 
-      <div className="marquee mt-6 [mask-image:linear-gradient(90deg,transparent,black_6%,black_94%,transparent)]">
-        <div className="marquee-track gap-5 pr-5">
-          {[...founders.wall, ...founders.wall].map((card, i) => (
-            <WallCard key={`${card.name}-${i}`} name={card.name} />
-          ))}
-        </div>
-      </div>
+      {/* THE WALL is parked until real faces and quotes exist. To bring
+          it back, restore this block and the WallCard component below:
+
+          <p className="mt-16 font-mono text-[11px] tracking-[0.18em] text-ink-muted">
+            <span aria-hidden className="text-accent">●</span>{" "}
+            THE WALL · {founders.wallSub.toUpperCase()}
+          </p>
+          <div className="marquee mt-6 [mask-image:linear-gradient(90deg,transparent,black_6%,black_94%,transparent)]">
+            <div className="marquee-track gap-5 pr-5">
+              {[...founders.wall, ...founders.wall].map((card, i) => (
+                <WallCard key={`${card.name}-${i}`} name={card.name} />
+              ))}
+            </div>
+          </div>
+
+          founders.wall and founders.wallSub stay in site.ts, and the
+          marquee CSS stays in globals.css, so nothing else is needed. */}
     </Section>
   );
 }
