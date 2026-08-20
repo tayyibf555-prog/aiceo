@@ -11,6 +11,7 @@
 */
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { MARK_GRID } from "../lib/halftone-data";
 
 /* World: x 0..96 (screen lower-right), z 0..56 (screen lower-left), y up. */
@@ -52,12 +53,20 @@ export function renderOffice(host, state, opts = {}) {
     accentDeep: new THREE.Color("#22458f"),
     white: new THREE.Color("#ffffff"),
     floorWhite: new THREE.Color("#fdfdfe"),
-    wall: new THREE.Color("#e9ecf3"),
-    wallDeep: new THREE.Color("#d9dee8"),
+    wall: new THREE.Color("#e3e7ef"),
+    wallDeep: new THREE.Color("#ccd3e0"),
     ink: new THREE.Color("#171a20"),
     inkSoft: new THREE.Color("#2a2f38"),
     cream: new THREE.Color("#f5e9c9"),
     creamDeep: new THREE.Color("#ead9a8"),
+    /* real-material palette: light oak tops, brushed metal legs,
+       glass partitions. Blue stays the brand accent on top. */
+    wood: new THREE.Color("#e3c9a3"),
+    woodDeep: new THREE.Color("#c2a077"),
+    metal: new THREE.Color("#b9bfc9"),
+    metalDark: new THREE.Color("#6f7683"),
+    glass: new THREE.Color("#dce6f5"),
+    floorWarm: new THREE.Color("#f7f5f2"),
     green: new THREE.Color("#9db39a"),
     greenDeep: new THREE.Color("#7e9880"),
     skinA: new THREE.Color("#efcfae"),
@@ -84,6 +93,11 @@ export function renderOffice(host, state, opts = {}) {
   renderer.setClearColor(0xffffff, 0);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
+  /* filmic roll-off instead of clipped highlights: the difference
+     between a flat toy render and a product shot */
+  renderer.toneMapping = THREE.NeutralToneMapping;
+  renderer.toneMappingExposure = 0.92;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
   host.appendChild(renderer.domElement);
   renderer.domElement.style.display = "block";
   renderer.domElement.style.width = "100%";
@@ -102,10 +116,19 @@ export function renderOffice(host, state, opts = {}) {
   const camera = new THREE.OrthographicCamera(-66, 66, 40, -40, 1, 600);
   camera.up.set(0, 1, 0);
 
-  /* lights */
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xdde3ee, 1.25));
-  const dir = new THREE.DirectionalLight(0xffffff, 1.55);
-  dir.position.set(-30, 95, 10);
+  /* Image-based lighting. A studio environment gives every surface
+     something to reflect, which is what stops plastic looking flat. */
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
+  scene.environment = envRT.texture;
+  scene.environmentIntensity = 0.3;
+  pmrem.dispose();
+
+  /* key / fill / rim: warm sun, cool bounce, and a back edge so the
+     furniture separates from the floor */
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xd2dae8, 0.32));
+  const dir = new THREE.DirectionalLight(0xfff1dd, 1.35);
+  dir.position.set(-34, 96, 26);
   dir.target.position.copy(CENTER);
   dir.castShadow = true;
   dir.shadow.mapSize.set(2048, 2048);
@@ -117,22 +140,59 @@ export function renderOffice(host, state, opts = {}) {
   dir.shadow.bias = -0.0004;
   dir.shadow.normalBias = 0.5;
   scene.add(dir, dir.target);
-  /* fill from the viewer side so wall faces stay light, no shadows */
-  const fill = new THREE.DirectionalLight(0xffffff, 0.45);
-  fill.position.set(120, 50, 130);
+
+  const fill = new THREE.DirectionalLight(0xe8f0ff, 0.34);
+  fill.position.set(120, 46, 130);
   scene.add(fill);
+
+  const rim = new THREE.DirectionalLight(0xffffff, 0.42);
+  rim.position.set(60, 34, -90);
+  rim.target.position.copy(CENTER);
+  scene.add(rim, rim.target);
 
   /* material helper: fresh per call so zones can be dimmed safely */
   const mat = (color, o = {}) =>
     new THREE.MeshStandardMaterial({
       color,
-      roughness: o.rough ?? 0.92,
-      metalness: 0,
+      roughness: o.rough ?? 0.72,
+      metalness: o.metal ?? 0,
       emissive: o.emissive ?? 0x000000,
       emissiveIntensity: o.emissiveIntensity ?? 1,
       transparent: o.opacity !== undefined,
       opacity: o.opacity ?? 1,
+      envMapIntensity: o.env ?? 1,
     });
+
+  /* Soft contact shadow decal. Real ambient occlusion would cost a
+     post pass; a blurred blob under each object buys most of the
+     grounding for almost nothing. */
+  const blobTex = (() => {
+    const c = document.createElement("canvas");
+    c.width = c.height = 128;
+    const ctx = c.getContext("2d");
+    const g = ctx.createRadialGradient(64, 64, 4, 64, 64, 62);
+    g.addColorStop(0, "rgba(24,32,52,0.5)");
+    g.addColorStop(0.45, "rgba(24,32,52,0.22)");
+    g.addColorStop(1, "rgba(24,32,52,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 128, 128);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  })();
+  const blobMat = new THREE.MeshBasicMaterial({
+    map: blobTex,
+    transparent: true,
+    depthWrite: false,
+  });
+  const contact = (parent, x, z, rx, rz = rx, y = 0.05) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(rx * 2, rz * 2), blobMat);
+    m.rotation.x = -Math.PI / 2;
+    m.position.set(x, y, z);
+    m.renderOrder = 1;
+    parent.add(m);
+    return m;
+  };
 
   const anim = { screens: [], leds: [], glints: [], bobs: [], bars: [], lamp: null };
 
@@ -165,9 +225,10 @@ export function renderOffice(host, state, opts = {}) {
   {
     const ctx = floorCanvas.getContext("2d");
     const PX = 12; /* px per world unit */
-    ctx.fillStyle = "#fdfdfe";
+    /* warm off-white polished concrete rather than paper white */
+    ctx.fillStyle = "#f7f5f2";
     ctx.fillRect(0, 0, 1152, 672);
-    ctx.strokeStyle = "#e9edf5";
+    ctx.strokeStyle = "#e7e9f0";
     ctx.lineWidth = 2;
     for (let gx = 8; gx < 96; gx += 8) {
       ctx.beginPath(); ctx.moveTo(gx * PX, 0); ctx.lineTo(gx * PX, 672); ctx.stroke();
@@ -199,13 +260,33 @@ export function renderOffice(host, state, opts = {}) {
         (z.z + z.d - 2) * PX
       );
     }
+
+    /* fine grain, then a soft vignette into the corners: real floors
+       are never one flat value */
+    ctx.globalAlpha = 0.05;
+    for (let i = 0; i < 5200; i++) {
+      ctx.fillStyle = i % 2 ? "#8d93a4" : "#ffffff";
+      ctx.fillRect(Math.random() * 1152, Math.random() * 672, 2, 2);
+    }
+    ctx.globalAlpha = 1;
+    const vig = ctx.createRadialGradient(576, 336, 180, 576, 336, 720);
+    vig.addColorStop(0, "rgba(120,130,150,0)");
+    vig.addColorStop(1, "rgba(120,130,150,0.16)");
+    ctx.fillStyle = vig;
+    ctx.fillRect(0, 0, 1152, 672);
   }
   const floorTex = new THREE.CanvasTexture(floorCanvas);
-  floorTex.anisotropy = 4;
+  floorTex.anisotropy = 8;
   floorTex.colorSpace = THREE.SRGBColorSpace;
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(96, 56),
-    new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.95 })
+    /* a touch of sheen so the floor catches the key light */
+    new THREE.MeshStandardMaterial({
+      map: floorTex,
+      roughness: 0.62,
+      metalness: 0.04,
+      envMapIntensity: 0.5,
+    })
   );
   floor.rotation.x = -Math.PI / 2;
   floor.position.set(48, 0.02, 28);
@@ -226,6 +307,87 @@ export function renderOffice(host, state, opts = {}) {
   knee2.position.set(68, 1.6, 55.2);
   const knee3 = box(structure, 1.6, 3.2, 56, C.wall, { radius: 0.4 });
   knee3.position.set(95.2, 1.6, 28);
+
+  /* skirting: the small architectural line that stops walls looking
+     like they were dropped onto the floor */
+  const skirtBack = box(structure, 96.6, 0.9, 0.5, C.wallDeep, {
+    radius: 0.12, cast: false, rough: 0.6,
+  });
+  skirtBack.position.set(47.9, 0.45, 1.85);
+  const skirtLeft = box(structure, 0.5, 0.9, 56.6, C.wallDeep, {
+    radius: 0.12, cast: false, rough: 0.6,
+  });
+  skirtLeft.position.set(1.85, 0.45, 28.1);
+
+  /* Glass meeting-room partition around the boardroom: brushed posts
+     and clear panels, the way a real office divides a room without
+     closing it. */
+  const glassPanel = (x, z, w, d, h = 11) => {
+    const pane = new THREE.Mesh(
+      new THREE.BoxGeometry(w, h, d),
+      new THREE.MeshPhysicalMaterial({
+        color: C.glass,
+        transparent: true,
+        opacity: 0.26,
+        roughness: 0.05,
+        metalness: 0,
+        transmission: 0,
+        envMapIntensity: 1.4,
+        depthWrite: false,
+      })
+    );
+    pane.position.set(x, h / 2, z);
+    pane.renderOrder = 2;
+    structure.add(pane);
+    return pane;
+  };
+  const glassPost = (x, z, h = 11.4) => {
+    const p = box(structure, 0.3, h, 0.3, C.metal, {
+      radius: 0.06, metal: 0.75, rough: 0.35, env: 2.4,
+    });
+    p.position.set(x, h / 2, z);
+    return p;
+  };
+  /* left wall of the boardroom, then a return with a doorway gap */
+  glassPanel(57.6, 15, 0.28, 23);
+  for (const [px, pz] of [[57.6, 3.5], [57.6, 15], [57.6, 26.4]]) glassPost(px, pz);
+  /* slim head rail along the single partition only */
+  const rail = box(structure, 0.36, 0.3, 23, C.metal, {
+    radius: 0.06, metal: 0.75, rough: 0.35, env: 2.4, cast: false,
+  });
+  rail.position.set(57.6, 11.2, 15);
+  const railFoot = box(structure, 0.4, 0.35, 23, C.metal, {
+    radius: 0.06, metal: 0.75, rough: 0.35, env: 2.4, cast: false,
+  });
+  railFoot.position.set(57.6, 0.2, 15);
+
+  /* pendant lights: warm anchors above the two gathering points */
+  const pendant = (x, z, y = 15) => {
+    const g = new THREE.Group();
+    g.position.set(x, 0, z);
+    const cord = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.07, 0.07, 6, 6),
+      mat(C.metalDark, { metal: 0.8, rough: 0.4 })
+    );
+    cord.position.y = y + 3;
+    const shade = new THREE.Mesh(
+      new THREE.ConeGeometry(1.7, 1.5, 24, 1, true),
+      mat(C.white, { rough: 0.5, env: 1.2 })
+    );
+    shade.material.side = THREE.DoubleSide;
+    shade.position.y = y;
+    shade.castShadow = true;
+    const bulb = new THREE.Mesh(
+      new THREE.SphereGeometry(0.45, 12, 12),
+      mat(0xfff0d8, { emissive: 0xffe9c4, emissiveIntensity: 1.4 })
+    );
+    bulb.position.y = y - 0.6;
+    const glow = new THREE.PointLight(0xffe6bd, 34, 30, 2);
+    glow.position.y = y - 1;
+    g.add(cord, shade, bulb, glow);
+    scene.add(g);
+    return g;
+  };
 
   for (let i = 0; i < 12; i++) {
     const dx = 3 + i * 4.55 + 1.65;
@@ -281,11 +443,17 @@ export function renderOffice(host, state, opts = {}) {
     const g = new THREE.Group();
     g.position.set(x, 0, z);
     g.rotation.y = rotY;
-    const base = box(g, 1.6 * s, 0.35, 1.1 * s, C.inkSoft, { radius: 0.12 });
-    base.position.y = 3.8;
-    const neck = box(g, 0.4, 1.2, 0.4, C.inkSoft, { radius: 0.1 });
-    neck.position.y = 4.4;
-    const panel = box(g, 3.9 * s, 2.6 * s, 0.3, C.inkSoft, { radius: 0.12 });
+    const base = box(g, 1.6 * s, 0.3, 1.1 * s, C.metal, {
+      radius: 0.1, metal: 0.85, rough: 0.35, env: 2.4,
+    });
+    base.position.y = 3.75;
+    const neck = box(g, 0.36, 1.3, 0.36, C.metal, {
+      radius: 0.08, metal: 0.9, rough: 0.3,
+    });
+    neck.position.y = 4.45;
+    const panel = box(g, 3.9 * s, 2.6 * s, 0.3, C.ink, {
+      radius: 0.12, rough: 0.42, metal: 0.15,
+    });
     panel.position.y = 5.9 * s;
     const screen = new THREE.Mesh(
       new THREE.PlaneGeometry(3.4 * s, 2.1 * s),
@@ -301,11 +469,19 @@ export function renderOffice(host, state, opts = {}) {
   const desk = (parent, x, z, w = 8, d = 4.2, o = {}) => {
     const g = new THREE.Group();
     g.position.set(x + w / 2, 0, z + d / 2);
-    const top = box(g, w, 0.8, d, C.white, { radius: 0.3 });
-    top.position.y = 3.4;
+    contact(g, 0, 0.4, w * 0.62, d * 0.75);
+    const top = box(g, w, 0.55, d, C.wood, { radius: 0.16, rough: 0.55 });
+    top.position.y = 3.55;
+    /* a thin darker underside reads as a real edge-banded desk */
+    const under = box(g, w - 0.5, 0.25, d - 0.5, C.woodDeep, {
+      radius: 0.1, rough: 0.7, cast: false,
+    });
+    under.position.y = 3.2;
     for (const [lx, lz] of [[-w / 2 + 0.7, -d / 2 + 0.7], [w / 2 - 0.7, -d / 2 + 0.7], [-w / 2 + 0.7, d / 2 - 0.7], [w / 2 - 0.7, d / 2 - 0.7]]) {
-      const leg = box(g, 0.55, 3, 0.55, C.wallDeep, { radius: 0.12 });
-      leg.position.set(lx, 1.5, lz);
+      const leg = box(g, 0.4, 3.1, 0.4, C.metal, {
+        radius: 0.08, metal: 0.85, rough: 0.32, env: 2.4,
+      });
+      leg.position.set(lx, 1.55, lz);
     }
     if (o.monitor !== false) monitor(g, 0, -d / 2 + 1.3, o.ms ?? 1);
     if (o.papers) {
@@ -320,14 +496,19 @@ export function renderOffice(host, state, opts = {}) {
     const g = new THREE.Group();
     g.position.set(x, 0, z);
     g.rotation.y = rotY;
-    const seat = box(g, 2.9, 0.7, 2.9, C.accent, { radius: 0.3 });
+    contact(g, 0, 0.2, 2.4, 2.4);
+    const seat = box(g, 2.9, 0.7, 2.9, C.accent, { radius: 0.3, rough: 0.62 });
     seat.position.y = 2.4;
-    const back = box(g, 2.9, 3.6, 0.6, C.accent, { radius: 0.28 });
+    const back = box(g, 2.9, 3.6, 0.6, C.accent, { radius: 0.28, rough: 0.62 });
     back.position.set(0, 4.4, -1.35);
-    const post = box(g, 0.45, 2.2, 0.45, C.inkSoft, { radius: 0.1 });
+    const post = box(g, 0.4, 2.2, 0.4, C.metalDark, {
+      radius: 0.1, metal: 0.9, rough: 0.3,
+    });
     post.position.y = 1.1;
-    const foot = box(g, 2, 0.35, 2, C.inkSoft, { radius: 0.15 });
-    foot.position.y = 0.18;
+    const foot = box(g, 2, 0.3, 2, C.metalDark, {
+      radius: 0.14, metal: 0.85, rough: 0.35, env: 2.4,
+    });
+    foot.position.y = 0.16;
     parent.add(g);
     return g;
   };
@@ -335,16 +516,29 @@ export function renderOffice(host, state, opts = {}) {
   const roundTable = (parent, x, z, r = 4) => {
     const g = new THREE.Group();
     g.position.set(x, 0, z);
-    const top = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.8, 36), mat(C.cream, { rough: 0.85 }));
-    top.position.y = 4.4;
+    contact(g, 0, 0.3, r * 1.35, r * 1.35);
+    const top = new THREE.Mesh(
+      new THREE.CylinderGeometry(r, r, 0.5, 48),
+      mat(C.wood, { rough: 0.5 })
+    );
+    top.position.y = 4.45;
     top.castShadow = true;
-    const rim = new THREE.Mesh(new THREE.CylinderGeometry(r - 0.01, r - 0.01, 0.18, 36), mat(C.creamDeep));
-    rim.position.y = 3.95;
-    const col = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.7, 4, 14), mat(C.wallDeep));
+    const rim = new THREE.Mesh(
+      new THREE.CylinderGeometry(r - 0.02, r - 0.02, 0.2, 48),
+      mat(C.woodDeep, { rough: 0.65 })
+    );
+    rim.position.y = 4.1;
+    const col = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.45, 0.6, 4, 20),
+      mat(C.metal, { metal: 0.9, rough: 0.3 })
+    );
     col.position.y = 2;
     col.castShadow = true;
-    const base = new THREE.Mesh(new THREE.CylinderGeometry(1.7, 1.9, 0.4, 20), mat(C.wallDeep));
-    base.position.y = 0.2;
+    const base = new THREE.Mesh(
+      new THREE.CylinderGeometry(1.7, 1.9, 0.3, 28),
+      mat(C.metalDark, { metal: 0.85, rough: 0.35, env: 2.4 })
+    );
+    base.position.y = 0.15;
     g.add(top, rim, col, base);
     parent.add(g);
     return g;
@@ -353,7 +547,8 @@ export function renderOffice(host, state, opts = {}) {
   const sofa = (parent, x, z, w = 9) => {
     const g = new THREE.Group();
     g.position.set(x + w / 2, 0, z + 1.7);
-    const seat = box(g, w, 1.9, 3.4, C.accent, { radius: 0.5 });
+    contact(g, 0, 0.6, w * 0.62, 3.4);
+    const seat = box(g, w, 1.9, 3.4, C.accent, { radius: 0.5, rough: 0.62 });
     seat.position.y = 1.4;
     const back = box(g, w, 3.2, 1.1, C.accent, { radius: 0.45 });
     back.position.set(0, 2.8, -1.6);
@@ -368,7 +563,8 @@ export function renderOffice(host, state, opts = {}) {
   const pingpong = (parent, x, z) => {
     const g = new THREE.Group();
     g.position.set(x + 4.5, 0, z + 2.5);
-    const top = box(g, 9, 0.5, 5, C.accent, { radius: 0.2 });
+    contact(g, 0, 0.4, 6, 3.6);
+    const top = box(g, 9, 0.5, 5, C.accent, { radius: 0.2, rough: 0.6 });
     top.position.y = 3;
     const lineM = box(g, 0.18, 0.06, 5, C.white, { cast: false, radius: 0.02 });
     lineM.position.y = 3.29;
@@ -385,7 +581,11 @@ export function renderOffice(host, state, opts = {}) {
   const plant = (parent, x, z, s = 1) => {
     const g = new THREE.Group();
     g.position.set(x, 0, z);
-    const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.95 * s, 0.75 * s, 1.9 * s, 12), mat(C.accentDeep));
+    contact(g, 0, 0.15, 2.2 * s, 2.2 * s);
+    const pot = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.95 * s, 0.75 * s, 1.9 * s, 18),
+      mat(C.accentDeep, { rough: 0.55 })
+    );
     pot.position.y = 0.95 * s;
     pot.castShadow = true;
     g.add(pot);
@@ -408,7 +608,8 @@ export function renderOffice(host, state, opts = {}) {
   const cabinet = (parent, x, z) => {
     const g = new THREE.Group();
     g.position.set(x + 1.7, 0, z + 1.6);
-    const bodyC = box(g, 3.4, 8.6, 3.2, C.white, { radius: 0.3 });
+    contact(g, 0, 0.6, 2.8, 2.8);
+    const bodyC = box(g, 3.4, 8.6, 3.2, C.white, { radius: 0.3, rough: 0.55 });
     bodyC.position.y = 4.3;
     for (let i = 0; i < 3; i++) {
       const front = box(g, 2.6, 1.7, 0.25, i === 1 ? C.accent : C.wallDeep, { radius: 0.15, cast: false });
@@ -421,7 +622,10 @@ export function renderOffice(host, state, opts = {}) {
   const rack = (parent, x, z) => {
     const g = new THREE.Group();
     g.position.set(x + 1.8, 0, z + 1.5);
-    const bodyR = box(g, 3.6, 11.5, 3, C.ink, { radius: 0.3, rough: 0.7 });
+    contact(g, 0, 0.6, 3, 2.8);
+    const bodyR = box(g, 3.6, 11.5, 3, C.ink, {
+      radius: 0.3, rough: 0.38, metal: 0.35,
+    });
     bodyR.position.y = 5.75;
     for (let r = 0; r < 4; r++) {
       const ledA = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 8), mat(C.accent, { emissive: C.accent, emissiveIntensity: 1 }));
@@ -438,7 +642,8 @@ export function renderOffice(host, state, opts = {}) {
   const bookcase = (parent, x, z) => {
     const g = new THREE.Group();
     g.position.set(x, 0, z);
-    const bodyB = box(g, 7, 9.4, 2.4, C.white, { radius: 0.3 });
+    contact(g, 0, 0.5, 4.4, 2.4);
+    const bodyB = box(g, 7, 9.4, 2.4, C.wood, { radius: 0.3, rough: 0.6 });
     bodyB.position.y = 4.7;
     const cols = [C.accent, C.creamDeep, C.accentDeep, C.wallDeep];
     for (let s = 0; s < 3; s++) {
@@ -476,7 +681,8 @@ export function renderOffice(host, state, opts = {}) {
   const cooler = (parent, x, z) => {
     const g = new THREE.Group();
     g.position.set(x, 0, z);
-    const bodyW = box(g, 2.2, 5.2, 2, C.white, { radius: 0.3 });
+    contact(g, 0, 0.2, 1.9, 1.9);
+    const bodyW = box(g, 2.2, 5.2, 2, C.white, { radius: 0.3, rough: 0.5 });
     bodyW.position.y = 2.6;
     const bottle = new THREE.Mesh(
       new THREE.CylinderGeometry(0.85, 0.95, 2.3, 12),
@@ -749,7 +955,8 @@ export function renderOffice(host, state, opts = {}) {
   scene.add(commons);
   pingpong(commons, 34, 26);
   sofa(commons, 45, 42);
-  const lowT = box(commons, 4.6, 1.6, 3, C.white, { radius: 0.4 });
+  contact(commons, 49.3, 38.4, 3.4, 2.6);
+  const lowT = box(commons, 4.6, 1.6, 3, C.wood, { radius: 0.4, rough: 0.55 });
   lowT.position.set(49.3, 0.8, 38);
   plant(commons, 57.5, 27.5, 0.9);
   plant(commons, 41.5, 50.5, 0.9);
@@ -1204,6 +1411,10 @@ export function renderOffice(host, state, opts = {}) {
         }
       });
       floorTex.dispose();
+      blobTex.dispose();
+      blobMat.dispose();
+      envRT.dispose();
+      scene.environment = null;
       renderer.dispose();
       host.innerHTML = "";
     },
