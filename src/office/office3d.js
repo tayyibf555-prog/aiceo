@@ -12,11 +12,6 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import { GTAOPass } from "three/examples/jsm/postprocessing/GTAOPass.js";
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { MARK_GRID } from "../lib/halftone-data";
 
 /* World: x 0..96 (screen lower-right), z 0..56 (screen lower-left), y up. */
@@ -40,59 +35,6 @@ const PILLS = [
   { zone: "reception", label: "SPEED TO LEAD", at: [10.5, 32.6], h: 13 },
   { zone: "corner", label: "THE AI CEO", at: [70, 47], h: 14.6, boss: true },
 ];
-
-/*
-  Tilt shift: sharp through a horizontal band, soft above and below,
-  so the floor reads like a photographed architectural model. Weights
-  are unrolled rather than arrayed to stay valid on GLSL ES 1.00.
-*/
-const TiltShiftShader = {
-  name: "TiltShift",
-  uniforms: {
-    tDiffuse: { value: null },
-    resolution: { value: new THREE.Vector2(1, 1) },
-    focusCenter: { value: 0.54 },
-    focusWidth: { value: 0.3 },
-    blurMax: { value: 3.4 },
-  },
-  vertexShader: `
-    varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }`,
-  fragmentShader: `
-    uniform sampler2D tDiffuse;
-    uniform vec2 resolution;
-    uniform float focusCenter;
-    uniform float focusWidth;
-    uniform float blurMax;
-    varying vec2 vUv;
-    void main() {
-      float d = abs(vUv.y - focusCenter);
-      float t = clamp((d - focusWidth) / max(focusWidth, 0.001), 0.0, 1.0);
-      float amount = pow(t, 1.6) * blurMax;
-      if (amount < 0.01) {
-        gl_FragColor = texture2D(tDiffuse, vUv);
-        return;
-      }
-      vec2 px = amount / resolution;
-      vec4 sum = texture2D(tDiffuse, vUv) * 0.227;
-      sum += (texture2D(tDiffuse, vUv + vec2(0.0, px.y)) +
-              texture2D(tDiffuse, vUv - vec2(0.0, px.y)) +
-              texture2D(tDiffuse, vUv + vec2(px.x, 0.0)) +
-              texture2D(tDiffuse, vUv - vec2(px.x, 0.0))) * 0.194;
-      sum += (texture2D(tDiffuse, vUv + vec2(0.0, px.y * 2.0)) +
-              texture2D(tDiffuse, vUv - vec2(0.0, px.y * 2.0)) +
-              texture2D(tDiffuse, vUv + vec2(px.x * 2.0, 0.0)) +
-              texture2D(tDiffuse, vUv - vec2(px.x * 2.0, 0.0))) * 0.121;
-      sum += (texture2D(tDiffuse, vUv + vec2(0.0, px.y * 3.0)) +
-              texture2D(tDiffuse, vUv - vec2(0.0, px.y * 3.0)) +
-              texture2D(tDiffuse, vUv + vec2(px.x * 3.0, 0.0)) +
-              texture2D(tDiffuse, vUv - vec2(px.x * 3.0, 0.0))) * 0.054;
-      gl_FragColor = sum / (0.227 + 4.0 * (0.194 + 0.121 + 0.054));
-    }`,
-};
 
 function cssColor(varName, fallback) {
   if (typeof window === "undefined") return fallback;
@@ -1352,49 +1294,19 @@ export function renderOffice(host, state, opts = {}) {
   }
 
   /* ── sizing ────────────────────────────────────────────────────── */
-  /* Post: ambient occlusion for crevice contact, then the tilt-shift
-     band. Desktop only, so phones keep the direct fast path. */
-  let composer = null, gtao = null, tilt = null;
-  const usePost =
-    !reduced && typeof window !== "undefined" && window.innerWidth >= 760;
-  if (usePost) {
-    try {
-      composer = new EffectComposer(renderer);
-      composer.addPass(new RenderPass(scene, camera));
-      gtao = new GTAOPass(scene, camera, 1, 1);
-      gtao.output = GTAOPass.OUTPUT.Default;
-      gtao.blendIntensity = 0.55;
-      gtao.updateGtaoMaterial({
-        radius: 1.8,
-        distanceExponent: 1.1,
-        thickness: 3.5,
-        scale: 1.1,
-        samples: 8,
-      });
-      gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 4, samples: 8 });
-      composer.addPass(gtao);
-      tilt = new ShaderPass(TiltShiftShader);
-      composer.addPass(tilt);
-      composer.addPass(new OutputPass());
-    } catch {
-      composer = null; /* any failure falls back to a plain render */
-    }
-  }
-  /* an opaque page-white ground keeps the composer honest about alpha */
+  /* Screen-space AO and tilt shift were tried here and removed: both
+     needed a half-resolution canvas to afford, which reads as
+     pixelated on retina, and the AO re-randomised every frame, which
+     reads as shimmer. Full resolution and a clean single pass wins. */
   scene.background = new THREE.Color(0xffffff);
 
   const VIEW_W = 121;
   function resize() {
     const w = Math.max(host.clientWidth, 200);
     const h = Math.max(Math.round(w / 1.66), 240);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, composer ? 1 : 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setSize(w, h, true);
     renderer.domElement.style.height = `${h}px`;
-    if (composer) {
-      composer.setSize(w, h);
-      gtao?.setSize(w, h);
-      tilt?.uniforms.resolution.value.set(w, h);
-    }
     const half = VIEW_W / 2;
     camera.left = -half;
     camera.right = half;
@@ -1412,7 +1324,8 @@ export function renderOffice(host, state, opts = {}) {
   function updatePointer(e) {
     const r = el.getBoundingClientRect();
     pointerNdc.set(((e.clientX - r.left) / r.width) * 2 - 1, -(((e.clientY - r.top) / r.height) * 2 - 1));
-    view.goalPar.set(pointerNdc.x * 2.2, -pointerNdc.y * 1.6);
+    /* a hint of parallax, not a sway */
+    view.goalPar.set(pointerNdc.x * 1.1, -pointerNdc.y * 0.8);
   }
   function pickZone() {
     raycaster.setFromCamera(pointerNdc, camera);
@@ -1468,11 +1381,6 @@ export function renderOffice(host, state, opts = {}) {
   let raf = null;
   let tick = 0;
   let running = false;
-  /* Adaptive quality: ambient occlusion and tilt shift are worth real
-     GPU time, but not a slideshow. Measure what a frame actually costs
-     on this machine and quietly fall back to the direct render if it
-     cannot keep up. */
-  let perfFrames = 0, perfMs = 0, perfSettled = !composer;
   const plateAnchor = new THREE.Vector3();
 
   function projectOverlay() {
@@ -1503,8 +1411,7 @@ export function renderOffice(host, state, opts = {}) {
 
   function renderOnce() {
     projectOverlay();
-    if (composer) composer.render();
-    else renderer.render(scene, camera);
+    renderer.render(scene, camera);
   }
 
   let last = 0;
@@ -1521,22 +1428,8 @@ export function renderOffice(host, state, opts = {}) {
     }
     /* dt in 1/60s ticks, so motion is identical on 60Hz, 120Hz and
        throttled displays */
-    const raw = now - last;
-    const dt = Math.min(raw / 16.67, 3);
+    const dt = Math.min((now - last) / 16.67, 3);
     last = now;
-
-    if (!perfSettled) {
-      perfFrames++;
-      if (perfFrames > 30) perfMs += raw; /* ignore shader warm up */
-      if (perfFrames >= 110) {
-        perfSettled = true;
-        if (perfMs / (perfFrames - 30) > 26) {
-          composer = null;
-          renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-          resize();
-        }
-      }
-    }
     tick += dt;
     lastDt = dt;
     const ease = (k) => 1 - Math.pow(1 - k, dt);
@@ -1646,7 +1539,6 @@ export function renderOffice(host, state, opts = {}) {
       blobMat.dispose();
       envRT.dispose();
       woodTex.dispose();
-      composer?.dispose();
       scene.environment = null;
       renderer.dispose();
       host.innerHTML = "";
