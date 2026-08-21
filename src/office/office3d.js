@@ -474,8 +474,16 @@ export function renderOffice(host, state, opts = {}) {
   }
 
   /* boardroom wall screen with live bars */
-  const board = box(structure, 24, 8, 0.5, C.white, { radius: 0.3, cast: false });
+  const boardFrame = box(structure, 24.8, 8.8, 0.35, C.metal, {
+    radius: 0.18, cast: false, metal: 0.7, rough: 0.4, env: 2.4,
+  });
+  boardFrame.position.set(76, 8.4, 1.78);
+  const board = box(structure, 24, 8, 0.5, C.white, { radius: 0.25, cast: false, rough: 0.35 });
   board.position.set(76, 8.4, 1.9);
+  const tray = box(structure, 10, 0.35, 0.9, C.metal, {
+    radius: 0.12, cast: false, metal: 0.7, rough: 0.4, env: 2.4,
+  });
+  tray.position.set(76, 3.7, 2.3);
   for (let b = 0; b < 5; b++) {
     const h = 2 + (b % 3) * 1.5;
     const geo = new THREE.BoxGeometry(2.4, 1, 0.3);
@@ -533,6 +541,13 @@ export function renderOffice(host, state, opts = {}) {
     screen.position.set(0, 5.9 * s, 0.17);
     g.add(screen);
     anim.screens.push(screen);
+    const kb = new THREE.Mesh(
+      new THREE.BoxGeometry(2.4 * s, 0.12, 0.85 * s),
+      mat(C.inkSoft, { rough: 0.5, metal: 0.15 })
+    );
+    kb.position.set(0, 3.72, 1.45 * s);
+    kb.rotation.y = 0.04;
+    g.add(kb);
     parent.add(g);
     return g;
   };
@@ -1033,6 +1048,15 @@ export function renderOffice(host, state, opts = {}) {
   cabinet(zg("archive"), 16.4, 3);
   cabinet(zg("archive"), 20.8, 3);
   desk(zg("archive"), 10, 13, 8, 4.2, { papers: true });
+  {
+    const mug = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.32, 0.28, 0.62, 12),
+      mat(C.accent, { rough: 0.45 })
+    );
+    mug.position.set(16.6, 4.15, 16.2);
+    mug.castShadow = true;
+    zg("archive").add(mug);
+  }
   chair(zg("archive"), 14, 11.5, 0);
   const agentArchive = person(zg("archive"), 19.5, 15.5, {
     shirt: C.accentDeep, skin: C.skinB, hair: C.hairBrown,
@@ -1122,6 +1146,15 @@ export function renderOffice(host, state, opts = {}) {
   plant(commons, 41.5, 50.5, 0.9);
   /* a working desk cluster + roaming staff make it a full office */
   desk(commons, 44, 46, 8, 4.2);
+  {
+    const mug = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.32, 0.28, 0.62, 12),
+      mat(C.white, { rough: 0.45 })
+    );
+    mug.position.set(50.4, 4.15, 49.2);
+    mug.castShadow = true;
+    commons.add(mug);
+  }
   chair(commons, 48, 53, Math.PI);
   person(commons, 48, 53, {
     seated: true, shirt: C.white, hair: C.hairBrown,
@@ -1132,7 +1165,7 @@ export function renderOffice(host, state, opts = {}) {
   });
   addWalker(
     staffA,
-    [[33, 52], [22, 50], [5.4, 49], [20, 50], [33, 46], [42, 36]],
+    [[33, 52], [20, 51.5], [5.4, 49], [19, 50.5], [34, 48.5], [42, 36]],
     { coffee: true, kitchenAt: 2 }
   );
   /* idles at the ping-pong table or the cooler: people loiter near
