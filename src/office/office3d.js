@@ -554,7 +554,7 @@ export function renderOffice(host, state, opts = {}) {
       });
       leg.position.set(lx, 1.55, lz);
     }
-    if (o.monitor !== false) monitor(g, 0, -d / 2 + 1.3, o.ms ?? 1);
+    if (o.monitor !== false) monitor(g, 0, -d / 2 + 1.3, o.ms ?? 1, o.mrot ?? 0);
     if (o.papers) {
       const p = box(g, 2.4, 0.3, 1.7, C.white, { radius: 0.08 });
       p.position.set(-w / 2 + 2, 3.95, d / 2 - 1.4);
@@ -1088,7 +1088,7 @@ export function renderOffice(host, state, opts = {}) {
   }
 
   /* RECEPTION — speed to lead answers before anyone else */
-  desk(zg("reception"), 8, 34, 10, 4.6, { papers: true });
+  desk(zg("reception"), 8, 34, 10, 4.6, { papers: true, mrot: Math.PI });
   const agentReception = person(zg("reception"), 10.5, 32.4, {
     shirt: C.accent, hairStyle: "long", wander: true, scale: 0.94,
   });
@@ -1145,8 +1145,8 @@ export function renderOffice(host, state, opts = {}) {
 
   /* CORNER OFFICE — the AI CEO runs the whole floor */
   rug(zg("corner"), 66, 34, 22, 15);
-  desk(zg("corner"), 72, 38, 10, 5, { ms: 0.95 });
-  monitor(zg("corner"), 79.8, 39.9, 0.8, -0.25);
+  desk(zg("corner"), 72, 38, 10, 5, { ms: 0.95, mrot: Math.PI });
+  monitor(zg("corner"), 79.8, 39.9, 0.8, Math.PI - 0.25);
   chair(zg("corner"), 77, 36.8, 0);
   const agentBoss = person(zg("corner"), 70, 47, {
     scale: 1.14, shirt: C.ink, tie: C.accent, collar: "white",
