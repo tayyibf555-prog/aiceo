@@ -944,7 +944,8 @@ export function renderOffice(host, state, opts = {}) {
       /* pts[0] is the spawn point; head for the next stop first */
       idx: 1 % pts.length,
       speed: opts.speed || 0.055,
-      pause: 20 + Math.floor(Math.random() * 90),
+      /* long, widely staggered first rests so nobody sets off together */
+      pause: 120 + Math.floor(Math.random() * 900),
       phase: Math.random() * 100,
     });
   };
@@ -952,6 +953,11 @@ export function renderOffice(host, state, opts = {}) {
      speed ramps out of pauses and eases into stops, and the walk blends
      to an idle breath instead of snapping. dt is in 1/60s ticks. */
   function stepWalkers(dt, ease) {
+    /* One person on the move at a time. A floor where everyone walks
+       at once reads as a crowd; a floor where one person crosses while
+       the rest work reads as a calm, expensive office. */
+    let moving = 0;
+    for (const w of walkers) if (w.pause <= 0 && w.hidden <= 0) moving++;
     for (const w of walkers) {
       const inner = w.inner;
       /* out of sight in the kitchen, then back with a brew */
@@ -971,7 +977,14 @@ export function renderOffice(host, state, opts = {}) {
         if (w.cupFor <= 0) w.cup.visible = false;
       }
       if (w.pause > 0) {
-        w.pause -= dt;
+        const next = w.pause - dt;
+        if (next <= 0 && moving >= 1) {
+          /* someone else is mid-walk: hold at the desk a little longer */
+          w.pause = 60 + Math.random() * 240;
+        } else {
+          w.pause = next;
+          if (next <= 0) moving++;
+        }
         w.moveT = 0;
         w.gait = Math.max(0, (w.gait || 0) - 0.045 * dt);
       } else {
@@ -986,7 +999,9 @@ export function renderOffice(host, state, opts = {}) {
             if (w.cup) w.cup.visible = false;
           }
           w.idx = (w.idx + 1) % w.pts.length;
-          w.pause = 90 + Math.random() * 330;
+          /* a proper rest at each stop: most of the office is settled
+             at any moment */
+          w.pause = 340 + Math.random() * 700;
           continue;
         }
         w.moveT = (w.moveT || 0) + dt;
@@ -1021,11 +1036,12 @@ export function renderOffice(host, state, opts = {}) {
   chair(zg("archive"), 14, 11.5, 0);
   const agentArchive = person(zg("archive"), 19.5, 15.5, {
     shirt: C.accentDeep, skin: C.skinB, hair: C.hairBrown,
-    hairStyle: "crop", wander: true,
+    hairStyle: "crop", wander: true, scale: 0.97,
   });
   addWalker(agentArchive, [[19.5, 15.5], [21, 21], [9, 21], [8.2, 14], [12, 9], [20, 9.5]]);
 
   /* BOARDROOM — the second brain holds what the business knows */
+  rug(zg("boardroom"), 66, 6.5, 16, 13);
   bookcase(zg("boardroom"), 90.5, 5.5);
   roundTable(zg("boardroom"), 74, 13);
   chair(zg("boardroom"), 74, 7.4, 0);
@@ -1041,13 +1057,40 @@ export function renderOffice(host, state, opts = {}) {
   );
   person(zg("boardroom"), 74, 7.4, {
     seated: true, shirt: C.wallDeep, hair: C.hairLight,
-    hairStyle: "bun", pose: "work",
+    hairStyle: "bun", pose: "work", scale: 0.96,
   });
+  {
+    /* an open laptop and a couple of sheets on the table */
+    const tg = new THREE.Group();
+    tg.position.set(74, 4.7, 13);
+    const lapBase = box(tg, 2.3, 0.14, 1.6, C.inkSoft, { radius: 0.05, rough: 0.4, metal: 0.3 });
+    lapBase.position.set(-1.2, 0.07, 0.6);
+    lapBase.rotation.y = 0.5;
+    const lid = box(tg, 2.3, 1.5, 0.1, C.inkSoft, { radius: 0.05, rough: 0.4, metal: 0.3 });
+    lid.position.set(-1.85, 0.68, 1.1);
+    lid.rotation.y = 0.5;
+    lid.rotation.x = -0.32;
+    const lscreen = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.9, 1.15),
+      mat(C.accent, { emissive: C.accent, emissiveIntensity: 0.7, rough: 0.4 })
+    );
+    lscreen.position.set(-1.83, 0.66, 1.04);
+    lscreen.rotation.y = 0.5 + Math.PI;
+    lscreen.rotation.x = 0.32;
+    tg.add(lscreen);
+    anim.screens.push(lscreen);
+    for (const [px, pz, r] of [[1.3, -0.5, 0.4], [1.9, 0.4, -0.2]]) {
+      const sheet = box(tg, 1.35, 0.03, 0.95, C.white, { radius: 0.02, cast: false, rough: 0.9 });
+      sheet.position.set(px, 0.03, pz);
+      sheet.rotation.y = r;
+    }
+    zg("boardroom").add(tg);
+  }
 
   /* RECEPTION — speed to lead answers before anyone else */
   desk(zg("reception"), 8, 34, 10, 4.6, { papers: true });
   const agentReception = person(zg("reception"), 10.5, 32.4, {
-    shirt: C.accent, hairStyle: "long", wander: true,
+    shirt: C.accent, hairStyle: "long", wander: true, scale: 0.94,
   });
   addWalker(
     agentReception,
@@ -1066,6 +1109,10 @@ export function renderOffice(host, state, opts = {}) {
   /* COMMONS — the cartoon office breathes */
   const commons = new THREE.Group();
   scene.add(commons);
+  {
+    const matEl = box(commons, 7, 0.1, 2.4, "#cdd3de", { radius: 0.05, cast: false, rough: 0.95 });
+    matEl.position.set(33, 0.06, 54.3);
+  }
   pingpong(commons, 34, 26);
   sofa(commons, 45, 42);
   contact(commons, 49.3, 38.4, 3.4, 2.6);
@@ -1077,21 +1124,24 @@ export function renderOffice(host, state, opts = {}) {
   desk(commons, 44, 46, 8, 4.2);
   chair(commons, 48, 53, Math.PI);
   person(commons, 48, 53, {
-    seated: true, shirt: C.wallDeep, hair: C.hairBrown,
-    hairStyle: "crop", pose: "work", rotY: Math.PI,
+    seated: true, shirt: C.white, hair: C.hairBrown,
+    hairStyle: "crop", pose: "work", rotY: Math.PI, scale: 0.98,
   });
   const staffA = person(commons, 33, 52, {
-    shirt: C.wallDeep, hairStyle: "bun", hair: C.hairLight, wander: true,
+    shirt: C.cream, hairStyle: "bun", hair: C.hairLight, wander: true, scale: 0.92,
   });
   addWalker(
     staffA,
     [[33, 52], [22, 50], [5.4, 49], [20, 50], [33, 46], [42, 36]],
     { coffee: true, kitchenAt: 2 }
   );
-  const staffB = person(commons, 10, 26, {
-    shirt: C.inkSoft, skin: C.skinB, hairStyle: "crop", hair: C.hairLight, wander: true,
+  /* idles at the ping-pong table or the cooler: people loiter near
+     furniture, never in the middle of an empty floor */
+  const staffB = person(commons, 38.5, 33, {
+    shirt: C.inkSoft, skin: C.skinB, hairStyle: "crop", hair: C.hairLight,
+    wander: true, scale: 1.03,
   });
-  addWalker(staffB, [[10, 26], [28, 23.5], [50, 23], [55, 26.5], [30, 27.5]], { speed: 0.06 });
+  addWalker(staffB, [[38.5, 33], [23.5, 34.8]], { speed: 0.06 });
 
   /* CORNER OFFICE — the AI CEO runs the whole floor */
   rug(zg("corner"), 66, 34, 22, 15);
@@ -1135,7 +1185,7 @@ export function renderOffice(host, state, opts = {}) {
     return s;
   });
   const runners = [];
-  const runnerGeo = new THREE.SphereGeometry(0.55, 10, 10);
+  const runnerGeo = new THREE.SphereGeometry(0.42, 10, 10);
   function spawnRunner() {
     const path = runSamples[Math.floor(Math.random() * runSamples.length)];
     const m = new THREE.Mesh(runnerGeo, mat(C.accent, { emissive: C.accent, emissiveIntensity: 0.9 }));
@@ -1478,9 +1528,9 @@ export function renderOffice(host, state, opts = {}) {
         runners.splice(i, 1);
         continue;
       }
-      r.m.position.set(r.path[idx][0], 0.7 + 0.25 * Math.sin(r.i / 2.2), r.path[idx][1]);
+      r.m.position.set(r.path[idx][0], 0.55 + 0.15 * Math.sin(r.i / 2.2), r.path[idx][1]);
     }
-    if (crossedEvery(170)) spawnRunner();
+    if (crossedEvery(430)) spawnRunner();
     stepWalkers(dt, ease);
 
     renderOnce();
