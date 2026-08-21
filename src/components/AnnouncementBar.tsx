@@ -1,10 +1,20 @@
-import { announcement } from "@/content/site";
+import { announcement, seatsFilled, seatsTotal } from "@/content/site";
 
-/* Motif 4 (brief §3.4): full-width accent bar, white mono text, top of page. */
+/* Full-width accent bar at the top of the page. Sized up so the seat
+   count is the first thing read, with a slim fill gauge underneath. */
 export default function AnnouncementBar() {
+  const pct = Math.min(100, Math.round((seatsFilled / seatsTotal) * 100));
   return (
-    <div className="bg-accent px-4 py-2 text-center font-mono text-[11px] tracking-[0.02em] text-accent-on sm:text-[12px] sm:tracking-[0.06em]">
-      {announcement}
+    <div className="bg-accent text-accent-on">
+      <p className="px-4 py-3 text-center font-mono text-[12.5px] font-bold leading-snug tracking-[0.04em] sm:py-3.5 sm:text-[14px] sm:tracking-[0.08em]">
+        {announcement}
+      </p>
+      <div
+        aria-hidden
+        className="h-[3px] w-full bg-[rgb(255_255_255/0.25)]"
+      >
+        <div className="h-full bg-white" style={{ width: `${pct}%` }} />
+      </div>
     </div>
   );
 }

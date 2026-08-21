@@ -15,8 +15,11 @@ export const brand = {
   hudLabel: "AICEO_V1.0",
 };
 
-export const announcement =
-  "Cohort 1 starts 18 September · 30 seats · $997";
+/* seatsFilled is the only place this number lives: keep it true, or
+   wire it to the live order count when the checkout webhook is on. */
+export const seatsFilled = 12;
+export const seatsTotal = 30;
+export const announcement = `Cohort 1 starts 18 September · ${seatsFilled}/${seatsTotal} seats filled · $997`;
 
 /** Section ids double as anchor targets; exec labels feed the terminal HUD. */
 export const sections = [

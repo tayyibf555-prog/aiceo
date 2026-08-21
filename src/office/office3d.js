@@ -12,6 +12,11 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { GTAOPass } from "three/examples/jsm/postprocessing/GTAOPass.js";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { MARK_GRID } from "../lib/halftone-data";
 
 /* World: x 0..96 (screen lower-right), z 0..56 (screen lower-left), y up. */
@@ -35,6 +40,59 @@ const PILLS = [
   { zone: "reception", label: "SPEED TO LEAD", at: [10.5, 32.6], h: 13 },
   { zone: "corner", label: "THE AI CEO", at: [70, 47], h: 14.6, boss: true },
 ];
+
+/*
+  Tilt shift: sharp through a horizontal band, soft above and below,
+  so the floor reads like a photographed architectural model. Weights
+  are unrolled rather than arrayed to stay valid on GLSL ES 1.00.
+*/
+const TiltShiftShader = {
+  name: "TiltShift",
+  uniforms: {
+    tDiffuse: { value: null },
+    resolution: { value: new THREE.Vector2(1, 1) },
+    focusCenter: { value: 0.54 },
+    focusWidth: { value: 0.3 },
+    blurMax: { value: 3.4 },
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }`,
+  fragmentShader: `
+    uniform sampler2D tDiffuse;
+    uniform vec2 resolution;
+    uniform float focusCenter;
+    uniform float focusWidth;
+    uniform float blurMax;
+    varying vec2 vUv;
+    void main() {
+      float d = abs(vUv.y - focusCenter);
+      float t = clamp((d - focusWidth) / max(focusWidth, 0.001), 0.0, 1.0);
+      float amount = pow(t, 1.6) * blurMax;
+      if (amount < 0.01) {
+        gl_FragColor = texture2D(tDiffuse, vUv);
+        return;
+      }
+      vec2 px = amount / resolution;
+      vec4 sum = texture2D(tDiffuse, vUv) * 0.227;
+      sum += (texture2D(tDiffuse, vUv + vec2(0.0, px.y)) +
+              texture2D(tDiffuse, vUv - vec2(0.0, px.y)) +
+              texture2D(tDiffuse, vUv + vec2(px.x, 0.0)) +
+              texture2D(tDiffuse, vUv - vec2(px.x, 0.0))) * 0.194;
+      sum += (texture2D(tDiffuse, vUv + vec2(0.0, px.y * 2.0)) +
+              texture2D(tDiffuse, vUv - vec2(0.0, px.y * 2.0)) +
+              texture2D(tDiffuse, vUv + vec2(px.x * 2.0, 0.0)) +
+              texture2D(tDiffuse, vUv - vec2(px.x * 2.0, 0.0))) * 0.121;
+      sum += (texture2D(tDiffuse, vUv + vec2(0.0, px.y * 3.0)) +
+              texture2D(tDiffuse, vUv - vec2(0.0, px.y * 3.0)) +
+              texture2D(tDiffuse, vUv + vec2(px.x * 3.0, 0.0)) +
+              texture2D(tDiffuse, vUv - vec2(px.x * 3.0, 0.0))) * 0.054;
+      gl_FragColor = sum / (0.227 + 4.0 * (0.194 + 0.121 + 0.054));
+    }`,
+};
 
 function cssColor(varName, fallback) {
   if (typeof window === "undefined") return fallback;
@@ -96,7 +154,7 @@ export function renderOffice(host, state, opts = {}) {
   /* filmic roll-off instead of clipped highlights: the difference
      between a flat toy render and a product shot */
   renderer.toneMapping = THREE.NeutralToneMapping;
-  renderer.toneMappingExposure = 0.92;
+  renderer.toneMappingExposure = 1.0;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   host.appendChild(renderer.domElement);
   renderer.domElement.style.display = "block";
@@ -126,8 +184,8 @@ export function renderOffice(host, state, opts = {}) {
 
   /* key / fill / rim: warm sun, cool bounce, and a back edge so the
      furniture separates from the floor */
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xd2dae8, 0.32));
-  const dir = new THREE.DirectionalLight(0xfff1dd, 1.35);
+  scene.add(new THREE.HemisphereLight(0xfffaf2, 0xdcd8d2, 0.3));
+  const dir = new THREE.DirectionalLight(0xfff0d6, 1.75);
   dir.position.set(-34, 96, 26);
   dir.target.position.copy(CENTER);
   dir.castShadow = true;
@@ -141,9 +199,14 @@ export function renderOffice(host, state, opts = {}) {
   dir.shadow.normalBias = 0.5;
   scene.add(dir, dir.target);
 
-  const fill = new THREE.DirectionalLight(0xe8f0ff, 0.34);
+  const fill = new THREE.DirectionalLight(0xeaf1ff, 0.28);
   fill.position.set(120, 46, 130);
   scene.add(fill);
+
+  /* a warm pool over the corner office so the hero zone leads the eye */
+  const focal = new THREE.PointLight(0xffd9a8, 48, 46, 2);
+  focal.position.set(78, 15, 42);
+  scene.add(focal);
 
   const rim = new THREE.DirectionalLight(0xffffff, 0.42);
   rim.position.set(60, 34, -90);
@@ -161,6 +224,7 @@ export function renderOffice(host, state, opts = {}) {
       transparent: o.opacity !== undefined,
       opacity: o.opacity ?? 1,
       envMapIntensity: o.env ?? 1,
+      map: o.map ?? null,
     });
 
   /* Soft contact shadow decal. Real ambient occlusion would cost a
@@ -185,6 +249,26 @@ export function renderOffice(host, state, opts = {}) {
     transparent: true,
     depthWrite: false,
   });
+  /* Procedural oak grain. Flat colour is what makes wood read as
+     painted plastic; a few dozen soft bands fix it for nothing. */
+  const woodTex = (() => {
+    const c = document.createElement("canvas");
+    c.width = c.height = 256;
+    const x = c.getContext("2d");
+    x.fillStyle = "#e3c9a3";
+    x.fillRect(0, 0, 256, 256);
+    for (let i = 0; i < 170; i++) {
+      x.globalAlpha = 0.035 + Math.random() * 0.05;
+      x.fillStyle = Math.random() < 0.5 ? "#c2a077" : "#f2e0c4";
+      x.fillRect(0, Math.random() * 256, 256, 1 + Math.random() * 3);
+    }
+    x.globalAlpha = 1;
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    return t;
+  })();
+
   const contact = (parent, x, z, rx, rz = rx, y = 0.05) => {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(rx * 2, rz * 2), blobMat);
     m.rotation.x = -Math.PI / 2;
@@ -298,8 +382,53 @@ export function renderOffice(host, state, opts = {}) {
   scene.add(structure);
   const backWall = box(structure, 96.6, 14, 1.6, C.wall, { radius: 0.4 });
   backWall.position.set(47.9, 7, 0.8);
-  const leftWall = box(structure, 1.6, 11, 56.6, C.wall, { radius: 0.4 });
-  leftWall.position.set(0.8, 5.5, 28.1);
+  /* Left elevation is glazed. The mullions cast the stripes across
+     the floor and the glass casts nothing, which is what gives the
+     room a believable source of daylight. */
+  const GLAZE_TO = 43;
+  const sill = box(structure, 1.6, 2.2, GLAZE_TO, C.wall, { radius: 0.3 });
+  sill.position.set(0.8, 1.1, GLAZE_TO / 2);
+  const head = box(structure, 1.6, 0.9, GLAZE_TO, C.wall, { radius: 0.2 });
+  head.position.set(0.8, 11.4, GLAZE_TO / 2);
+  const glazing = new THREE.Mesh(
+    new THREE.BoxGeometry(0.4, 8.5, GLAZE_TO - 1),
+    new THREE.MeshPhysicalMaterial({
+      color: C.glass,
+      transparent: true,
+      opacity: 0.2,
+      roughness: 0.04,
+      metalness: 0,
+      envMapIntensity: 1.6,
+      depthWrite: false,
+    })
+  );
+  glazing.position.set(0.8, 6.4, GLAZE_TO / 2);
+  glazing.renderOrder = 2;
+  structure.add(glazing);
+  for (let mz = 2.5; mz < GLAZE_TO; mz += 6.8) {
+    const mull = box(structure, 1.2, 8.5, 0.5, C.metal, {
+      radius: 0.08, metal: 0.7, rough: 0.35, env: 2.4,
+    });
+    mull.position.set(0.8, 6.4, mz);
+  }
+  /* the rest of the wall is solid, and holds the kitchen door */
+  const leftSolid = box(structure, 1.6, 11, 56.6 - GLAZE_TO, C.wall, { radius: 0.4 });
+  leftSolid.position.set(0.8, 5.5, GLAZE_TO + (56.6 - GLAZE_TO) / 2);
+  const KITCHEN = { x: 5.4, z: 49 };
+  const kDoor = box(structure, 0.5, 8.6, 3.6, C.wood, {
+    radius: 0.2, rough: 0.55, map: woodTex, cast: false,
+  });
+  kDoor.position.set(1.85, 4.3, KITCHEN.z);
+  const kKnob = new THREE.Mesh(
+    new THREE.SphereGeometry(0.26, 10, 10),
+    mat(C.metal, { metal: 0.85, rough: 0.3, env: 2.4 })
+  );
+  kKnob.position.set(2.15, 4.1, KITCHEN.z - 1.3);
+  structure.add(kKnob);
+  const kSign = box(structure, 0.35, 1.5, 4.4, C.white, {
+    radius: 0.15, rough: 0.5, cast: false,
+  });
+  kSign.position.set(1.95, 10.1, KITCHEN.z);
   /* front knee walls with an entrance gap */
   const knee1 = box(structure, 26, 3.2, 1.6, C.wall, { radius: 0.4 });
   knee1.position.set(13, 1.6, 55.2);
@@ -470,7 +599,7 @@ export function renderOffice(host, state, opts = {}) {
     const g = new THREE.Group();
     g.position.set(x + w / 2, 0, z + d / 2);
     contact(g, 0, 0.4, w * 0.62, d * 0.75);
-    const top = box(g, w, 0.55, d, C.wood, { radius: 0.16, rough: 0.55 });
+    const top = box(g, w, 0.55, d, C.wood, { radius: 0.16, rough: 0.55, map: woodTex });
     top.position.y = 3.55;
     /* a thin darker underside reads as a real edge-banded desk */
     const under = box(g, w - 0.5, 0.25, d - 0.5, C.woodDeep, {
@@ -519,7 +648,7 @@ export function renderOffice(host, state, opts = {}) {
     contact(g, 0, 0.3, r * 1.35, r * 1.35);
     const top = new THREE.Mesh(
       new THREE.CylinderGeometry(r, r, 0.5, 48),
-      mat(C.wood, { rough: 0.5 })
+      mat(C.wood, { rough: 0.5, map: woodTex })
     );
     top.position.y = 4.45;
     top.castShadow = true;
@@ -643,7 +772,7 @@ export function renderOffice(host, state, opts = {}) {
     const g = new THREE.Group();
     g.position.set(x, 0, z);
     contact(g, 0, 0.5, 4.4, 2.4);
-    const bodyB = box(g, 7, 9.4, 2.4, C.wood, { radius: 0.3, rough: 0.6 });
+    const bodyB = box(g, 7, 9.4, 2.4, C.wood, { radius: 0.3, rough: 0.6, map: woodTex });
     bodyB.position.y = 4.7;
     const cols = [C.accent, C.creamDeep, C.accentDeep, C.wallDeep];
     for (let s = 0; s < 3; s++) {
@@ -845,7 +974,28 @@ export function renderOffice(host, state, opts = {}) {
   /* ── walkers: people who actually move around the office ───────── */
   const walkers = [];
   const addWalker = (g, pts, opts = {}) => {
+    let cup = null;
+    if (opts.coffee) {
+      cup = new THREE.Group();
+      const mug = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.42, 0.36, 0.9, 12),
+        mat(C.white, { rough: 0.4 })
+      );
+      const brew = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.34, 0.34, 0.08, 12),
+        mat("#6f4a2c", { rough: 0.5 })
+      );
+      brew.position.y = 0.42;
+      cup.add(mug, brew);
+      cup.position.set(1.5, 5.3, 0.9);
+      cup.visible = false;
+      g.add(cup);
+    }
     walkers.push({
+      cup,
+      kitchenAt: opts.kitchenAt,
+      hidden: 0,
+      cupFor: 0,
       g,
       inner: g.userData.inner,
       pts,
@@ -862,6 +1012,22 @@ export function renderOffice(host, state, opts = {}) {
   function stepWalkers(dt, ease) {
     for (const w of walkers) {
       const inner = w.inner;
+      /* out of sight in the kitchen, then back with a brew */
+      if (w.hidden > 0) {
+        w.hidden -= dt;
+        if (w.hidden <= 0) {
+          w.g.visible = true;
+          if (w.cup) {
+            w.cup.visible = true;
+            w.cupFor = 900;
+          }
+        }
+        continue;
+      }
+      if (w.cup && w.cupFor > 0) {
+        w.cupFor -= dt;
+        if (w.cupFor <= 0) w.cup.visible = false;
+      }
       if (w.pause > 0) {
         w.pause -= dt;
         w.moveT = 0;
@@ -872,6 +1038,11 @@ export function renderOffice(host, state, opts = {}) {
         const dz = tz - w.g.position.z;
         const dist = Math.hypot(dx, dz);
         if (dist < 0.35) {
+          if (w.kitchenAt !== undefined && w.idx === w.kitchenAt) {
+            w.g.visible = false;
+            w.hidden = 80;
+            if (w.cup) w.cup.visible = false;
+          }
           w.idx = (w.idx + 1) % w.pts.length;
           w.pause = 90 + Math.random() * 330;
           continue;
@@ -956,7 +1127,7 @@ export function renderOffice(host, state, opts = {}) {
   pingpong(commons, 34, 26);
   sofa(commons, 45, 42);
   contact(commons, 49.3, 38.4, 3.4, 2.6);
-  const lowT = box(commons, 4.6, 1.6, 3, C.wood, { radius: 0.4, rough: 0.55 });
+  const lowT = box(commons, 4.6, 1.6, 3, C.wood, { radius: 0.4, rough: 0.55, map: woodTex });
   lowT.position.set(49.3, 0.8, 38);
   plant(commons, 57.5, 27.5, 0.9);
   plant(commons, 41.5, 50.5, 0.9);
@@ -970,7 +1141,11 @@ export function renderOffice(host, state, opts = {}) {
   const staffA = person(commons, 33, 52, {
     shirt: C.wallDeep, hairStyle: "bun", hair: C.hairLight, wander: true,
   });
-  addWalker(staffA, [[33, 52], [33, 44], [42, 34], [52, 29], [45, 33.5]]);
+  addWalker(
+    staffA,
+    [[33, 52], [22, 50], [5.4, 49], [20, 50], [33, 46], [42, 36]],
+    { coffee: true, kitchenAt: 2 }
+  );
   const staffB = person(commons, 10, 26, {
     shirt: C.inkSoft, skin: C.skinB, hairStyle: "crop", hair: C.hairLight, wander: true,
   });
@@ -1177,13 +1352,49 @@ export function renderOffice(host, state, opts = {}) {
   }
 
   /* ── sizing ────────────────────────────────────────────────────── */
+  /* Post: ambient occlusion for crevice contact, then the tilt-shift
+     band. Desktop only, so phones keep the direct fast path. */
+  let composer = null, gtao = null, tilt = null;
+  const usePost =
+    !reduced && typeof window !== "undefined" && window.innerWidth >= 760;
+  if (usePost) {
+    try {
+      composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+      gtao = new GTAOPass(scene, camera, 1, 1);
+      gtao.output = GTAOPass.OUTPUT.Default;
+      gtao.blendIntensity = 0.55;
+      gtao.updateGtaoMaterial({
+        radius: 1.8,
+        distanceExponent: 1.1,
+        thickness: 3.5,
+        scale: 1.1,
+        samples: 8,
+      });
+      gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 4, samples: 8 });
+      composer.addPass(gtao);
+      tilt = new ShaderPass(TiltShiftShader);
+      composer.addPass(tilt);
+      composer.addPass(new OutputPass());
+    } catch {
+      composer = null; /* any failure falls back to a plain render */
+    }
+  }
+  /* an opaque page-white ground keeps the composer honest about alpha */
+  scene.background = new THREE.Color(0xffffff);
+
   const VIEW_W = 121;
   function resize() {
     const w = Math.max(host.clientWidth, 200);
     const h = Math.max(Math.round(w / 1.66), 240);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, composer ? 1 : 2));
     renderer.setSize(w, h, true);
     renderer.domElement.style.height = `${h}px`;
+    if (composer) {
+      composer.setSize(w, h);
+      gtao?.setSize(w, h);
+      tilt?.uniforms.resolution.value.set(w, h);
+    }
     const half = VIEW_W / 2;
     camera.left = -half;
     camera.right = half;
@@ -1257,6 +1468,11 @@ export function renderOffice(host, state, opts = {}) {
   let raf = null;
   let tick = 0;
   let running = false;
+  /* Adaptive quality: ambient occlusion and tilt shift are worth real
+     GPU time, but not a slideshow. Measure what a frame actually costs
+     on this machine and quietly fall back to the direct render if it
+     cannot keep up. */
+  let perfFrames = 0, perfMs = 0, perfSettled = !composer;
   const plateAnchor = new THREE.Vector3();
 
   function projectOverlay() {
@@ -1287,7 +1503,8 @@ export function renderOffice(host, state, opts = {}) {
 
   function renderOnce() {
     projectOverlay();
-    renderer.render(scene, camera);
+    if (composer) composer.render();
+    else renderer.render(scene, camera);
   }
 
   let last = 0;
@@ -1304,8 +1521,22 @@ export function renderOffice(host, state, opts = {}) {
     }
     /* dt in 1/60s ticks, so motion is identical on 60Hz, 120Hz and
        throttled displays */
-    const dt = Math.min((now - last) / 16.67, 3);
+    const raw = now - last;
+    const dt = Math.min(raw / 16.67, 3);
     last = now;
+
+    if (!perfSettled) {
+      perfFrames++;
+      if (perfFrames > 30) perfMs += raw; /* ignore shader warm up */
+      if (perfFrames >= 110) {
+        perfSettled = true;
+        if (perfMs / (perfFrames - 30) > 26) {
+          composer = null;
+          renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+          resize();
+        }
+      }
+    }
     tick += dt;
     lastDt = dt;
     const ease = (k) => 1 - Math.pow(1 - k, dt);
@@ -1414,6 +1645,8 @@ export function renderOffice(host, state, opts = {}) {
       blobTex.dispose();
       blobMat.dispose();
       envRT.dispose();
+      woodTex.dispose();
+      composer?.dispose();
       scene.environment = null;
       renderer.dispose();
       host.innerHTML = "";
